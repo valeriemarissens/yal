@@ -56,6 +56,16 @@ espace = {finDeLigne}  | [ \t\f]
 
 "="                    { return symbol(CodesLexicaux.EGAL); }
 
+"=="                   { return symbol(CodesLexicaux.DOUBLEEGAL); }
+
+"("                    { return symbol(CodesLexicaux.PARENTHESEOUVRANTE); }
+
+")"                    { return symbol(CodesLexicaux.PARENTHESEFERMANTE); }
+
+"-"                    { return symbol(CodesLexicaux.MOINS); }
+
+"+"                    { return symbol(CodesLexicaux.PLUS); }
+
 {csteE}      	       { return symbol(CodesLexicaux.CSTENTIERE, yytext()); }
 
 {idf}      	           { return symbol(CodesLexicaux.IDF, yytext()); }

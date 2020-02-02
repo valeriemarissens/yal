@@ -58,14 +58,20 @@ parser code {:
    
 /* Terminals (tokens returned by the scanner).  */
 
-terminal Symbol    PROGRAMME, DEBUT, FIN, POINTVIRGULE, ECRIRE, EGAL, LIRE ;
+terminal Symbol    PROGRAMME, DEBUT, FIN, ECRIRE, LIRE ;
+terminal Symbol    POINTVIRGULE, EGAL, DOUBLEEGAL, PARENTHESEOUVRANTE, PARENTHESEFERMANTE ;
+terminal Symbol    PLUS, MOINS ;
 terminal String    IDF, CSTENTIERE, ENTIER ;
    
 /* Non terminals used in the grammar section.  */
 
-non terminal ArbreAbstrait PROG, LINST, INST;
+non terminal ArbreAbstrait PROG, LINST, INST ;
 non terminal Expression EXP ;
-non terminal LDECL, DECL;
+non terminal LDECL, DECL ;
+
+/* Precedences. */
+/* Produisent un shift/reduce conflict => utilisation du precedence left */
+precedence left MOINS, PLUS;
 
 /* ----------------------------Grammar Section-------------------- */
  
@@ -100,19 +106,25 @@ LINST   ::=     LINST:li  INST:i
                    RESULT = b ; :}
                 ;
 
-INST    ::=     ECRIRE EXP:e POINTVIRGULE
-                {: RESULT = new Ecrire(e, eleft + 1) ; :}
-        |
-                IDF:id EGAL EXP:e POINTVIRGULE
+INST    ::=     IDF:id EGAL EXP:e POINTVIRGULE
                 {: RESULT = new Affectation(id, e, eleft + 1) ; :}
         |
                 LIRE IDF:id POINTVIRGULE
                 {: RESULT = new Lire(id, idleft + 1) ; :}
+        |
+                ECRIRE EXP:e POINTVIRGULE
+                {: RESULT = new Ecrire(e, eleft + 1) ; :}
                 ;
     
-EXP    ::=      CSTENTIERE:c
+EXP     ::=     CSTENTIERE:c
                 {: RESULT = new ConstanteEntiere(c, cleft + 1) ; :}
         |
                 IDF:id
                 {: RESULT = new Variable(id, idleft + 1) ; :}
+        /*|
+                PARENTHESEOUVRANTE EXP:e PARENTHESEFERMANTE*/
+                /* Que mettre ici pour ne pas avoir null exception ? */
+        |
+                EXP:e1 PLUS EXP:e2
+                {: RESULT = new Addition(e1, e2, e2left + 1) ; :}
                 ;

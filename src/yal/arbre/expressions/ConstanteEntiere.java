@@ -8,8 +8,9 @@ public class ConstanteEntiere extends Constante {
 
     @Override
     public String toMIPS() {
-        StringBuilder mips = new StringBuilder("\t # On range "+cste+" dans $v0\n");
-        mips.append("\t li $v0, "+cste+"\n");
+        StringBuilder mips = new StringBuilder();
+        mips.append("\t li $v0, "+cste);
+        mips.append("\t\t # on range "+cste+" dans $v0 \n");
         return mips.toString();
     }
 

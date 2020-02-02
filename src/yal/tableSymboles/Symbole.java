@@ -4,7 +4,7 @@ public class Symbole {
     private int deplacement;
 
     public Symbole(){
-        deplacement = -1; //mejor otro valor ?
+        deplacement = -1;
     }
 
     public int getDeplacement() {

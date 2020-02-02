@@ -32,6 +32,9 @@ public class Programme extends ArbreAbstrait {
     @Override
     public String toMIPS() {
         StringBuilder mips = new StringBuilder();
+        mips.append(".data\n");
+        mips.append("retourLigne:  .asciiz \"\\n\"");
+        mips.append("\n\n");
         mips.append(".text\n");
         mips.append("# Debut du programme mips\n");
         mips.append("main :\n");
