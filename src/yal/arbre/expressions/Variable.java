@@ -33,8 +33,8 @@ public class Variable extends Expression {
     public String toMIPS() {
         StringBuilder mips = new StringBuilder();
         if (symbole != null) {
-            mips.append("\t lw $t8, " + symbole.getDeplacement() + "($s7)");
-            mips.append("\t\t # on range la valeur de " + entreeVariable.getIdf() + " dans $t8 \n");
+            mips.append("\t lw $v0, " + symbole.getDeplacement() + "($s7)");
+            mips.append("\t\t # on range la valeur de " + entreeVariable.getIdf() + " dans $v0 \n");
         }
         return mips.toString();
     }
