@@ -1,12 +1,11 @@
 package yal.arbre.expressions;
 
-public class Superieur extends Calcul {
+public class Superieur extends Comparaison {
 
     public Superieur(Expression e1, Expression e2, int i) {
         super(e1, e2, i);
     }
 
-    @Override
     String titreOperation() {
         return "comparaison "+toString()+"\n";
     }
@@ -16,7 +15,7 @@ public class Superieur extends Calcul {
      * Si e1 > e2 alors $v0 <- 1, sinon $v0 <- 0.
      * @return
      */
-    @Override
+
     String calculOperation() {
         StringBuilder calcul = new StringBuilder();
         calcul.append("\t sgt $v0, $t8, $v0 \t\t # $v0 <- $t8 > $v0 \n");
@@ -30,8 +29,7 @@ public class Superieur extends Calcul {
         "\t lw $"*/
     }
 
-    @Override
-    String operateur() {
+    public String getOperateur() {
         return " > ";
     }
 }

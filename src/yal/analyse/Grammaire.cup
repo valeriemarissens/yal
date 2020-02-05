@@ -121,6 +121,15 @@ INST    ::=     IDF:id EGAL EXP:e POINTVIRGULE
 
         |       SI EXP:e ALORS FINSI
                 {: RESULT = new Condition(eleft+1); :}
+
+        |       SI EXP:e ALORS LINST:lifst FINSI
+                {: RESULT = new Condition(e, lifst, null, eleft+1); :}
+
+        |       SI EXP:e ALORS SINON LINST:lisnd FINSI
+                {: RESULT = new Condition(e, null, lisnd, eleft+1); :}
+
+        |       SI EXP:e ALORS LINST:lifst SINON LINST:lisnd FINSI
+                {: RESULT = new Condition(e, lifst, lisnd, eleft+1); :}
                 ;
     
 EXP     ::=     CSTENTIERE:c
