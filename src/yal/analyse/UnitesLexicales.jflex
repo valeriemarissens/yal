@@ -56,8 +56,6 @@ espace = {finDeLigne}  | [ \t\f]
 
 "="                    { return symbol(CodesLexicaux.EGAL); }
 
-"=="                   { return symbol(CodesLexicaux.DOUBLEEGAL); }
-
 "("                    { return symbol(CodesLexicaux.PARENTHESEOUVRANTE); }
 
 ")"                    { return symbol(CodesLexicaux.PARENTHESEFERMANTE); }
@@ -65,6 +63,14 @@ espace = {finDeLigne}  | [ \t\f]
 "-"                    { return symbol(CodesLexicaux.MOINS); }
 
 "+"                    { return symbol(CodesLexicaux.PLUS); }
+
+"*"                    { return symbol(CodesLexicaux.FOIS); }
+
+"/"                    { return symbol(CodesLexicaux.DIVISE); }
+
+">"                    { return symbol(CodesLexicaux.SUPERIEUR); }
+
+"<"                    { return symbol(CodesLexicaux.INFERIEUR); }
 
 {csteE}      	       { return symbol(CodesLexicaux.CSTENTIERE, yytext()); }
 

@@ -60,7 +60,7 @@ parser code {:
 
 terminal Symbol    PROGRAMME, DEBUT, FIN, ECRIRE, LIRE ;
 terminal Symbol    POINTVIRGULE, EGAL, DOUBLEEGAL, PARENTHESEOUVRANTE, PARENTHESEFERMANTE ;
-terminal Symbol    PLUS, MOINS ;
+terminal Symbol    PLUS, MOINS, FOIS, DIVISE, SUPERIEUR, INFERIEUR ;
 terminal String    IDF, CSTENTIERE, ENTIER ;
    
 /* Non terminals used in the grammar section.  */
@@ -71,7 +71,10 @@ non terminal LDECL, DECL ;
 
 /* Precedences. */
 /* Produisent un shift/reduce conflict => utilisation du precedence left */
-precedence left MOINS, PLUS;
+precedence left PLUS, MOINS ;
+precedence left FOIS, DIVISE ;
+precedence left PARENTHESEOUVRANTE, PARENTHESEFERMANTE ;
+precedence left SUPERIEUR, INFERIEUR, DOUBLEEGAL ; // plutôt avant ?
 
 /* ----------------------------Grammar Section-------------------- */
  
@@ -121,10 +124,25 @@ EXP     ::=     CSTENTIERE:c
         |
                 IDF:id
                 {: RESULT = new Variable(id, idleft + 1) ; :}
-        /*|
-                PARENTHESEOUVRANTE EXP:e PARENTHESEFERMANTE*/
-                /* Que mettre ici pour ne pas avoir null exception ? */
+        |
+                PARENTHESEOUVRANTE EXP:e PARENTHESEFERMANTE
+                {: RESULT = e ; :}
         |
                 EXP:e1 PLUS EXP:e2
                 {: RESULT = new Addition(e1, e2, e2left + 1) ; :}
+        |
+                EXP:e1 MOINS EXP:e2
+                {: RESULT = new Soustraction(e1, e2, e2left + 1) ; :}
+        |
+                EXP:e1 FOIS EXP:e2
+                {: RESULT = new Multiplication(e1, e2, e2left + 1) ; :}
+        |
+                EXP:e1 DIVISE EXP:e2
+                {: RESULT = new Division(e1, e2, e2left + 1) ; :}
+        |
+                EXP:e1 SUPERIEUR EXP:e2
+                {: RESULT = new Superieur(e1, e2, e2left + 1) ; :}
+        |
+                EXP:e1 INFERIEUR EXP:e2
+                {: RESULT = new Superieur(e2, e1, e2left + 1) ; :}
                 ;

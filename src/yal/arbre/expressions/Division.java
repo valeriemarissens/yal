@@ -1,46 +1,26 @@
 package yal.arbre.expressions;
 
-public class Division extends Expression {
-    private Expression e1;
-    private Expression e2;
+public class Division extends Calcul {
 
     public Division(Expression e1, Expression e2, int i) {
-        super(i);
-        this.e1 = e1;
-        this.e2 = e2;
-    }
-
-    /**
-     * Opérandes et résultat entiers.
-     */
-    @Override
-    public void verifier() {
-
-    }
-
-    /**
-     * Idem que pour multiplication.
-     * @return
-     */
-    @Override
-    public String toMIPS() {
-        StringBuilder mips = new StringBuilder();
-
-        mips.append("\t # Division "+toString()+"\n");
-        mips.append(e1.toMIPS());
-        mips.append("\t sw $v0, 0($sp) \t# empiler $v0 \n");
-        mips.append("\t add $sp, $sp, -4 \n");
-        mips.append(e2.toMIPS());
-        mips.append("\t sub $sp, $sp, 4 \n");
-        mips.append("\t lw $t8, ($sp) \t\t # dépiler dans $t8 \n");
-        mips.append("\t div $t8, $v0 \t\t # $t8 / $v0 \n");
-        mips.append("\t mflo $v0  \t\t# on range le quotien dans $v0 \n");
-
-        return mips.toString();
+        super(e1, e2, i);
     }
 
     @Override
-    public String toString(){
-        return e1.toString()+" / "+e2.toString();
+    String titreOperation() {
+        return "division "+toString()+"\n";
+    }
+
+    @Override
+    String calculOperation() {
+        StringBuilder calcul = new StringBuilder();
+        calcul.append("\t div $t8, $v0 \t\t # $t8 / $v0 \n");
+        calcul.append("\t mflo $v0  \t\t# on range le quotien dans $v0 \n");
+        return calcul.toString();
+    }
+
+    @Override
+    String operateur() {
+        return " / ";
     }
 }
