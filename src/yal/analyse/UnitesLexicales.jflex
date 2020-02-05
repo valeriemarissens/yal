@@ -72,6 +72,14 @@ espace = {finDeLigne}  | [ \t\f]
 
 "<"                    { return symbol(CodesLexicaux.INFERIEUR); }
 
+"si"                    { return symbol(CodesLexicaux.SI); }
+
+"alors"                 { return symbol(CodesLexicaux.ALORS); }
+
+"sinon"                 { return symbol(CodesLexicaux.SINON); }
+
+"finsi"                 { return symbol(CodesLexicaux.FINSI); }
+
 {csteE}      	       { return symbol(CodesLexicaux.CSTENTIERE, yytext()); }
 
 {idf}      	           { return symbol(CodesLexicaux.IDF, yytext()); }
