@@ -16,7 +16,7 @@ public class Soustraction extends Calcul {
 
     @Override
     String calculOperation() {
-        return "\t sub $v0, $t8, $v0 \t\t # $v0 <- $t8 - $v0 \n";
+        return "\t sub $v0, $t8, $v0 \t\t # $v0 = $t8 - $v0 \n";
     }
 
     @Override
