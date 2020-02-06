@@ -14,4 +14,8 @@ public class ConstanteEntiere extends Constante {
         return mips.toString();
     }
 
+    @Override
+    public String getType() {
+        return "ConstanteEntiere";
+    }
 }

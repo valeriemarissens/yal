@@ -10,4 +10,6 @@ public abstract class Expression extends ArbreAbstrait {
 
     public abstract void verifier();
 
+    public abstract String getType();
+
 }

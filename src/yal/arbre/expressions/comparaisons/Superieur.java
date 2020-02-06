@@ -1,4 +1,7 @@
-package yal.arbre.expressions;
+package yal.arbre.expressions.comparaisons;
+
+import yal.arbre.expressions.Expression;
+import yal.arbre.expressions.comparaisons.Comparaison;
 
 public class Superieur extends Comparaison {
 
@@ -30,6 +33,6 @@ public class Superieur extends Comparaison {
     }
 
     public String getOperateur() {
-        return " > ";
+        return "<";
     }
 }

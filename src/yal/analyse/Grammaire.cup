@@ -2,15 +2,20 @@ package yal.analyse ;
 
 import java.util.*;
 import yal.arbre.* ;
-import yal.arbre.expressions.* ;
 import yal.arbre.instructions.* ;
 import yal.tableSymboles.* ;
+import yal.arbre.expressions.calculs.* ;
+import yal.arbre.expressions.comparaisons.* ;
+import yal.arbre.expressions.Constante;
+import yal.arbre.expressions.ConstanteEntiere;
+import yal.arbre.expressions.Expression;
+import yal.arbre.expressions.Variable;
+
 import yal.exceptions.AnalyseSyntaxiqueException;
 
 import java_cup.runtime.*;
 
-action code {:
-             :} ;
+action code {: :} ;
 
 parser code {:
 

@@ -1,12 +1,13 @@
 package yal.arbre.instructions;
 
+import yal.arbre.ArbreAbstrait;
 import yal.arbre.BlocDInstructions;
-import yal.arbre.expressions.Comparaison;
+import yal.arbre.expressions.Expression;
 
 public class Condition extends Instruction {
-    BlocDInstructions blocSi;
-    BlocDInstructions blocSinon;
-    Comparaison expression;
+    ArbreAbstrait blocSi;
+    ArbreAbstrait blocSinon;
+    Expression expression;
     private boolean estInutile = false;
 
     /**
@@ -20,7 +21,7 @@ public class Condition extends Instruction {
      * @param bsinon
      * @param n
      */
-    public Condition(Comparaison exp, BlocDInstructions bsi, BlocDInstructions bsinon, int n){
+    public Condition(Expression exp, ArbreAbstrait bsi, ArbreAbstrait bsinon, int n){
         super(n);
         expression = exp;
         blocSi = bsi;
@@ -39,6 +40,9 @@ public class Condition extends Instruction {
 
     @Override
     public void verifier() {
+        if (!expression.getType().equals("Comparaison")){
+            // Erreur sémantique
+        }
         blocSi.verifier();
         blocSinon.verifier();
     }

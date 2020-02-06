@@ -30,6 +30,11 @@ public class Variable extends Expression {
     }
 
     @Override
+    public String getType() {
+        return "Variable";
+    }
+
+    @Override
     public String toMIPS() {
         StringBuilder mips = new StringBuilder();
         if (symbole != null) {

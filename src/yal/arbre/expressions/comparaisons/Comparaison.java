@@ -1,4 +1,6 @@
-package yal.arbre.expressions;
+package yal.arbre.expressions.comparaisons;
+
+import yal.arbre.expressions.Expression;
 
 public abstract class Comparaison extends Expression {
     Expression expressionGauche;
@@ -24,5 +26,9 @@ public abstract class Comparaison extends Expression {
     @Override
     public String toMIPS() {
         return null;
+    }
+
+    public String getType(){
+        return "Comparaison";
     }
 }

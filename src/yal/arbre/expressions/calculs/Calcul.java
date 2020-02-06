@@ -1,9 +1,11 @@
-package yal.arbre.expressions;
+package yal.arbre.expressions.calculs;
+
+import yal.arbre.expressions.Expression;
 
 /**
  * Design Pattern Template Method.
  */
-public abstract class Calcul extends Expression{
+public abstract class Calcul extends Expression {
     private Expression expGauche;
     private Expression expDroite;
 
@@ -48,8 +50,12 @@ public abstract class Calcul extends Expression{
 
     @Override
     public String toString(){
-        return expGauche.toString()+operateur()+ expDroite.toString();
+        return expGauche.toString()+ getOperateur()+ expDroite.toString();
     }
 
-    abstract String operateur();
+    public abstract String getOperateur();
+
+    public String getType(){
+        return "Calcul";
+    }
 }

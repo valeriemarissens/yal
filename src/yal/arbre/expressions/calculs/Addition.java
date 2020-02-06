@@ -1,4 +1,6 @@
-package yal.arbre.expressions;
+package yal.arbre.expressions.calculs;
+
+import yal.arbre.expressions.Expression;
 
 public class Addition extends Calcul {
 
@@ -13,11 +15,12 @@ public class Addition extends Calcul {
 
     @Override
     String calculOperation() {
-        return "\t add $v0, $t8, $v0 \t\t # $v0 <- $t8 + $v0 \n";
+        return "\t add $v0, $t8, $v0 \t\t" +
+                " # $v0 <- $t8 + $v0 \n";
     }
 
-    @Override
-    String operateur() {
-        return " + ";
+    public String getOperateur() {
+        return "+";
     }
+
 }

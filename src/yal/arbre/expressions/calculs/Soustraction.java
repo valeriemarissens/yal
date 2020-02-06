@@ -1,4 +1,7 @@
-package yal.arbre.expressions;
+package yal.arbre.expressions.calculs;
+
+import yal.arbre.expressions.Expression;
+import yal.arbre.expressions.calculs.Calcul;
 
 public class Soustraction extends Calcul {
 
@@ -17,7 +20,7 @@ public class Soustraction extends Calcul {
     }
 
     @Override
-    String operateur() {
-        return " - ";
+    public String getOperateur() {
+        return "-";
     }
 }
