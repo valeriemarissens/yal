@@ -46,7 +46,7 @@ public class Comparaison extends Expression {
         calcul.append("# Début de comparaison entre deux entiers. \n ");
         calcul.append("\t li $v0, ");
 
-        // Le toString d'une constante n'est que sa valeur
+        // Le toMIPS d'une constante n'est que sa valeur
         calcul.append(expressionGauche.toString());
         calcul.append("\n");
 
@@ -60,6 +60,18 @@ public class Comparaison extends Expression {
 
         calcul.append("\n\n");
 
+        return calcul.toString();
+    }
+
+    private String initialisationComparaisonCsteExp(Expression exp, ConstanteEntiere cste){
+        StringBuilder calcul = new StringBuilder();
+
+        // On initialise $v0 et $t4...
+        calcul.append(initToStringComparaisonExpCste(exp, cste));
+
+        // ... pour les utiliser dans sgt/slt.
+        calcul.append("\t ");
+        calcul.append(cmdMips);
         return calcul.toString();
     }
 
@@ -77,16 +89,10 @@ public class Comparaison extends Expression {
      */
     private String toStringComparaisonExpEtCste(Expression exp, ConstanteEntiere cste){
         StringBuilder calcul = new StringBuilder();
-
-        // On initialise $v0 et $t4...
-        calcul.append(initToStringComparaisonExpCste(exp, cste));
-
-        // ... pour les utiliser dans sgt/slt.
-        calcul.append("\t ");
-        calcul.append(cmdMips);
+        calcul.append(initialisationComparaisonCsteExp(exp, cste));
         calcul.append(" $v0, $v0, $t4");
 
-        calcul.append("\n\n");
+        calcul.append("\n");
         return calcul.toString();
     }
 
@@ -103,16 +109,10 @@ public class Comparaison extends Expression {
      *              A utiliser pour utiliser le beq ensuite.
      */
     private String toStringComparaisonCsteEtExp(Expression exp, ConstanteEntiere cste){
-
         StringBuilder calcul = new StringBuilder();
-        // On initialise $v0 et $t4...
-        calcul.append(initToStringComparaisonExpCste(exp, cste));
-
-        // ... pour les utiliser dans sgt/slt.
-        calcul.append("\t ");
-        calcul.append(cmdMips);
+        calcul.append(initialisationComparaisonCsteExp(exp, cste));
         calcul.append(" $v0, $t4, $v0");
-        calcul.append("\n\n");
+        calcul.append("\n");
         return calcul.toString();
     }
 
@@ -125,7 +125,7 @@ public class Comparaison extends Expression {
 
         // ...et la valeur de la cste dans $t4...
 
-        // (cste.toString() écrit juste la valeur de la cste)
+        // (cste.toMIPS() écrit juste la valeur de la cste)
         init.append("\t li $t4, ");
         init.append(cste.toString());
         init.append("\n");
@@ -144,6 +144,7 @@ public class Comparaison extends Expression {
      */
     private String toStringComparaisonExpEtExp(){
         StringBuilder calcul = new StringBuilder();
+        calcul.append("# Début de comparaison entre deux expressions. \n");
 
         // Le résultat de expressionDroite est gardé dans $v0.
         calcul.append(expressionDroite.toMIPS());
@@ -164,7 +165,8 @@ public class Comparaison extends Expression {
 
     }
 
-    public String toString(){
+    @Override
+    public String toMIPS(){
         StringBuilder code = new StringBuilder();
         String typeExpGauche = expressionGauche.getType();
         String typeExpDroite = expressionDroite.getType();
@@ -200,10 +202,7 @@ public class Comparaison extends Expression {
 
     }
 
-    @Override
-    public String toMIPS() {
-        return null;
-    }
+
 
     public String getType(){
         return "Comparaison";

@@ -3,7 +3,7 @@ package yal.arbre.instructions;
 import yal.arbre.ArbreAbstrait;
 import yal.arbre.expressions.Expression;
 import yal.exceptions.MessagesErreursSemantiques;
-import yal.outils.FabriqueIdCondition;
+import yal.outils.FabriqueIdentifiants;
 
 public class Condition extends Instruction {
     private int identifiant;
@@ -35,7 +35,7 @@ public class Condition extends Instruction {
         expression = exp;
         blocSi = bsi;
         blocSinon = bsinon;
-        identifiant = FabriqueIdCondition.getInstance().getNumero();
+        identifiant = FabriqueIdentifiants.getInstance().getNumeroCondition();
         nomEtiquetteSi = "si"+identifiant;
         nomEtiquetteSinon = "sinon"+identifiant;
         nomEtiquetteFinsi = "finsi"+identifiant;
@@ -101,10 +101,10 @@ public class Condition extends Instruction {
         StringBuilder code = new StringBuilder();
 
         if (!estInutile){
-            code.append(expression.toString());
+            code.append(expression.toMIPS());
             StringBuilder branchement = new StringBuilder();
 
-            branchement.append("\t # Évaluation comparaison et branchement \n");
+            branchement.append("# Évaluation comparaison et branchement \n");
 
             // Si $v0 = 0, alors la comparaison est fausse : étiquette sinon
             // beq $v0, $0, sinon

@@ -80,6 +80,12 @@ espace = {finDeLigne}  | [ \t\f]
 
 "finsi"                 { return symbol(CodesLexicaux.FINSI); }
 
+"tantque"               { return symbol(CodesLexicaux.TANTQUE); }
+
+"repeter"               { return symbol(CodesLexicaux.REPETER); }
+
+"fintantque"            { return symbol(CodesLexicaux.FINTANTQUE) ; }
+
 {csteE}      	       { return symbol(CodesLexicaux.CSTENTIERE, yytext()); }
 
 {idf}      	           { return symbol(CodesLexicaux.IDF, yytext()); }
