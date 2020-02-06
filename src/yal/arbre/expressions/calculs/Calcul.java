@@ -58,4 +58,8 @@ public abstract class Calcul extends Expression {
     public String getType(){
         return "Calcul";
     }
+
+    public Expression getExpDroite(){
+        return expDroite;
+    }
 }

@@ -64,12 +64,13 @@ parser code {:
 /* Terminals (tokens returned by the scanner).  */
 
 terminal Symbol    PROGRAMME, DEBUT, FIN, ECRIRE, LIRE ;
-terminal Symbol    POINTVIRGULE, EGAL, DOUBLEEGAL, PARENTHESEOUVRANTE, PARENTHESEFERMANTE ;
+terminal Symbol    POINTVIRGULE, EGAL, PARENTHESEOUVRANTE, PARENTHESEFERMANTE ;
 terminal Symbol    PLUS, MOINS, FOIS, DIVISE;
 terminal Symbol    SI, ALORS, FINSI, SINON ;
 terminal Symbol    TANTQUE, REPETER, FINTANTQUE;
+terminal Symbol    ET, OU, NON ;
 terminal String    IDF, CSTENTIERE, ENTIER ;
-terminal String    SUPERIEUR, INFERIEUR;
+terminal String    SUPERIEUR, INFERIEUR, DOUBLEEGAL, PASEGAL ;
    
 /* Non terminals used in the grammar section.  */
 
@@ -79,10 +80,14 @@ non terminal LDECL, DECL ;
 
 /* Precedences. */
 /* Produisent un shift/reduce conflict => utilisation du precedence left */
+/* Règle 14 de la sémantique : */
+precedence left ET, OU ;
+precedence left DOUBLEEGAL, PASEGAL ;
+precedence left SUPERIEUR, INFERIEUR ;
 precedence left PLUS, MOINS ;
 precedence left FOIS, DIVISE ;
+precedence left NON ;
 precedence left PARENTHESEOUVRANTE, PARENTHESEFERMANTE ;
-precedence left SUPERIEUR, INFERIEUR, DOUBLEEGAL ; // plutôt avant ?
 
 /* ----------------------------Grammar Section-------------------- */
  
@@ -117,18 +122,20 @@ LINST   ::=     LINST:li  INST:i
                    RESULT = b ; :}
                 ;
 
-INST    ::=     IDF:id EGAL EXP:e POINTVIRGULE
+INST    ::=     /* AFFECT */
+                IDF:id EGAL EXP:e POINTVIRGULE
                 {: RESULT = new Affectation(id, e, eleft + 1) ; :}
         |
+                /* LIRE */
                 LIRE IDF:id POINTVIRGULE
                 {: RESULT = new Lire(id, idleft + 1) ; :}
         |
+                /* ECRIRE */
                 ECRIRE EXP:e POINTVIRGULE
                 {: RESULT = new Ecrire(e, eleft + 1) ; :}
-
+        |
                 /* Début des conditions */
-
-        |       SI EXP:e ALORS FINSI
+                SI EXP:e ALORS FINSI
                 {: RESULT = new Condition(eleft+1); :}
 
         |       SI EXP:e ALORS LINST:lifst FINSI
@@ -139,10 +146,9 @@ INST    ::=     IDF:id EGAL EXP:e POINTVIRGULE
 
         |       SI EXP:e ALORS LINST:lifst SINON LINST:lisnd FINSI
                 {: RESULT = new Condition(e, lifst, lisnd, eleft+1); :}
-
+        |
                 /* Boucle */
-
-        |       TANTQUE EXP:e REPETER LINST:li FINTANTQUE
+                TANTQUE EXP:e REPETER LINST:li FINTANTQUE
                 {: RESULT = new Boucle(e, li, eleft+1); :}
                 ;
     
@@ -152,9 +158,16 @@ EXP     ::=     CSTENTIERE:c
                 IDF:id
                 {: RESULT = new Variable(id, idleft + 1) ; :}
         |
+                /* ( EXP ) */
                 PARENTHESEOUVRANTE EXP:e PARENTHESEFERMANTE
                 {: RESULT = e ; :}
         |
+                /* - EXP */
+                MOINS EXP:e
+                {: ConstanteEntiere zero = new ConstanteEntiere("0", eleft + 1) ;
+                   RESULT = new Soustraction(zero, e, eleft + 1) ; :}
+        |
+                /* Début des EXP OPER EXP */
                 EXP:e1 PLUS EXP:e2
                 {: RESULT = new Addition(e1, e2, e2left + 1) ; :}
         |

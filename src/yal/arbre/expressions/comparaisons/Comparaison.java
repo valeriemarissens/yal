@@ -199,10 +199,12 @@ public class Comparaison extends Expression {
 
     @Override
     public void verifier() {
-
     }
 
-
+    @Override
+    public String toString(){
+        return expressionGauche.toString()+getOperateur()+expressionDroite.toString();
+    }
 
     public String getType(){
         return "Comparaison";

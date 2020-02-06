@@ -1,12 +1,29 @@
 package yal.arbre.expressions.calculs;
 
+import yal.arbre.expressions.ConstanteEntiere;
 import yal.arbre.expressions.Expression;
-import yal.arbre.expressions.calculs.Calcul;
+import yal.exceptions.MessagesErreursSemantiques;
 
 public class Division extends Calcul {
 
     public Division(Expression e1, Expression e2, int i) {
         super(e1, e2, i);
+    }
+
+    /**
+     * Vérifie que l'expression de droite ne soit
+     * pas égale à 0.
+     */
+    @Override
+    public void verifier(){
+        Expression expDroite = getExpDroite();
+        String typeExpDroite = expDroite.getType();
+        if (typeExpDroite.equals("ConstanteEntiere")){
+            ConstanteEntiere constanteEntiere = (ConstanteEntiere) expDroite;
+            if (constanteEntiere.toString().equals("0")){
+                MessagesErreursSemantiques.getInstance().ajouter(noLigne,"La division par 0 est interdite.");
+            }
+        }
     }
 
     @Override
