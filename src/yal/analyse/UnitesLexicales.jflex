@@ -68,9 +68,9 @@ espace = {finDeLigne}  | [ \t\f]
 
 "/"                    { return symbol(CodesLexicaux.DIVISE); }
 
-">"                    { return symbol(CodesLexicaux.SUPERIEUR); }
+">"                    { return symbol(CodesLexicaux.SUPERIEUR, yytext()); }
 
-"<"                    { return symbol(CodesLexicaux.INFERIEUR); }
+"<"                    { return symbol(CodesLexicaux.INFERIEUR, yytext()); }
 
 "si"                    { return symbol(CodesLexicaux.SI); }
 

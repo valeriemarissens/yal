@@ -65,9 +65,10 @@ parser code {:
 
 terminal Symbol    PROGRAMME, DEBUT, FIN, ECRIRE, LIRE ;
 terminal Symbol    POINTVIRGULE, EGAL, DOUBLEEGAL, PARENTHESEOUVRANTE, PARENTHESEFERMANTE ;
-terminal Symbol    PLUS, MOINS, FOIS, DIVISE, SUPERIEUR, INFERIEUR ;
+terminal Symbol    PLUS, MOINS, FOIS, DIVISE;
 terminal Symbol    SI, ALORS, FINSI, SINON ;
 terminal String    IDF, CSTENTIERE, ENTIER ;
+terminal String    SUPERIEUR, INFERIEUR;
    
 /* Non terminals used in the grammar section.  */
 
@@ -158,9 +159,9 @@ EXP     ::=     CSTENTIERE:c
                 EXP:e1 DIVISE EXP:e2
                 {: RESULT = new Division(e1, e2, e2left + 1) ; :}
         |
-                EXP:e1 SUPERIEUR EXP:e2
-                {: RESULT = new Superieur(e1, e2, e2left + 1) ; :}
+                EXP:e1 SUPERIEUR:op EXP:e2
+                {: RESULT = new Comparaison(e1, e2, op ,e2left + 1) ; :}
         |
-                EXP:e1 INFERIEUR EXP:e2
-                {: RESULT = new Superieur(e2, e1, e2left + 1) ; :}
+                EXP:e1 INFERIEUR:op EXP:e2
+                {: RESULT = new Comparaison(e1, e2, op, e2left + 1) ; :}
                 ;
