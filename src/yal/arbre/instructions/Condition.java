@@ -57,9 +57,9 @@ public class Condition extends Instruction {
     @Override
     public void verifier() {
         if (!estInutile) {
-            if (!expression.getType().equals("Comparaison")) {
+            if (!expression.getType().equals("Comparaison") && !expression.getType().equals("Egalite")) {
                 int ligneErreur = expression.getNoLigne();
-                MessagesErreursSemantiques.getInstance().ajouter(ligneErreur,"condition mal exprimée (penser aux parenthèses si besoin).");
+                MessagesErreursSemantiques.getInstance().ajouter(ligneErreur,"condition mal exprimée.");
             }
             if (blocSi != null) {
                 blocSi.verifier();
@@ -70,6 +70,7 @@ public class Condition extends Instruction {
         }
     }
 
+
     private String toMipsBloc(ArbreAbstrait arbre){
         if (arbre==null){
             return "";
@@ -78,6 +79,59 @@ public class Condition extends Instruction {
         }
     }
 
+
+
+    @Override
+    public String toMIPS(){
+        StringBuilder code = new StringBuilder();
+
+        if (expression.getType().equals("Comparaison")){
+            code.append(toMIPSComparaison());
+        }else if (expression.getType().equals("Egalite")){
+            code.append(toMIPSEgalite());
+        }
+        return code.toString();
+    }
+
+    private String toMIPSEgalite(){
+        StringBuilder code = new StringBuilder();
+        // Devrait contenir le calcul de $v0 et $t4 et beq/bne $v0, $t4,
+
+        code.append("# Évaluation égalité et branchement \n");
+        code.append(expression.toMIPS());
+        code.append(nomEtiquetteSinon);
+        code.append("\n\n");
+
+        code.append(toMIPSEtiquettes());
+        return code.toString();
+    }
+
+    private String toMIPSEtiquettes(){
+        StringBuilder etiquettes = new StringBuilder();
+
+        // instructions du bloc si
+        etiquettes.append(toMipsBloc(blocSi));
+
+        // j endif
+        etiquettes.append("\t j ");
+        etiquettes.append(nomEtiquetteFinsi);
+        etiquettes.append("\n\n");
+
+        // sinon :
+        //      instructions du bloc sinon
+        etiquettes.append(nomEtiquetteSinon);
+        etiquettes.append(": \n");
+        etiquettes.append(toMipsBloc(blocSinon));
+        etiquettes.append("\n");
+
+        // finsi :
+        //      # vit sa vie
+        etiquettes.append(nomEtiquetteFinsi);
+        etiquettes.append(": \n");
+        etiquettes.append("\t # On continue...\n");
+
+        return etiquettes.toString();
+    }
 
     /**
      * Modèle de traduction pris :
@@ -96,44 +150,23 @@ public class Condition extends Instruction {
      *
      * @return
      */
-    @Override
-    public String toMIPS() {
+    private String toMIPSComparaison() {
         StringBuilder code = new StringBuilder();
 
-        if (!estInutile){
             code.append(expression.toMIPS());
             StringBuilder branchement = new StringBuilder();
 
-            branchement.append("# Évaluation comparaison et branchement \n");
+            code.append("# Évaluation comparaison et branchement \n");
 
             // Si $v0 = 0, alors la comparaison est fausse : étiquette sinon
             // beq $v0, $0, sinon
-            branchement.append("\t beq $v0, $0, ");
-            branchement.append(nomEtiquetteSinon);
-            branchement.append("\n\n");
+            code.append("\t beq $v0, $0, ");
+            code.append(nomEtiquetteSinon);
+            code.append("\n\n");
 
-            // instructions du bloc si
-            branchement.append(toMipsBloc(blocSi));
+            code.append(toMIPSEtiquettes());
 
-            // j endif
-            branchement.append("\t j ");
-            branchement.append(nomEtiquetteFinsi);
-            branchement.append("\n\n");
-
-            // sinon :
-            //      instructions du bloc sinon
-            branchement.append(nomEtiquetteSinon);
-            branchement.append(": \n");
-            branchement.append(toMipsBloc(blocSinon));
-            branchement.append("\n");
-
-            // finsi :
-            //      # vit sa vie
-            branchement.append(nomEtiquetteFinsi);
-            branchement.append(": \n");
-            branchement.append("\t # On continue...\n");
             code.append(branchement);
-        }
 
         return code.toString();
     }

@@ -199,6 +199,8 @@ public class Comparaison extends Expression {
 
     @Override
     public void verifier() {
+        expressionGauche.verifier();
+        expressionDroite.verifier();
     }
 
     @Override

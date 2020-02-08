@@ -185,4 +185,10 @@ EXP     ::=     CSTENTIERE:c
         |
                 EXP:e1 INFERIEUR:op EXP:e2
                 {: RESULT = new Comparaison(e1, e2, op, e2left + 1) ; :}
+        |
+                EXP:e1 DOUBLEEGAL:op EXP:e2
+                {: RESULT = new Egalite(e1, e2, op, e2left + 1); :}
+        |
+                EXP:e1 PASEGAL:op EXP:e2
+                {: RESULT = new Egalite(e1, e2, op, e2left + 1); :}
                 ;

@@ -74,9 +74,9 @@ espace = {finDeLigne}  | [ \t\f]
 
 "<"                    { return symbol(CodesLexicaux.INFERIEUR, yytext()); }
 
-"=="                   { return symbol(CodesLexicaux.DOUBLEEGAL); }
+"=="                   { return symbol(CodesLexicaux.DOUBLEEGAL, yytext()); }
 
-"!="                   { return symbol(CodesLexicaux.PASEGAL); }
+"!="                   { return symbol(CodesLexicaux.PASEGAL, yytext()); }
 
 "et"                   { return symbol(CodesLexicaux.ET); }
 
