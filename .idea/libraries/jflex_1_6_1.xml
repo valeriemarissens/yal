@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="jflex-1.6.1">
     <CLASSES>
-      <root url="jar://$USER_HOME$/Documents/Informatique/Librairies/jflex-1.6.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../libs/jflex-1.6.1.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

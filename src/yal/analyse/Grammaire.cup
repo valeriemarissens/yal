@@ -164,8 +164,7 @@ EXP     ::=     CSTENTIERE:c
         |
                 /* - EXP */
                 MOINS EXP:e
-                {: ConstanteEntiere zero = new ConstanteEntiere("0", eleft + 1) ;
-                   RESULT = new Soustraction(zero, e, eleft + 1) ; :}
+                {: RESULT = new Oppose(e, eleft + 1) ; :}
         |
                 /* Début des EXP OPER EXP */
                 EXP:e1 PLUS EXP:e2
