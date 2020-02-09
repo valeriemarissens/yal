@@ -30,6 +30,11 @@ public class Oppose extends Expression {
 
     @Override
     public String getType() {
-        return "Oppose";
+        return "Calcul";
+    }
+
+    @Override
+    public String toString(){
+        return "-"+e;
     }
 }

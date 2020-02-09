@@ -1,6 +1,7 @@
 package yal.arbre.expressions.calculs;
 
 import yal.arbre.expressions.Expression;
+import yal.exceptions.MessagesErreursSemantiques;
 
 /**
  * Design Pattern Template Method.
@@ -19,7 +20,18 @@ public abstract class Calcul extends Expression {
      * Opérandes et résultat entiers.
      */
     @Override
-    public void verifier() {}
+    public void verifier() {
+        expGauche.verifier();
+        expDroite.verifier();
+
+        boolean pasEntierGauche = !expGauche.getType().equals("Calcul");
+        boolean pasEntierDroite = !expDroite.getType().equals("Calcul");
+        if (pasEntierDroite || pasEntierGauche) {
+            String messageExplicite = "Les opérandes de +, -, *, / sont des entiers, pas des booléens.";
+            MessagesErreursSemantiques.getInstance().ajouter(noLigne, messageExplicite);
+        }
+
+    }
 
     /**
      * A faire : optimisation si val opérande droite = cste
