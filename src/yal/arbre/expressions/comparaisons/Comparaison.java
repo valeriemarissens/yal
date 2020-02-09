@@ -197,6 +197,7 @@ public class Comparaison extends Expression {
             code.append(toStringComparaisonExpEtExp());
         }
 
+
         return code.toString();
     }
 

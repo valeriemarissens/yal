@@ -84,6 +84,7 @@ public class Ecrire extends Instruction {
         mips.append("\t la $a0, retourLigne \n");
         mips.append("\t syscall \n");
 
+
         return mips.toString();
     }
 

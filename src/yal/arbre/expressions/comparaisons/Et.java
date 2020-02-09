@@ -72,7 +72,7 @@ public class Et extends Expression {
     @Override
     public String toMIPS() {
         StringBuilder code = new StringBuilder();
-        // Le résultat de expressionDroite est gardé dans $v0.
+        /*// Le résultat de expressionDroite est gardé dans $v0.
         code.append(expressionDroite.toMIPS());
 
         // Mais on aura besoin de $v0 pour expressionGauche, alors on le met dans $t4.
@@ -84,7 +84,7 @@ public class Et extends Expression {
         // Et on peut faire la comparaison.
         code.append("\t");
         code.append("and $v0, $v0, $t4");
-        code.append("\n\n");
+        code.append("\n\n");*/
 
         code.append(transformerBooleen());
 
