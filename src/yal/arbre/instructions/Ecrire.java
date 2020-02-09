@@ -16,16 +16,21 @@ public class Ecrire extends Instruction {
     }
 
     /**
-     * Le code d'écriture d'un string est 4.
+     * Le code d'écriture d'un string est 4 et celui d'un int est 1.
      * @return code d'écriture de exp suivie d'un retour à la ligne
      * (défini dans Programme.java).
      */
     @Override
     public String toMIPS() {
+        String codeEcriture = "1";
+        if (exp.getType().equals("Comparaison") || exp.getType().equals("Egalite")){
+            codeEcriture = "4";
+        }
+
         StringBuilder mips = new StringBuilder("\n\t # Ecrire "+exp.toString()+"\n");
         mips.append(exp.toMIPS());
         mips.append("\t move $a0, $v0 \n");
-        mips.append("\t li $v0, 1 \n");
+        mips.append("\t li $v0, "+codeEcriture+" \n");
         mips.append("\t syscall \n");
         mips.append("\t li $v0, 4 \n");
         mips.append("\t la $a0, retourLigne \n");

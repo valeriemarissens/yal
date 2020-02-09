@@ -34,6 +34,10 @@ public class Programme extends ArbreAbstrait {
         StringBuilder mips = new StringBuilder();
         mips.append(".data\n");
         mips.append("retourLigne:  .asciiz \"\\n\"");
+        mips.append("\n");
+        mips.append("vrai: .asciiz \"vrai\"");
+        mips.append("\n");
+        mips.append("faux: .asciiz \"faux\"");
         mips.append("\n\n");
         mips.append(".text\n");
         mips.append("# Debut du programme mips\n");

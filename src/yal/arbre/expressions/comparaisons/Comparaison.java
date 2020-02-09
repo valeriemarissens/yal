@@ -3,6 +3,7 @@ package yal.arbre.expressions.comparaisons;
 import yal.arbre.expressions.ConstanteEntiere;
 import yal.arbre.expressions.Expression;
 import yal.arbre.expressions.calculs.Soustraction;
+import yal.outils.FabriqueIdentifiants;
 
 public class Comparaison extends Expression {
     Expression expressionGauche;
@@ -36,6 +37,48 @@ public class Comparaison extends Expression {
     }
 
     /**
+     * Si $v0 == 1 alors $v0 <- "vrai"
+     * Sinon $v0 <- "faux"
+     * @return code MIPS qui modifie le booléen de 1 ou 0 à "vrai" ou "faux"
+     * et le garde dans $v0.
+     */
+    private String transformerBooleen(){
+        int identifiant = FabriqueIdentifiants.getInstance().getNumeroCondition();
+        String nomEtiquetteSinon = "sinon"+identifiant;
+        String nomEtiquetteFinsi = "finsi"+identifiant;
+
+        StringBuilder code = new StringBuilder();
+
+        code.append("\n");
+
+        // On met 0 dans $t8.
+        code.append("\t li $t4, 0 \n");
+
+        // Si $v0 != 0 alors on va à l'étiquette Sinon.
+        code.append("\t beq $v0, $t4, ");
+        code.append(nomEtiquetteSinon);
+        code.append("\n");
+
+        // Ici $v0 == 0, donc on met "vrai" dans $v0
+        // et on va a l'étiquette Finsi.
+        code.append("\t la $v0, vrai \n");
+        code.append("\t j ");
+        code.append(nomEtiquetteFinsi);
+        code.append("\n");
+
+        // Étiquette Sinon :
+        // Ici $v0 == 1, donc on met "faux" dans $v0
+        code.append(nomEtiquetteSinon);
+        code.append(": \n\t la $v0, faux \n");
+
+        // Étiquette Finsi.
+        code.append(nomEtiquetteFinsi);
+        code.append(": \n\t #On continue... \n");
+
+        return code.toString();
+    }
+
+    /**
      * On va stocker la valeur de l'exp de gauche dans $v0 et celle de l'exp de droite dans $t4.
      *
      * @return le code pour calculer la comparaison et stocker le res dans $v0.
@@ -43,7 +86,7 @@ public class Comparaison extends Expression {
      */
     private String toStringComparaisonCstEtCst(){
         StringBuilder calcul = new StringBuilder();
-        calcul.append("# Début de comparaison entre deux entiers. \n ");
+        calcul.append("\t # Début de comparaison entre deux entiers. \n ");
         calcul.append("\t li $v0, ");
 
         // Le toMIPS d'une constante n'est que sa valeur
@@ -72,6 +115,9 @@ public class Comparaison extends Expression {
         // ... pour les utiliser dans sgt/slt.
         calcul.append("\t ");
         calcul.append(cmdMips);
+
+
+
         return calcul.toString();
     }
 
@@ -118,7 +164,7 @@ public class Comparaison extends Expression {
 
     private String initToStringComparaisonExpCste(Expression exp, ConstanteEntiere cste){
         StringBuilder init = new StringBuilder();
-        init.append("# Début de comparaison entre une expression et une constante. \n");
+        init.append("\t # Début de comparaison entre une expression et une constante. \n");
 
         // On met la valeur de exp dans $v0...
         init.append(exp.toMIPS());
@@ -144,7 +190,7 @@ public class Comparaison extends Expression {
      */
     private String toStringComparaisonExpEtExp(){
         StringBuilder calcul = new StringBuilder();
-        calcul.append("# Début de comparaison entre deux expressions. \n");
+        calcul.append("\t # Début de comparaison entre deux expressions. \n");
 
         // Le résultat de expressionDroite est gardé dans $v0.
         calcul.append(expressionDroite.toMIPS());
@@ -193,6 +239,7 @@ public class Comparaison extends Expression {
             code.append(toStringComparaisonExpEtExp());
         }
 
+        code.append(transformerBooleen());
 
         return code.toString();
     }

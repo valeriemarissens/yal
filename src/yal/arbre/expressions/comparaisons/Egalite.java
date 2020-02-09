@@ -6,6 +6,7 @@ public class Egalite extends Expression {
 
     Expression expressionGauche;
     Expression expressionDroite;
+    String operateur;
     String cmdMips;
 
     protected Egalite(int n) {
@@ -16,6 +17,7 @@ public class Egalite extends Expression {
         super(i);
         expressionGauche = e1;
         expressionDroite = e2;
+        operateur = op;
 
         // Oui c'est l'inverse de ce qu'on pourrait croire,
         // mais c'est  parce qu'on se branche directement sur le sinon dans condition
@@ -37,7 +39,7 @@ public class Egalite extends Expression {
     public String toMIPS() {
         StringBuilder code = new StringBuilder();
 
-        code.append("# Début de comparaison entre deux expressions. \n");
+        code.append("\t # Début de comparaison entre deux expressions. \n");
         // Le résultat de expressionDroite est gardé dans $v0.
         code.append(expressionDroite.toMIPS());
 
@@ -57,5 +59,10 @@ public class Egalite extends Expression {
     @Override
     public String getType() {
         return "Egalite";
+    }
+
+    @Override
+    public String toString(){
+        return expressionGauche.toString()+" "+operateur+" "+expressionDroite;
     }
 }
