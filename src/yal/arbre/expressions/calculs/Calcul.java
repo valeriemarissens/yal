@@ -9,11 +9,13 @@ import yal.exceptions.MessagesErreursSemantiques;
 public abstract class Calcul extends Expression {
     protected Expression expGauche;
     protected Expression expDroite;
+    private boolean estDroiteCste = false;
 
     protected Calcul(Expression e1, Expression e2, int i) {
         super(i);
         this.expGauche = e1;
         this.expDroite = e2;
+        estDroiteCste = expDroite.getType().equals("ConstanteEntiere");
     }
 
     /**
@@ -46,14 +48,25 @@ public abstract class Calcul extends Expression {
         mips.append("\t # ");
         mips.append(titreOperation());
         mips.append(expGauche.toMIPS());
-        mips.append("\t sw $v0, 0($sp) \t# empiler $v0 \n");
-        mips.append("\t add $sp, $sp, -4 \n");
-        mips.append(expDroite.toMIPS());
-        mips.append("\t add $sp, $sp, 4 \n");
-        mips.append("\t lw $t8, ($sp) \t\t # dépiler dans $t8 \n");
-        mips.append(calculOperation());
-        mips.append("\t # fin ");
-        mips.append(titreOperation());
+
+        if (estDroiteCste){
+            mips.append("\t move $t8, $v0 \n");
+            mips.append("\t li $v0, ");
+            mips.append(expDroite.toString()); // donne juste sa valeur, pas son code
+            mips.append("\n");
+            mips.append("\t add $v0, $t8, $v0 \n");
+
+        }else {
+            mips.append("\t sw $v0, 0($sp) \t# empiler $v0 \n");
+            mips.append("\t add $sp, $sp, -4 \n");
+            mips.append(expDroite.toMIPS());
+            mips.append("\t add $sp, $sp, 4 \n");
+            mips.append("\t lw $t8, ($sp) \t\t # dépiler dans $t8 \n");
+        }
+            mips.append(calculOperation());
+            mips.append("\t # fin ");
+            mips.append(titreOperation());
+
 
         return mips.toString();
     }
