@@ -49,7 +49,6 @@ public abstract class Calcul extends Expression {
             mips.append("\t li $v0, ");
             mips.append(expDroite.toString()); // donne juste sa valeur, pas son code
             mips.append("\n");
-            mips.append("\t add $v0, $t8, $v0 \n");
 
         }else {
             mips.append("\t sw $v0, 0($sp) \t# empiler $v0 \n");

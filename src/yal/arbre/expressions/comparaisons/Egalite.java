@@ -26,7 +26,7 @@ public class Egalite extends CalculBooleen {
 
         // On commence par soustraire les deux nombres :
         // $v0 = 0 si les nombres sont égaux
-        code.append("\t subu $v0, $v0, $t4 \n"); // (subu au lieu de sub évite les overflow
+        code.append("\t subu $v0, $v0, $t8 \n"); // (subu au lieu de sub évite les overflow
 
         // $v0 devient 1 si les nombres ne sont pas égaux.
         code.append("\t sltu $v0, $0, $v0 \n");
