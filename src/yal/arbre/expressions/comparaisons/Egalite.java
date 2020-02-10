@@ -7,7 +7,7 @@ public class Egalite extends Expression {
     Expression expressionGauche;
     Expression expressionDroite;
     String operateur;
-    String cmdMips;
+    private boolean difference = false;
 
     protected Egalite(int n) {
         super(n);
@@ -18,15 +18,7 @@ public class Egalite extends Expression {
         expressionGauche = e1;
         expressionDroite = e2;
         operateur = op;
-
-        // Oui c'est l'inverse de ce qu'on pourrait croire,
-        // mais c'est  parce qu'on se branche directement sur le sinon dans condition
-        if (op.equals("==")){
-            cmdMips = "bne";
-        }else if (op.equals("!=")){
-            cmdMips = "beq";
-        }
-
+        if (op.equals("!=")) difference = true;
     }
 
     @Override
@@ -49,10 +41,20 @@ public class Egalite extends Expression {
         // Maintenant, on garde le résultat de expressionGauche dans $v0.
         code.append(expressionGauche.toMIPS());
 
-        // ComparaisonLogique on peut faire la comparaison.
-        code.append("\t");
-        code.append(cmdMips);
-        code.append(" $v0, $t4, ");
+        // Et on peut faire la comparaison.
+        // Pour cela, on commence par soustraire les deux nombres :
+        // $v0 = 0 si les nombres sont égaux
+        code.append("\t subu $v0, $v0, $t4 \n"); // (subu au lieu de sub évite les overflow
+
+        // $v0 devient 1 si les nombres ne sont pas égaux.
+        code.append("\t sltu $v0, $0, $v0 \n");
+
+        if (!difference) {
+            // (cas où on teste ==)
+            // $v0 doit être à 0 dans Condition si c'est faux. Donc on va inverser :
+            code.append("\t xori $v0, $v0, 1 \n");
+        }
+
         return code.toString();
     }
 
