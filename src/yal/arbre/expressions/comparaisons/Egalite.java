@@ -5,8 +5,7 @@ import yal.arbre.expressions.calculs.CalculBooleen;
 import yal.exceptions.MessagesErreursSemantiques;
 
 public class Egalite extends CalculBooleen {
-
-    String operateur;
+    private String operateur;
     private boolean difference = false;
 
     public Egalite(Expression e1, Expression e2, String op, int i){

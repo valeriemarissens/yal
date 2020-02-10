@@ -1,32 +1,38 @@
 package yal.arbre.expressions.comparaisons.comparaisonsLogiques;
 
 import yal.arbre.expressions.Expression;
+import yal.arbre.expressions.calculs.Calcul;
 import yal.exceptions.MessagesErreursSemantiques;
 
-public abstract class ComparaisonLogique extends Expression {
+/**
+ * ET, OU, NON héritent de ComparaisonLogique.
+ */
+public abstract class ComparaisonLogique extends Calcul {
     private Expression expressionGauche;
     private Expression expressionDroite;
 
     public ComparaisonLogique(Expression e1, Expression e2, int i) {
-        super(i);
+        super(e1,e2,i);
         expressionGauche = e1;
         expressionDroite = e2;
+        estBooleen = true;
     }
 
+    /**
+     * Règle 13 sémantique : opérandes et résultat booléens.
+     */
     @Override
     public void verifier() {
         expressionGauche.verifier();
         expressionDroite.verifier();
 
-        boolean pasBooleenGauche = expressionGauche.getType().equals("Calcul");
-        boolean pasBooleenDroite = expressionDroite.getType().equals("Calcul");
-        if (pasBooleenGauche || pasBooleenDroite){
+        if ( !expressionGauche.estBooleen() || !expressionDroite.estBooleen() ){
             String messageExplicite = "Les opérandes de 'et', 'oui' et 'non' doivent être des booléens et pas des entiers.";
             MessagesErreursSemantiques.getInstance().ajouter(noLigne,messageExplicite);
         }
     }
 
-    @Override
+    /*@Override
     public String toMIPS() {
         StringBuilder mips = new StringBuilder();
 
@@ -52,19 +58,10 @@ public abstract class ComparaisonLogique extends Expression {
         mips.append("\n");
 
         return mips.toString();
-    }
-
-    abstract String calculOperation();
-
-    abstract String getOperateur();
+    }*/
 
     @Override
     public String getType() {
         return "ComparaisonLogique";
-    }
-
-    @Override
-    public String toString(){
-        return expressionGauche.toString()+getOperateur()+expressionDroite.toString();
     }
 }

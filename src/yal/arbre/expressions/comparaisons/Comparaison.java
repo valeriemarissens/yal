@@ -7,15 +7,15 @@ import yal.arbre.expressions.calculs.Soustraction;
 import yal.outils.FabriqueIdentifiants;
 
 public class Comparaison extends CalculBooleen {
-    String cmdMips;
+    private String cmdMips;
 
 
     public Comparaison(Expression e1, Expression e2, String op, int i){
         super(e1, e2, i);
 
-        if (op.equals("<")){
+        if (op.equals(">")){
             cmdMips = "sgt";
-        }else if (op.equals(">")){
+        }else if (op.equals("<")){
             cmdMips = "slt";
         }
 
@@ -39,7 +39,7 @@ public class Comparaison extends CalculBooleen {
 
         calcul.append("\t");
         calcul.append(cmdMips);
-        calcul.append(" $v0, $v0, $t4");
+        calcul.append(" $v0, $t8, $v0"); //$v0, $v0, $t4 avant <===========
         calcul.append("\n\n");
 
         return calcul.toString();

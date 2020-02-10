@@ -8,13 +8,22 @@ public class Et extends ComparaisonLogique {
         super(e1, e2, i);
     }
 
+    /**
+     * Dans ce cas, le toString() renvoie la même chose.
+     * @return e1 et e2.
+     */
     @Override
-    String calculOperation() {
-        return " and $v0, $v0, $t4";
+    public String titreOperation() {
+        return toString();
     }
 
     @Override
-    String getOperateur() {
+    public String calculOperation() {
+        return "\t and $v0, $v0, $t4 \t\t # $v0 <- $v0 et $t4 \n";
+    }
+
+    @Override
+    public String getOperateur() {
         return " et ";
     }
 }

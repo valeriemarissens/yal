@@ -20,7 +20,7 @@ public abstract class Calcul extends Expression {
     }
 
     /**
-     * Opérandes et résultat entiers.
+     * Règle 13 sémantique : opérandes et résultat entiers.
      */
     @Override
     public void verifier() {
@@ -33,19 +33,13 @@ public abstract class Calcul extends Expression {
             String messageExplicite = "Les opérandes de +, -, *, / sont des entiers, pas des booléens.";
             MessagesErreursSemantiques.getInstance().ajouter(noLigne, messageExplicite);
         }
-
     }
 
-    /**
-     * A faire : optimisation si val opérande droite = cste
-     * dans le cas des mult et div ?
-     * Pb : donne tout le temps 0...
-     * @return
-     */
     @Override
     public String toMIPS() {
         StringBuilder mips = new StringBuilder();
 
+        mips.append("\n");
         mips.append("\t # Début : ");
         mips.append(titreOperation());
         mips.append(expGauche.toMIPS());
