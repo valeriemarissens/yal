@@ -9,12 +9,12 @@ public class Addition extends Calcul {
     }
 
     @Override
-    String titreOperation() {
+    public String titreOperation() {
         return "addition "+toString()+"\n";
     }
 
     @Override
-    String calculOperation() {
+    public String calculOperation() {
         return "\t add $v0, $t8, $v0 \t\t" +
                 " # $v0 <- $t8 + $v0 \n";
     }

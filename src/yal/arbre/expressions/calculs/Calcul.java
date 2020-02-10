@@ -7,8 +7,8 @@ import yal.exceptions.MessagesErreursSemantiques;
  * Design Pattern Template Method.
  */
 public abstract class Calcul extends Expression {
-    private Expression expGauche;
-    private Expression expDroite;
+    protected Expression expGauche;
+    protected Expression expDroite;
 
     protected Calcul(Expression e1, Expression e2, int i) {
         super(i);
@@ -58,9 +58,9 @@ public abstract class Calcul extends Expression {
         return mips.toString();
     }
 
-    abstract String titreOperation();
+    public abstract String titreOperation();
 
-    abstract String calculOperation();
+    public abstract String calculOperation();
 
     @Override
     public String toString(){

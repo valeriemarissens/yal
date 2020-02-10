@@ -10,12 +10,12 @@ public class Multiplication extends Calcul {
     }
 
     @Override
-    String titreOperation() {
+    public String titreOperation() {
         return "multiplication "+toString()+"\n";
     }
 
     @Override
-    String calculOperation() {
+    public String calculOperation() {
         StringBuilder calcul = new StringBuilder();
         calcul.append("\t mult $t8, $v0 \t\t # $t8 * $v0 \n");
         calcul.append("\t mflo $v0  \t\t# on range la résultat dans $v0 \n");

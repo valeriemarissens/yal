@@ -10,12 +10,12 @@ public class Soustraction extends Calcul {
     }
 
     @Override
-    String titreOperation() {
+    public String titreOperation() {
         return "soustraction "+toString()+"\n";
     }
 
     @Override
-    String calculOperation() {
+    public String calculOperation() {
         return "\t sub $v0, $t8, $v0 \t\t # $v0 = $t8 - $v0 \n";
     }
 
