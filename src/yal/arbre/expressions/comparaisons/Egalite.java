@@ -2,6 +2,7 @@ package yal.arbre.expressions.comparaisons;
 
 import yal.arbre.expressions.Expression;
 import yal.arbre.expressions.calculs.CalculBooleen;
+import yal.exceptions.MessagesErreursSemantiques;
 
 public class Egalite extends CalculBooleen {
 
@@ -14,11 +15,7 @@ public class Egalite extends CalculBooleen {
         if (op.equals("!=")) difference = true;
     }
 
-    @Override
-    public void verifier() {
-        expGauche.verifier();
-        expDroite.verifier();
-    }
+
 
     public String titreOperation(){
         return " égalité entre deux expressions. \n";
@@ -35,9 +32,8 @@ public class Egalite extends CalculBooleen {
         // $v0 devient 1 si les nombres ne sont pas égaux.
         code.append("\t sltu $v0, $0, $v0 \n");
 
-        if (!difference) {
-            // (cas où on teste ==)
-            // $v0 doit être à 0 dans Condition si c'est faux. Donc on va inverser :
+        if (difference) {
+            // Devient 0 si c'est 1 et inversement
             code.append("\t xori $v0, $v0, 1 \n");
         }
 

@@ -13,9 +13,9 @@ public class Comparaison extends CalculBooleen {
     public Comparaison(Expression e1, Expression e2, String op, int i){
         super(e1, e2, i);
 
-        if (op.equals(">")){
+        if (op.equals("<")){
             cmdMips = "sgt";
-        }else if (op.equals("<")){
+        }else if (op.equals(">")){
             cmdMips = "slt";
         }
 

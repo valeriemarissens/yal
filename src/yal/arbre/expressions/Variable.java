@@ -34,6 +34,7 @@ public class Variable extends Expression {
         return "Variable";
     }
 
+
     @Override
     public String toMIPS() {
         StringBuilder mips = new StringBuilder();

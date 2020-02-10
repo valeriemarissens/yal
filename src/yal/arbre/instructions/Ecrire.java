@@ -69,8 +69,7 @@ public class Ecrire extends Instruction {
     @Override
     public String toMIPS() {
         String codeEcriture = "1";
-        boolean estBooleen = !(exp.getType().equals("Calcul") || exp.getType().equals("Constante"));
-
+        boolean estBooleen = exp.estBooleen();
         StringBuilder mips = new StringBuilder("\n\t # Ecrire "+exp.toString()+"\n");
         mips.append(exp.toMIPS());
 

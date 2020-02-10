@@ -16,6 +16,7 @@ public abstract class Calcul extends Expression {
         this.expGauche = e1;
         this.expDroite = e2;
         estDroiteCste = expDroite.getType().equals("ConstanteEntiere");
+        estBooleen = false;
     }
 
     /**
@@ -45,7 +46,7 @@ public abstract class Calcul extends Expression {
     public String toMIPS() {
         StringBuilder mips = new StringBuilder();
 
-        mips.append("\t # ");
+        mips.append("\t # Début : ");
         mips.append(titreOperation());
         mips.append(expGauche.toMIPS());
 
@@ -64,7 +65,7 @@ public abstract class Calcul extends Expression {
             mips.append("\t lw $t8, ($sp) \t\t # dépiler dans $t8 \n");
         }
             mips.append(calculOperation());
-            mips.append("\t # fin ");
+            mips.append("\t # Fin : ");
             mips.append(titreOperation());
 
 
