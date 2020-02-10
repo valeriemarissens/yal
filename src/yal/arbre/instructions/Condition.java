@@ -79,33 +79,6 @@ public class Condition extends Instruction {
         }
     }
 
-
-
-    @Override
-    public String toMIPS(){
-        StringBuilder code = new StringBuilder();
-
-        if (expression.getType().equals("Comparaison")){
-            code.append(toMIPSComparaison());
-        }else if (expression.getType().equals("Egalite")){
-            code.append(toMIPSEgalite());
-        }
-        return code.toString();
-    }
-
-    private String toMIPSEgalite(){
-        StringBuilder code = new StringBuilder();
-        // Devrait contenir le calcul de $v0 et $t4 et beq/bne $v0, $t4,
-
-        code.append("# Évaluation égalité et branchement \n");
-        code.append(expression.toMIPS());
-        code.append(nomEtiquetteSinon);
-        code.append("\n\n");
-
-        code.append(toMIPSEtiquettes());
-        return code.toString();
-    }
-
     private String toMIPSEtiquettes(){
         StringBuilder etiquettes = new StringBuilder();
 
@@ -150,11 +123,11 @@ public class Condition extends Instruction {
      *
      * @return
      */
-    private String toMIPSComparaison() {
+    public String toMIPS() {
         StringBuilder code = new StringBuilder();
+        if (!estInutile) {
 
             code.append(expression.toMIPS());
-            StringBuilder branchement = new StringBuilder();
 
             code.append("# Évaluation comparaison et branchement \n");
 
@@ -165,9 +138,7 @@ public class Condition extends Instruction {
             code.append("\n\n");
 
             code.append(toMIPSEtiquettes());
-
-            code.append(branchement);
-
+        }
         return code.toString();
     }
 }
