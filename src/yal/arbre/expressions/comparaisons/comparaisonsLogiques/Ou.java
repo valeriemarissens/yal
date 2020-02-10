@@ -19,7 +19,7 @@ public class Ou extends ComparaisonLogique {
 
     @Override
     public String calculOperation() {
-        return "\t or $v0, $v0, $t4 \t\t # $v0 <- $v0 ou $t4 \n";
+        return "\t or $v0, $v0, $t8 \t\t # $v0 <- $v0 ou $t8 \n";
     }
 
     @Override

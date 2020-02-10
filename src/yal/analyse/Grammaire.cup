@@ -197,4 +197,7 @@ EXP     ::=     CSTENTIERE:c
         |
                 EXP:e1 OU EXP:e2
                 {: RESULT = new Ou(e1, e2, e2left + 1) ; :}
+        |
+                NON EXP:e
+                {: RESULT = new Non(e, eleft + 1) ; :}
                 ;

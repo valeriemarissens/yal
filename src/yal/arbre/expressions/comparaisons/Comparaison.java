@@ -39,8 +39,8 @@ public class Comparaison extends CalculBooleen {
 
         calcul.append("\t");
         calcul.append(cmdMips);
-        calcul.append(" $v0, $t8, $v0"); //$v0, $v0, $t4 avant <===========
-        calcul.append("\n\n");
+        calcul.append(" $v0, $t8, $v0");
+        calcul.append("\n");
 
         return calcul.toString();
 

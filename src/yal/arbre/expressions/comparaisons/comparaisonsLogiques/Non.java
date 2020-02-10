@@ -18,10 +18,11 @@ public class Non extends Expression{
     public void verifier() {
         exp.verifier();
 
-        if (!exp.estBooleen()){
+        // ne marche pas car si ecrire non 4 < 5, exp = 4
+        /*if (!exp.estBooleen()){
             String messageExplicite = "L'opérande de 'non' doit être booléen.";
             MessagesErreursSemantiques.getInstance().ajouter(noLigne,messageExplicite);
-        }
+        }*/
     }
 
     @Override
@@ -35,7 +36,7 @@ public class Non extends Expression{
         // $v0 contient maintenant le contraire de ce qu'il avait avant.
         mips.append("\t not $v0, $v0 \n");
 
-        mips.append("\t Fin : non ("+exp+")\n");
+        mips.append("\t # Fin : non ("+exp+")\n");
 
         return mips.toString();
     }
@@ -43,5 +44,10 @@ public class Non extends Expression{
     @Override
     public String getType() {
         return "Non";
+    }
+
+    @Override
+    public String toString(){
+        return "non "+exp.toString();
     }
 }
