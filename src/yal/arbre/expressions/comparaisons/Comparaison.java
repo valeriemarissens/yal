@@ -159,7 +159,7 @@ public class Comparaison extends Expression {
         // Maintenant, on garde le résultat de expressionGauche dans $v0.
         calcul.append(expressionGauche.toMIPS());
 
-        // Et on peut faire la comparaison.
+        // ComparaisonLogique on peut faire la comparaison.
         calcul.append("\t");
         calcul.append(cmdMips);
         calcul.append(" $v0, $v0, $t4");

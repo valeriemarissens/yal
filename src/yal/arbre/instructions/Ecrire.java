@@ -31,6 +31,7 @@ public class Ecrire extends Instruction {
         StringBuilder code = new StringBuilder();
 
         code.append("\n");
+        code.append("\t # Transformation du booléen en 'vrai' ou 'faux'\n");
 
         // On met 0 dans $t8.
         code.append("\t li $t4, 0 \n");
@@ -54,7 +55,8 @@ public class Ecrire extends Instruction {
 
         // Étiquette Finsi.
         code.append(nomEtiquetteFinsi);
-        code.append(": \n\t #On continue... \n");
+        code.append(": \n\t # On continue... \n");
+        code.append("\n");
 
         return code.toString();
     }
@@ -67,7 +69,7 @@ public class Ecrire extends Instruction {
     @Override
     public String toMIPS() {
         String codeEcriture = "1";
-        boolean estBooleen = exp.getType().equals("Comparaison") || exp.getType().equals("Egalite");
+        boolean estBooleen = !(exp.getType().equals("Calcul") || exp.getType().equals("Constante"));
 
         StringBuilder mips = new StringBuilder("\n\t # Ecrire "+exp.toString()+"\n");
         mips.append(exp.toMIPS());

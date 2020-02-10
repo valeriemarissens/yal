@@ -49,7 +49,7 @@ public class Egalite extends Expression {
         // Maintenant, on garde le résultat de expressionGauche dans $v0.
         code.append(expressionGauche.toMIPS());
 
-        // Et on peut faire la comparaison.
+        // ComparaisonLogique on peut faire la comparaison.
         code.append("\t");
         code.append(cmdMips);
         code.append(" $v0, $t4, ");

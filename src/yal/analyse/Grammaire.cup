@@ -6,6 +6,7 @@ import yal.arbre.instructions.* ;
 import yal.tableSymboles.* ;
 import yal.arbre.expressions.calculs.* ;
 import yal.arbre.expressions.comparaisons.* ;
+import yal.arbre.expressions.comparaisons.comparaisonsLogiques.*;
 import yal.arbre.expressions.Constante;
 import yal.arbre.expressions.ConstanteEntiere;
 import yal.arbre.expressions.Expression;
@@ -193,4 +194,7 @@ EXP     ::=     CSTENTIERE:c
         |
                 EXP:e1 ET EXP:e2
                 {: RESULT = new Et(e1, e2, e2left + 1) ; :}
+        |
+                EXP:e1 OU EXP:e2
+                {: RESULT = new Ou(e1, e2, e2left + 1) ; :}
                 ;

@@ -43,7 +43,8 @@ public abstract class Calcul extends Expression {
     public String toMIPS() {
         StringBuilder mips = new StringBuilder();
 
-        mips.append("\t # "+titreOperation());
+        mips.append("\t # ");
+        mips.append(titreOperation());
         mips.append(expGauche.toMIPS());
         mips.append("\t sw $v0, 0($sp) \t# empiler $v0 \n");
         mips.append("\t add $sp, $sp, -4 \n");
@@ -51,7 +52,8 @@ public abstract class Calcul extends Expression {
         mips.append("\t add $sp, $sp, 4 \n");
         mips.append("\t lw $t8, ($sp) \t\t # dépiler dans $t8 \n");
         mips.append(calculOperation());
-        mips.append("\t # fin "+titreOperation());
+        mips.append("\t # fin ");
+        mips.append(titreOperation());
 
         return mips.toString();
     }
