@@ -28,7 +28,7 @@ public abstract class CalculBooleen extends Calcul {
     }
 
     public String getType(){
-        return "CalculBoolen";
+        return "CalculBooleen";
     }
 
 }
