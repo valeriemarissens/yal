@@ -34,10 +34,10 @@ public class Ecrire extends Instruction {
         code.append("\t # Transformation du booléen en 'vrai' ou 'faux'\n");
 
         // On met 0 dans $t8.
-        code.append("\t li $t4, 0 \n");
+        code.append("\t li $t8, 0 \n");
 
         // Si $v0 != 0 alors on va à l'étiquette Sinon.
-        code.append("\t beq $v0, $t4, ");
+        code.append("\t beq $v0, $t8, ");
         code.append(nomEtiquetteSinon);
         code.append("\n");
 

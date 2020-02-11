@@ -32,13 +32,18 @@ public class Programme extends ArbreAbstrait {
     @Override
     public String toMIPS() {
         StringBuilder mips = new StringBuilder();
+        // macros :
         mips.append(".data\n");
         mips.append("retourLigne:  .asciiz \"\\n\"");
         mips.append("\n");
         mips.append("vrai: .asciiz \"vrai\"");
         mips.append("\n");
         mips.append("faux: .asciiz \"faux\"");
+        mips.append("\n");
+        mips.append("divisionZero : .asciiz \"ERREUR EXECUTION : Vous avez essayé de diviser par zéro.\"");
         mips.append("\n\n");
+
+        // programme :
         mips.append(".text\n");
         mips.append("# Debut du programme mips\n");
         mips.append("main :\n");

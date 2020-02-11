@@ -57,8 +57,7 @@ public class Condition extends Instruction {
     @Override
     public void verifier() {
         if (!estInutile) {
-            String typeExpression = expression.getType();
-            if (!typeExpression.equals("CalculBooleen")) {
+            if (!expression.estBooleen()) {
                 int ligneErreur = expression.getNoLigne();
                 MessagesErreursSemantiques.getInstance().ajouter(ligneErreur,"condition mal exprimée.");
             }

@@ -19,11 +19,10 @@ public class Non extends Expression{
     public void verifier() {
         exp.verifier();
 
-        // ne marche pas car si ecrire non 4 < 5, exp = 4
-        /*if (!exp.estBooleen()){
-            String messageExplicite = "L'opérande de 'non' doit être booléen.";
+        if (!exp.estBooleen()){
+            String messageExplicite = "L'opérande de 'non' doit être booléen (pensez aux parenthèses).";
             MessagesErreursSemantiques.getInstance().ajouter(noLigne,messageExplicite);
-        }*/
+        }
     }
 
     @Override

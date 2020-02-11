@@ -14,10 +14,6 @@ public abstract class CalculBooleen extends Calcul {
 
     public void verifier() {
         boolean type = (expGauche.estBooleen() && expDroite.estBooleen()) || (!expGauche.estBooleen() && !expDroite.estBooleen());
-        System.out.println("expGauche : " + expGauche + " opérateur : "+ getOperateur() + " expDroite :" + expDroite);
-        System.out.println(expGauche.estBooleen() + " et droite : " + expDroite.estBooleen());
-
-        System.out.println("\n");
         if (!type) {
             String messageExplicite = "Les deux opérandes doivent être de même type.";
             MessagesErreursSemantiques.getInstance().ajouter(noLigne, messageExplicite);

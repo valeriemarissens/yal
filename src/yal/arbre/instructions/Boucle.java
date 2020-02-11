@@ -28,7 +28,7 @@ public class Boucle extends Instruction {
 
     @Override
     public void verifier() {
-        if (!expression.getType().equals("Comparaison")) {
+        if (!expression.estBooleen()) {
             int ligneErreur = expression.getNoLigne();
             MessagesErreursSemantiques.getInstance().ajouter(ligneErreur,"condition mal exprimée (penser aux parenthèses si besoin).");
         }
