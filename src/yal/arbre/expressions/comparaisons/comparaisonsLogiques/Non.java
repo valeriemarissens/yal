@@ -9,6 +9,7 @@ public class Non extends Expression{
     public Non(Expression e, int i){
         super(i);
         exp = e;
+        estBooleen = true;
     }
 
     /**
@@ -34,7 +35,7 @@ public class Non extends Expression{
         mips.append(exp.toMIPS());
 
         // $v0 contient maintenant le contraire de ce qu'il avait avant.
-        mips.append("\t not $v0, $v0 \n");
+        mips.append("\t xori $v0, $v0, 1 \n");
 
         mips.append("\t # Fin : non ("+exp+")\n");
 
