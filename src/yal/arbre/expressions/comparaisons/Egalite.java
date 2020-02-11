@@ -31,7 +31,7 @@ public class Egalite extends CalculBooleen {
         // $v0 devient 1 si les nombres ne sont pas égaux.
         code.append("\t sltu $v0, $0, $v0 \n");
 
-        if (difference) {
+        if (!difference) {
             // Devient 0 si c'est 1 et inversement
             code.append("\t xori $v0, $v0, 1 \n");
         }

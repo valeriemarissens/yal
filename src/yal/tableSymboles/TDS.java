@@ -20,7 +20,6 @@ public class TDS {
             tableSymboles.put(entree,symbole);
         }
         else{
-            tableSymboles.remove(entree);
             int ligneErreur = entree.getLigne();
             MessagesErreursSemantiques.getInstance().ajouter(ligneErreur,"la variable a déjà été déclarée.");
         }

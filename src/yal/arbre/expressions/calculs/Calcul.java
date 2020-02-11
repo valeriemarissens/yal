@@ -27,8 +27,8 @@ public abstract class Calcul extends Expression {
         expGauche.verifier();
         expDroite.verifier();
 
-        boolean pasEntierGauche = !expGauche.getType().equals("Calcul");
-        boolean pasEntierDroite = !expDroite.getType().equals("Calcul");
+        boolean pasEntierGauche = expGauche.estBooleen();
+        boolean pasEntierDroite = expDroite.estBooleen();
         if (pasEntierDroite || pasEntierGauche) {
             String messageExplicite = "Les opérandes de +, -, *, / sont des entiers, pas des booléens.";
             MessagesErreursSemantiques.getInstance().ajouter(noLigne, messageExplicite);

@@ -12,8 +12,6 @@ public class Programme extends ArbreAbstrait {
     public Programme(int n){
         super(n);
         instructions = new ArrayList<>();
-
-        System.out.println((1>0==2>1)!=3>4==5>5);
     }
 
     public void ajouter(ArbreAbstrait nouvelleInstruction){
