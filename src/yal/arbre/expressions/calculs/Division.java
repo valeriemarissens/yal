@@ -42,12 +42,9 @@ public class Division extends Calcul {
 
         calcul.append("\t # Vérifie division par 0 \n");
 
-        // On met 0 dans $t4 :
-        calcul.append("\t li $t4, 0 \n");
-
         // Avant calculOperation, la classe Calcul a mis expDroite dans $v0
         // Si $v0 = 0 alors on va à l'étiquette Sinon :
-        calcul.append("\t beq $v0, $t4, ");
+        calcul.append("\t beq $v0, $0, ");
         calcul.append(nomEtiquetteSinon);
         calcul.append("\n");
 

@@ -82,7 +82,8 @@ non terminal LDECL, DECL ;
 /* Precedences. */
 /* Produisent un shift/reduce conflict => utilisation du precedence left */
 /* Règle 14 de la sémantique : */
-precedence left ET, OU ;
+precedence left OU ;
+precedence left ET ;
 precedence left DOUBLEEGAL, PASEGAL ;
 precedence left SUPERIEUR, INFERIEUR ;
 precedence left PLUS, MOINS ;
