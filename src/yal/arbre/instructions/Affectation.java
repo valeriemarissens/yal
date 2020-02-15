@@ -18,7 +18,7 @@ public class Affectation extends Instruction {
      * Dans le futur : vérifier que les types correspondent.
      */
     @Override
-    public void verifier() {
+    public void verifier() { //TDS.identifier
         partieGauche.verifier();
         partieDroite.verifier();
     }
