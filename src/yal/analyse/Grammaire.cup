@@ -70,7 +70,7 @@ terminal Symbol    PLUS, MOINS, FOIS, DIVISE;
 terminal Symbol    SI, ALORS, FINSI, SINON ;
 terminal Symbol    TANTQUE, REPETER, FINTANTQUE;
 terminal Symbol    ET, OU, NON ;
-terminal String    IDF, CSTENTIERE, ENTIER ;
+terminal String    IDF, CSTENTIERE, ENTIER, FONCTION ;
 terminal String    SUPERIEUR, INFERIEUR, DOUBLEEGAL, PASEGAL ;
    
 /* Non terminals used in the grammar section.  */
@@ -78,6 +78,7 @@ terminal String    SUPERIEUR, INFERIEUR, DOUBLEEGAL, PASEGAL ;
 non terminal ArbreAbstrait PROG, LINST, INST ;
 non terminal Expression EXP ;
 non terminal LDECL, DECL ;
+non terminal IDF_FONCT, FIN_FONCT ;
 
 /* Precedences. */
 /* Produisent un shift/reduce conflict => utilisation du precedence left */
@@ -108,10 +109,26 @@ PROG    ::=     PROGRAMME  IDF  DEBUT  LDECL  LINST:li  FIN
 
 LDECL   ::=     LDECL  DECL | DECL ;
 
-DECL    ::=     ENTIER IDF:id POINTVIRGULE
+DECL    ::=     /* Déclaration de variables */
+                ENTIER IDF:id POINTVIRGULE
                 {: EntreeVariable e = new EntreeVariable(id, idleft + 1) ;
-                   Symbole s = new Symbole() ;
+                   SymboleVariable s = new SymboleVariable() ;
                    TDS.getInstance().ajouter(e,s) ; :}
+        |
+                /* Déclaration de fonctions */
+                FONCTION IDF_FONCT DEBUT LINST:li FIN_FONCT
+                //ici quelque chose avec li
+                ;
+
+IDF_FONCT ::=   IDF:id
+                {: EntreeFonction f = new EntreeFonction(id, idleft + 1) ;
+                   SymboleFonction s = new SymboleFonction() ;
+                   TDS.getInstance().ajouter(f, s) ;
+                   TDS.getInstance().entreeBloc() ; :}
+                ;
+
+FIN_FONCT ::=   FIN
+                {: TDS.getInstance().sortieBloc() ; :}
                 ;
 
 LINST   ::=     LINST:li  INST:i

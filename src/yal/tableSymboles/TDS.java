@@ -29,10 +29,15 @@ public class TDS {
         return tableSymboles.get(e);
     }
 
+    public void entreeBloc(){}
+
+    public void sortieBloc(){}
+
     public static TDS getInstance(){
         return instance;
     }
 
+    // Obsolète ?
     public int getTailleZoneVariable(){
         return cptDeplacement;
     }
