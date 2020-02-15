@@ -109,22 +109,25 @@ PROG    ::=     PROGRAMME  IDF  DEBUT  LDECL  LINST:li  FIN
 
 LDECL   ::=     LDECL  DECL | DECL ;
 
-DECL    ::=     /* Déclaration de variables */
+DECL    ::=     /* Déclaration de variable */
                 ENTIER IDF:id POINTVIRGULE
                 {: EntreeVariable e = new EntreeVariable(id, idleft + 1) ;
                    SymboleVariable s = new SymboleVariable() ;
                    TDS.getInstance().ajouter(e,s) ; :}
         |
-                /* Déclaration de fonctions */
-                FONCTION IDF_FONCT DEBUT LINST:li FIN_FONCT
-                //ici quelque chose avec li
+                /* Déclaration de fonction */
+                FONCTION IDF_FONCT:id DEBUT LINST:li FIN_FONCT
+                {: Programme sousProgramme = new Programme(lileft + 1);
+                   // en faisant un new il disparaît...
+                   // comment récupérer le programme d'avant ?
+                   sousProgramme.ajouterFonction((String)id, li) ; :}
                 ;
 
 IDF_FONCT ::=   IDF:id
                 {: EntreeFonction f = new EntreeFonction(id, idleft + 1) ;
                    SymboleFonction s = new SymboleFonction() ;
                    TDS.getInstance().ajouter(f, s) ;
-                   TDS.getInstance().entreeBloc() ; :}
+                   TDS.getInstance().entreeBloc(s.getNbBloc()) ; :}
                 ;
 
 FIN_FONCT ::=   FIN

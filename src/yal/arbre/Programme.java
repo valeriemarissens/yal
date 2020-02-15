@@ -5,17 +5,25 @@ import yal.exceptions.SemantiqueException;
 import yal.tableSymboles.TDS;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Programme extends ArbreAbstrait {
     private ArrayList<ArbreAbstrait> instructions;
+    private HashMap<String, ArbreAbstrait> instructionsFonctions;
 
     public Programme(int n){
         super(n);
         instructions = new ArrayList<>();
+        instructionsFonctions = new HashMap<>();
     }
 
     public void ajouter(ArbreAbstrait nouvelleInstruction){
         instructions.add(nouvelleInstruction);
+    }
+
+    // où l'instancier ?
+    public void ajouterFonction(String idFonction, ArbreAbstrait nouvelleInstructionFonction){
+        instructionsFonctions.put(idFonction, nouvelleInstructionFonction);
     }
 
     @Override
@@ -64,11 +72,29 @@ public class Programme extends ArbreAbstrait {
             mips.append(instruction.toMIPS());
         }
 
+        // fin :
         mips.append("\n");
         mips.append("# Fin du programme : retour au systeme\n");
         mips.append("end :\n");
         mips.append("\t li $v0, 10\n");
         mips.append("\t syscall\n");
+
+        mips.append(codeFonctionsToMIPS());
+
+        return mips.toString();
+    }
+
+    private String codeFonctionsToMIPS(){
+        StringBuilder mips = new StringBuilder();
+
+        mips.append("\n\n");
+        mips.append("# Fonctions : ");
+
+        instructionsFonctions.forEach( (idFonction, instruction ) -> {
+                mips.append("fonction" + idFonction + " :");
+                mips.append(instruction.toMIPS());
+            }
+        );
 
         return mips.toString();
     }
