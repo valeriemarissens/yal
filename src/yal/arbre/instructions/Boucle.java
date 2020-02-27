@@ -17,6 +17,11 @@ public class Boucle extends Instruction {
         super(n);
     }
 
+    @Override
+    public String getType() {
+        return "Boucle";
+    }
+
     public Boucle(Expression exp, ArbreAbstrait blocIns, int n){
         super(n);
         expression = exp;

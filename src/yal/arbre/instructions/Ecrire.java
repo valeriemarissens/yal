@@ -89,4 +89,8 @@ public class Ecrire extends Instruction {
         return mips.toString();
     }
 
+    @Override
+    public String getType() {
+        return "Ecrire";
+    }
 }

@@ -9,13 +9,13 @@ import yal.exceptions.MessagesErreursSemantiques;
 public abstract class Calcul extends Expression {
     protected Expression expGauche;
     protected Expression expDroite;
-    private boolean estDroiteCste = false;
+    private boolean estDroiteCste;
 
     protected Calcul(Expression e1, Expression e2, int i) {
         super(i);
         this.expGauche = e1;
         this.expDroite = e2;
-        estDroiteCste = expDroite.getType().equals("ConstanteEntiere");
+        estDroiteCste = expDroite.getType().equals("ConstanteEntiere") ;
         estBooleen = false;
     }
 

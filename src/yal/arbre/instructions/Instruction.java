@@ -8,4 +8,6 @@ public abstract class Instruction extends ArbreAbstrait {
         super(n);
     }
 
+    public abstract String getType();
+
 }

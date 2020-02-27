@@ -56,6 +56,8 @@ espace = {finDeLigne}  | [ \t\f]
 
 "fonction"             { return symbol(CodesLexicaux.FONCTION); }
 
+"retourne"             { return symbol(CodesLexicaux.RETOURNE); }
+
 ";"                    { return symbol(CodesLexicaux.POINTVIRGULE); }
 
 "="                    { return symbol(CodesLexicaux.EGAL); }

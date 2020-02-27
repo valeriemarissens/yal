@@ -38,4 +38,8 @@ public class Lire extends Instruction {
         return mips.toString();
     }
 
+    @Override
+    public String getType() {
+        return "Lire";
+    }
 }

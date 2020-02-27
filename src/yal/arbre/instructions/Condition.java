@@ -53,6 +53,11 @@ public class Condition extends Instruction {
         estInutile = true;
     }
 
+    @Override
+    public String getType() {
+        return "Condition";
+    }
+
 
     @Override
     public void verifier() {

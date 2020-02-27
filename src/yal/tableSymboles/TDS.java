@@ -33,7 +33,7 @@ public class TDS {
         }
         else{
             int ligneErreur = entree.getLigne();
-            MessagesErreursSemantiques.getInstance().ajouter(ligneErreur,"la variable a déjà été déclarée.");
+            MessagesErreursSemantiques.getInstance().ajouter(ligneErreur,"la variable ou la fonction a déjà été déclarée.");
         }
     }
 
@@ -46,6 +46,7 @@ public class TDS {
      * c'est le symbole qui le donne.
      */
     public void entreeBloc(int nbBloc){
+
         pile.push(nbBloc);
     }
 

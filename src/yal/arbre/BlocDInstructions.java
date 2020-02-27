@@ -43,4 +43,19 @@ public class BlocDInstructions extends ArbreAbstrait {
         return mips.toString();
     }
 
+    @Override
+    public String getType() {
+        return "BlocDInstructions";
+    }
+
+    public boolean existsRetourne(){
+        boolean existe = false;
+        for (ArbreAbstrait instruction : instructions){
+            if (instruction.getType().equals("Retourne")){
+                existe=true;
+            }
+        }
+        return existe;
+    }
+
 }

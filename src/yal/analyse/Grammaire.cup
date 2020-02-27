@@ -11,6 +11,7 @@ import yal.arbre.expressions.Constante;
 import yal.arbre.expressions.ConstanteEntiere;
 import yal.arbre.expressions.Expression;
 import yal.arbre.expressions.Variable;
+import yal.arbre.expressions.AppelFonction;
 
 import yal.exceptions.AnalyseSyntaxiqueException;
 
@@ -72,6 +73,7 @@ terminal Symbol    TANTQUE, REPETER, FINTANTQUE;
 terminal Symbol    ET, OU, NON ;
 terminal String    IDF, CSTENTIERE, ENTIER, FONCTION ;
 terminal String    SUPERIEUR, INFERIEUR, DOUBLEEGAL, PASEGAL ;
+terminal String    RETOURNE;
    
 /* Non terminals used in the grammar section.  */
 
@@ -79,6 +81,7 @@ non terminal ArbreAbstrait PROG, LINST, INST ;
 non terminal Expression EXP ;
 non terminal LDECL, DECL ;
 non terminal IDF_FONCT, FIN_FONCT ;
+non terminal PARAMETRES, PAR_EFF;
 
 /* Precedences. */
 /* Produisent un shift/reduce conflict => utilisation du precedence left */
@@ -96,43 +99,61 @@ precedence left PARENTHESEOUVRANTE, PARENTHESEFERMANTE ;
  
 start with PROG ;
 
-PROG    ::=     PROGRAMME  IDF  DEBUT  LDECL  LINST:li  FIN
+PROG    ::=     PROGRAMME  IDF  DEBUT  LDECL:ld LINST:li  FIN
+                {: Programme p = new Programme(lileft + 1) ;
+
+                    // Ajout des instructions dans le programme
+                   p.ajouter(li) ;
+
+                    // Ajout des fonctions dans le programme
+                   p.setFonctions((BlocDeclFonctions) ld);
+
+                   RESULT =  p ;
+                :}
+          |
+                PROGRAMME IDF  DEBUT  LINST:li  FIN
                 {: Programme p = new Programme(lileft + 1) ;
                    p.ajouter(li) ;
-                   RESULT =  p ; :}
-        |
-                PROGRAMME  IDF  DEBUT  LINST:li  FIN
-                {: Programme p = new Programme(lileft + 1) ;
-                   p.ajouter(li) ;
-                   RESULT =  p ; :}
+                   RESULT =  p ;
+                 :}
                 ;
 
-LDECL   ::=     LDECL  DECL | DECL ;
+LDECL   ::=     LDECL:ld DECL:d
+                {:
+                    ArbreAbstrait tmp = (ArbreAbstrait) d;
+                    String type = tmp.getType();
+                    if (type.equals("DeclarationFonction")){
+                        ((BlocDeclFonctions)ld).ajouter((DeclarationFonction)d);
+                    }
+                    RESULT = (BlocDeclFonctions) ld;
+                :}
+            |
+                DECL:d
+                {:
+                    BlocDeclFonctions b = new BlocDeclFonctions(dleft + 1) ;
+                    ArbreAbstrait tmp = (ArbreAbstrait) d;
+                    String type = tmp.getType();
+                    if (type.equals("DeclarationFonction")){
+                        b.ajouter((DeclarationFonction)d);
+                    }
+                    RESULT = b ;
+                :}
+                ;
 
 DECL    ::=     /* Déclaration de variable */
                 ENTIER IDF:id POINTVIRGULE
-                {: EntreeVariable e = new EntreeVariable(id, idleft + 1) ;
-                   SymboleVariable s = new SymboleVariable() ;
-                   TDS.getInstance().ajouter(e,s) ; :}
-        |
-                /* Déclaration de fonction */
-                FONCTION IDF_FONCT:id DEBUT LINST:li FIN_FONCT
-                {: Programme sousProgramme = new Programme(lileft + 1);
-                   // en faisant un new il disparaît...
-                   // comment récupérer le programme d'avant ?
-                   sousProgramme.ajouterFonction((String)id, li) ; :}
+                {:
+                    RESULT =  new DeclarationVariable(id, idleft+1);
+                 :}
+           |
+                /* Déclaration de fonction sans paramètres */
+                FONCTION IDF:id PARAMETRES DEBUT LINST:li FIN
+                {:
+                    RESULT = new DeclarationFonction(id, (BlocDInstructions)li, idleft + 1);
+                :}
                 ;
 
-IDF_FONCT ::=   IDF:id
-                {: EntreeFonction f = new EntreeFonction(id, idleft + 1) ;
-                   SymboleFonction s = new SymboleFonction() ;
-                   TDS.getInstance().ajouter(f, s) ;
-                   TDS.getInstance().entreeBloc(s.getNbBloc()) ; :}
-                ;
-
-FIN_FONCT ::=   FIN
-                {: TDS.getInstance().sortieBloc() ; :}
-                ;
+PARAMETRES ::=      PARENTHESEOUVRANTE PARENTHESEFERMANTE;
 
 LINST   ::=     LINST:li  INST:i
                 {: ((BlocDInstructions)li).ajouter(i) ;
@@ -172,6 +193,9 @@ INST    ::=     /* AFFECT */
                 /* Boucle */
                 TANTQUE EXP:e REPETER LINST:li FINTANTQUE
                 {: RESULT = new Boucle(e, li, eleft+1); :}
+        |
+                RETOURNE EXP:e POINTVIRGULE
+                {: RESULT = new Retourne(e, eleft+1); :}
                 ;
     
 EXP     ::=     CSTENTIERE:c
@@ -221,4 +245,8 @@ EXP     ::=     CSTENTIERE:c
         |
                 NON EXP:e
                 {: RESULT = new Non(e, eleft + 1) ; :}
+        |
+                IDF:id PARENTHESEOUVRANTE PARENTHESEFERMANTE
+                {: RESULT = new AppelFonction(id, idleft +1 ); :}
+
                 ;

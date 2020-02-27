@@ -41,4 +41,9 @@ public class Affectation extends Instruction {
 
         return mips.toString();
     }
+
+    @Override
+    public String getType() {
+        return "Affectation";
+    }
 }
