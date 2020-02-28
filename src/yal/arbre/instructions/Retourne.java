@@ -1,6 +1,7 @@
 package yal.arbre.instructions;
 
 import yal.arbre.expressions.Expression;
+import yal.exceptions.MessagesErreursSemantiques;
 
 public class Retourne extends Instruction {
     Expression expression;
@@ -11,18 +12,31 @@ public class Retourne extends Instruction {
 
     @Override
     public void verifier() {
-        // vérifier que c'est dans une fonction et nulle part ailleurs
-        // mais est-ce que c'est ici qu'on le fait ?
+        if (expression.estBooleen()) {
+            String messageExplicite = "Le retour d'une fonction est un entier.";
+            MessagesErreursSemantiques.getInstance().ajouter(noLigne, messageExplicite);
+        }
         expression.verifier();
     }
 
+    /**
+     * S'occupe de calculer la valeur de retour de la fonction et gère le retour à l'endroit
+     * où la fonction a été appelée.
+     * Faire le retour est plus simple (et intuitive ?) que de parcourir les instructions d'une fonction
+     * et d'arrêter de les écrire dès qu'il y a le retourne (et surtout arrange les cas où il y a un retourne
+     * dans une condition par ex, je crois, à tester).
+     */
     @Override
     public String toMIPS() {
         StringBuilder mips = new StringBuilder();
         mips.append("# On stocke le résultat de notre fonction dans $v0. \n");
         mips.append(expression.toMIPS());
+        mips.append("\n");
 
-        // C'est DeclarationFonction qui s'occupe de dépiler et de sortir.
+        mips.append("# On retourne d'où on vient. \n");
+        mips.append("\t lw $ra, 0($sp) \t\t # dépiler dans $t8 \n");
+        mips.append("\t add $sp, $sp, 4 \n");
+        mips.append("\t jr $ra \n");
         return mips.toString();
     }
 

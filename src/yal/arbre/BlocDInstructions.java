@@ -1,6 +1,7 @@
 package yal.arbre;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * 21 novembre 2018
@@ -8,7 +9,7 @@ import java.util.ArrayList;
  * @author brigitte wrobel-dautcourt
  */
 
-public class BlocDInstructions extends ArbreAbstrait {
+public class BlocDInstructions extends ArbreAbstrait implements Iterable<ArbreAbstrait> {
     protected ArrayList<ArbreAbstrait> instructions;
 
     public BlocDInstructions(int n) {
@@ -58,4 +59,8 @@ public class BlocDInstructions extends ArbreAbstrait {
         return existe;
     }
 
+    @Override
+    public Iterator<ArbreAbstrait> iterator() {
+        return instructions.iterator();
+    }
 }

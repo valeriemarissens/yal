@@ -1,6 +1,7 @@
 package yal.arbre;
 
 
+import yal.exceptions.MessagesErreursSemantiques;
 import yal.tableSymboles.EntreeFonction;
 import yal.tableSymboles.Symbole;
 import yal.tableSymboles.SymboleFonction;
@@ -25,7 +26,10 @@ public class DeclarationFonction extends ArbreAbstrait {
     @Override
     public void verifier() {
         instructions.verifier();
-        instructions.existsRetourne();
+        if (!instructions.existsRetourne()){
+            String messageExplicite = "La fonction doit retourner un entier.";
+            MessagesErreursSemantiques.getInstance().ajouter(noLigne, messageExplicite);
+        };
     }
 
     @Override
@@ -48,7 +52,7 @@ public class DeclarationFonction extends ArbreAbstrait {
         mips.append(instructions.toMIPS());
 
         // Code pour sortir de la fonction
-        mips.append(toMIPSSortie());
+        // C'est en fait la classe Retourne qui s'en occupe
         return mips.toString();
     }
 
@@ -62,16 +66,6 @@ public class DeclarationFonction extends ArbreAbstrait {
         return mips.toString();
     }
 
-    private String toMIPSSortie(){
-        StringBuilder mips = new StringBuilder();
-
-        mips.append("# On retourne d'où on vient. \n");
-        mips.append("\t lw $ra, 0($sp) \t\t # dépiler dans $t8 \n");
-        mips.append("\t add $sp, $sp, 4 \n");
-        mips.append("\t jr $ra \n");
-
-        return mips.toString();
-    }
 
 
     @Override
