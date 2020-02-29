@@ -2,7 +2,6 @@ package yal.arbre.expressions;
 
 import yal.exceptions.MessagesErreursSemantiques;
 import yal.tableSymboles.EntreeFonction;
-import yal.tableSymboles.Symbole;
 import yal.tableSymboles.SymboleFonction;
 import yal.tableSymboles.TDS;
 
@@ -54,6 +53,8 @@ public class AppelFonction extends Expression {
         mips.append("\t jal ");
         mips.append(symbole.getNomEtiquette());
         mips.append("\n");
+
+
 
         // C'est DeclarationFonction qui s'occupe d'empiler $ra.
         return mips.toString();

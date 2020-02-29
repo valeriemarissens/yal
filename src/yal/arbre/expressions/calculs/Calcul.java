@@ -60,7 +60,7 @@ public abstract class Calcul extends Expression {
 
             // on dépile expGauche dans $t8
             mips.append("\t add $sp, $sp, 4 \n");
-            mips.append("\t lw $t8, ($sp) \t\t # dépiler dans $t8 \n");
+            mips.append("\t lw $t8, 0($sp) \t\t # dépiler dans $t8 \n");
         }
             // expGauche dans $t8 et expDroite dans $v0
             mips.append(calculOperation());

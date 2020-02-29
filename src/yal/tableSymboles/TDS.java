@@ -46,7 +46,6 @@ public class TDS {
      * c'est le symbole qui le donne.
      */
     public void entreeBloc(int nbBloc){
-
         pile.push(nbBloc);
     }
 
