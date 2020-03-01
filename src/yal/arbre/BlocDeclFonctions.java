@@ -4,14 +4,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class BlocDeclFonctions extends ArbreAbstrait implements Iterable<DeclarationFonction> {
-
     ArrayList<DeclarationFonction> fonctions;
 
     public BlocDeclFonctions(int n) {
         super(n);
         fonctions = new ArrayList<>();
     }
-
 
     public void ajouter(DeclarationFonction f) {
         fonctions.add(f) ;

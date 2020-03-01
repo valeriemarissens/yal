@@ -1,5 +1,7 @@
 package yal.arbre;
 
+import yal.exceptions.MessagesErreursSemantiques;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -11,10 +13,12 @@ import java.util.Iterator;
 
 public class BlocDInstructions extends ArbreAbstrait implements Iterable<ArbreAbstrait> {
     protected ArrayList<ArbreAbstrait> instructions;
+    private boolean appartientAFonction;
 
     public BlocDInstructions(int n) {
         super(n) ;
         instructions = new ArrayList<>() ;
+        appartientAFonction = false;
     }
     
     public void ajouter(ArbreAbstrait a) {
@@ -30,6 +34,13 @@ public class BlocDInstructions extends ArbreAbstrait implements Iterable<ArbreAb
     public void verifier() {
         for (ArbreAbstrait i : instructions){
             i.verifier();
+            if (!appartientAFonction){
+                boolean estRetourne = i.getType().equals("Retourne");
+                if (estRetourne) {
+                    String messageExplicite = "\"retourne\" ne peut pas se retrouver en dehors du corps d'une fonction.";
+                    MessagesErreursSemantiques.getInstance().ajouter(i.getNoLigne(), messageExplicite);
+                }
+            }
         }
     }
     
@@ -62,5 +73,9 @@ public class BlocDInstructions extends ArbreAbstrait implements Iterable<ArbreAb
     @Override
     public Iterator<ArbreAbstrait> iterator() {
         return instructions.iterator();
+    }
+
+    public void setAppartientAFonction(boolean appartientAFonction) {
+        this.appartientAFonction = appartientAFonction;
     }
 }

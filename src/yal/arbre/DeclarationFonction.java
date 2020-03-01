@@ -3,7 +3,6 @@ package yal.arbre;
 
 import yal.exceptions.MessagesErreursSemantiques;
 import yal.tableSymboles.EntreeFonction;
-import yal.tableSymboles.Symbole;
 import yal.tableSymboles.SymboleFonction;
 import yal.tableSymboles.TDS;
 
@@ -16,6 +15,7 @@ public class DeclarationFonction extends ArbreAbstrait {
         super(n);
         nom = nomFonc;
         instructions = blocy;
+        instructions.setAppartientAFonction(true);
 
         EntreeFonction f = new EntreeFonction(nom, n) ;
         symbole = new SymboleFonction(nom) ;
