@@ -59,9 +59,10 @@ public class DeclarationFonction extends ArbreAbstrait {
     private String toMIPSEntree(){
         StringBuilder mips = new StringBuilder();
 
-        mips.append("# On empile l'adresse de retour pour retourner à l'endroit de l'appel. \n");
-        mips.append("\t add $sp, $sp, -4 \n");
+        mips.append("\t # On empile l'adresse de retour pour retourner à l'endroit de l'appel. \n");
         mips.append("\t sw $ra, 0($sp) \n");
+        mips.append("\t add $sp, $sp, -4 \n");
+        mips.append("\n");
 
         return mips.toString();
     }
