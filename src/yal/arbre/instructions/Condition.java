@@ -5,7 +5,7 @@ import yal.arbre.expressions.Expression;
 import yal.exceptions.MessagesErreursSemantiques;
 import yal.outils.FabriqueIdentifiants;
 
-public class Condition extends Instruction {
+public class Condition extends InstructionBloc {
     private int identifiant;
     String nomEtiquetteSi ;
     String nomEtiquetteSinon;
@@ -56,6 +56,11 @@ public class Condition extends Instruction {
     @Override
     public String getType() {
         return "Condition";
+    }
+
+    @Override
+    public boolean contientRetourne() {
+        return (blocSi.contientRetourne() || blocSinon.contientRetourne());
     }
 
 
@@ -146,4 +151,6 @@ public class Condition extends Instruction {
         }
         return code.toString();
     }
+
+
 }

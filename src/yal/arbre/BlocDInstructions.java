@@ -13,12 +13,10 @@ import java.util.Iterator;
 
 public class BlocDInstructions extends ArbreAbstrait implements Iterable<ArbreAbstrait> {
     protected ArrayList<ArbreAbstrait> instructions;
-    private boolean appartientAFonction;
 
     public BlocDInstructions(int n) {
         super(n) ;
         instructions = new ArrayList<>() ;
-        appartientAFonction = false;
     }
     
     public void ajouter(ArbreAbstrait a) {
@@ -34,13 +32,6 @@ public class BlocDInstructions extends ArbreAbstrait implements Iterable<ArbreAb
     public void verifier() {
         for (ArbreAbstrait i : instructions){
             i.verifier();
-            if (!appartientAFonction){
-                boolean estRetourne = i.getType().equals("Retourne");
-                if (estRetourne) {
-                    String messageExplicite = "\"retourne\" ne peut pas se retrouver en dehors du corps d'une fonction.";
-                    MessagesErreursSemantiques.getInstance().ajouter(i.getNoLigne(), messageExplicite);
-                }
-            }
         }
     }
     
@@ -60,22 +51,19 @@ public class BlocDInstructions extends ArbreAbstrait implements Iterable<ArbreAb
         return "BlocDInstructions";
     }
 
-    public boolean existsRetourne(){
-        boolean existe = false;
-        for (ArbreAbstrait instruction : instructions){
-            if (instruction.getType().equals("Retourne")){
-                existe=true;
-            }
-        }
-        return existe;
-    }
 
     @Override
     public Iterator<ArbreAbstrait> iterator() {
         return instructions.iterator();
     }
 
-    public void setAppartientAFonction(boolean appartientAFonction) {
-        this.appartientAFonction = appartientAFonction;
+    public boolean contientRetourne(){
+        for (ArbreAbstrait i : instructions){
+            if (i.contientRetourne()){
+                return true;
+            }
+        }
+        return false;
     }
+
 }

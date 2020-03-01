@@ -45,4 +45,9 @@ public class Retourne extends Instruction {
     public String getType() {
         return "Retourne";
     }
+
+    @Override
+    public boolean contientRetourne() {
+        return true;
+    }
 }

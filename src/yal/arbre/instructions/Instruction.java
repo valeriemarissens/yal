@@ -10,4 +10,8 @@ public abstract class Instruction extends ArbreAbstrait {
 
     public abstract String getType();
 
+    public boolean contientRetourne(){
+        return false;
+    }
+
 }

@@ -26,4 +26,9 @@ public class DeclarationVariable extends ArbreAbstrait {
     public String getType() {
         return "DeclarationVariable";
     }
+
+    @Override
+    public boolean contientRetourne() {
+        return false;
+    }
 }

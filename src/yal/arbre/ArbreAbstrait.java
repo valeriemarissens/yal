@@ -1,11 +1,12 @@
 package yal.arbre;
 
 public abstract class ArbreAbstrait {
-    // numéro de ligne du début de l'instructions
+    // numéro de ligne du début de l'instruction
     protected int noLigne ;
     
     protected ArbreAbstrait(int n) {
         noLigne = n ;
+
     }
     
     public int getNoLigne() {
@@ -17,4 +18,7 @@ public abstract class ArbreAbstrait {
     public abstract String toMIPS();
 
     public abstract String getType();
+
+
+    public abstract boolean contientRetourne();
 }

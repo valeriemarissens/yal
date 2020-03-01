@@ -29,6 +29,14 @@ public class Programme extends ArbreAbstrait {
 
     @Override
     public void verifier() throws SemantiqueException {
+        // Merci Djessy et Thibault pour l'idée de mettre ça dans Programme
+        for (ArbreAbstrait arbre : instructions){
+            if (arbre.contientRetourne()){
+                String messageExplicite = "Un 'retourne' doit être à l'intérieur d'une fonction.";
+                MessagesErreursSemantiques.getInstance().ajouter(noLigne, messageExplicite);
+            }
+        }
+
         for (ArbreAbstrait instruction : instructions) {
             instruction.verifier();
         }
@@ -95,6 +103,16 @@ public class Programme extends ArbreAbstrait {
     @Override
     public String getType() {
         return "Programme";
+    }
+
+    @Override
+    public boolean contientRetourne() {
+        for (ArbreAbstrait arbre : instructions){
+            if (arbre.contientRetourne()){
+                return true;
+            }
+        }
+        return false;
     }
 
     private String codeFonctionsToMIPS(){

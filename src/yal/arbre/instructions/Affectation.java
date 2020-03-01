@@ -46,4 +46,5 @@ public class Affectation extends Instruction {
     public String getType() {
         return "Affectation";
     }
+
 }

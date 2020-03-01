@@ -15,7 +15,6 @@ public class DeclarationFonction extends ArbreAbstrait {
         super(n);
         nom = nomFonc;
         instructions = blocy;
-        instructions.setAppartientAFonction(true);
 
         EntreeFonction f = new EntreeFonction(nom, n) ;
         symbole = new SymboleFonction(nom) ;
@@ -26,10 +25,11 @@ public class DeclarationFonction extends ArbreAbstrait {
     @Override
     public void verifier() {
         instructions.verifier();
-        if (!instructions.existsRetourne()){
+        if (!contientRetourne()){
             String messageExplicite = "La fonction doit retourner un entier.";
             MessagesErreursSemantiques.getInstance().ajouter(noLigne, messageExplicite);
-        };
+        }
+
     }
 
     @Override
@@ -37,7 +37,6 @@ public class DeclarationFonction extends ArbreAbstrait {
      * On y génère l'étiquette et le code MIPS des instructions à l'intérieur de la fonction.
      * Le nom de l'étiquette est dans le symbole (nécessaire pour AppelFonction).
      *
-     * TODO Dès qu'il y a l'instruction 'retourne', il faut arrêter de parcourir les instructions et faire le jr (jump).
      */
     public String toMIPS() {
         StringBuilder mips = new StringBuilder();
@@ -72,6 +71,11 @@ public class DeclarationFonction extends ArbreAbstrait {
     @Override
     public String getType() {
         return "DeclarationFonction";
+    }
+
+    @Override
+    public boolean contientRetourne() {
+        return instructions.contientRetourne();
     }
 
 

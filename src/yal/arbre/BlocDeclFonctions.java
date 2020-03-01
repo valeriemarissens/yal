@@ -33,6 +33,16 @@ public class BlocDeclFonctions extends ArbreAbstrait implements Iterable<Declara
     }
 
     @Override
+    public boolean contientRetourne() {
+        for (DeclarationFonction f : fonctions){
+            if (f.contientRetourne()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public Iterator<DeclarationFonction> iterator() {
         return fonctions.iterator();
     }

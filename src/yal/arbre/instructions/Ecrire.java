@@ -93,4 +93,6 @@ public class Ecrire extends Instruction {
     public String getType() {
         return "Ecrire";
     }
+
+
 }

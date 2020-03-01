@@ -22,6 +22,11 @@ public class Boucle extends Instruction {
         return "Boucle";
     }
 
+    @Override
+    public boolean contientRetourne() {
+        return bloc.contientRetourne();
+    }
+
     public Boucle(Expression exp, ArbreAbstrait blocIns, int n){
         super(n);
         expression = exp;
@@ -99,4 +104,5 @@ public class Boucle extends Instruction {
 
         return code.toString();
     }
+
 }

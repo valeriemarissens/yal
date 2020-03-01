@@ -19,4 +19,8 @@ public abstract class Constante extends Expression {
         return cste ;
     }
 
+    public boolean contientRetourne(){
+        return false;
+    }
+
 }

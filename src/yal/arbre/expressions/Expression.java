@@ -18,4 +18,7 @@ public abstract class Expression extends ArbreAbstrait {
         return estBooleen;
     }
 
+    public boolean contientRetourne(){
+        return false;
+    }
 }
