@@ -60,7 +60,16 @@ public class Condition extends InstructionBloc {
 
     @Override
     public boolean contientRetourne() {
-        return (blocSi.contientRetourne() || blocSinon.contientRetourne());
+        if (blocSi!= null && blocSinon!= null) {
+            return (blocSi.contientRetourne() || blocSinon.contientRetourne());
+        }
+        else if (blocSi != null && blocSinon == null){
+            return (blocSi.contientRetourne());
+        }
+        else if (blocSi == null && blocSinon != null){
+            return blocSinon.contientRetourne();
+        }
+        return false;
     }
 
 

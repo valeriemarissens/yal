@@ -33,6 +33,7 @@ public class AppelFonction extends Expression {
      */
     @Override
     public void verifier() {
+        chercherSymbole();
         if (symbole == null){
             MessagesErreursSemantiques.getInstance().ajouter(noLigne,"La fonction n'a pas été déclarée.");
         }
