@@ -1,24 +1,29 @@
 package yal.arbre.expressions;
 
+import yal.arbre.instructions.Affectation;
 import yal.exceptions.MessagesErreursSemantiques;
 import yal.tableSymboles.EntreeFonction;
 import yal.tableSymboles.SymboleFonction;
 import yal.tableSymboles.TDS;
 
-// Quelque part : TDS.getInstance().entreeBloc(s.getNbBloc()) ;
+// Quelque part : TDS.getInstance().entreeBloc(s.getNbBloc()) ; => plutôt dans DeclarationFonction ? (CM pg 16)
 // Quelque part après (à retourne ?): TDS.getInstance().sortieBloc() ;
 public class AppelFonction extends Expression {
     String nom ;
     EntreeFonction entree;
     SymboleFonction symbole;
+    Expression parametre;
+    Affectation affectationParametre;
 
     protected AppelFonction(int n) {
         super(n);
     }
 
-    public AppelFonction(String nomFonction, int noLigne){
+    public AppelFonction(String nomFonction, Expression p, int noLigne){
         super(noLigne);
         nom = nomFonction;
+        parametre = p;
+
         entree = new EntreeFonction(nomFonction, noLigne);
         chercherSymbole();
         estBooleen = false;
@@ -33,6 +38,10 @@ public class AppelFonction extends Expression {
      */
     @Override
     public void verifier() {
+        if (parametre != null){
+            parametre.verifier();
+        }
+
         chercherSymbole();
         if (symbole == null){
             MessagesErreursSemantiques.getInstance().ajouter(noLigne,"La fonction n'a pas été déclarée.");
@@ -49,13 +58,22 @@ public class AppelFonction extends Expression {
     public String toMIPS() {
         StringBuilder mips = new StringBuilder();
 
+        if (parametre != null) {
+            String idParam = symbole.getIdParametre();
+            affectationParametre = new Affectation(idParam, parametre, noLigne + 1);
+
+            //On affecte le(s) paramètre(s) :
+            mips.append("\t # On affecte le(s) paramètre(s) \n");
+            mips.append("\t ");
+            mips.append(affectationParametre.toMIPS());
+            mips.append("\n");
+        }
+
         // On stocke l'adresse où on est avec jal :
         // jal stocke l'adresse de l'instruction suivante dans $ra pour éviter les boucles.
         mips.append("\t jal ");
         mips.append(symbole.getNomEtiquette());
         mips.append("\n");
-
-
 
         // C'est DeclarationFonction qui s'occupe d'empiler $ra.
         return mips.toString();

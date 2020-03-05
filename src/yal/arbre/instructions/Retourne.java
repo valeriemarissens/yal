@@ -2,12 +2,15 @@ package yal.arbre.instructions;
 
 import yal.arbre.expressions.Expression;
 import yal.exceptions.MessagesErreursSemantiques;
+import yal.tableSymboles.TDS;
 
 public class Retourne extends Instruction {
     Expression expression;
     public Retourne(Expression e, int n) {
         super(n);
         expression=e;
+
+//        TDS.getInstance().sortieBloc();
     }
 
     @Override

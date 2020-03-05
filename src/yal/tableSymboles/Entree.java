@@ -12,15 +12,19 @@ public abstract class Entree {
         idf = nom;
     }
 
+    public void setIdf(String variable) {
+        this.idf = variable;
+    }
+
+    public void setNbParametres(int nbParametres) {
+        this.nbParametres = nbParametres;
+    }
+
     public int getLigne() {
         return ligne;
     }
 
     public String getIdf() { return idf;}
-
-    public void setIdf(String variable) {
-        this.idf = variable;
-    }
 
     public int getNbParametres() {return nbParametres; }
 
@@ -37,4 +41,6 @@ public abstract class Entree {
     public int hashCode() {
         return Objects.hash(idf);
     }
+
+    public abstract boolean estFonction();
 }

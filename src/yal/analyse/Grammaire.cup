@@ -12,6 +12,7 @@ import yal.arbre.expressions.ConstanteEntiere;
 import yal.arbre.expressions.Expression;
 import yal.arbre.expressions.Variable;
 import yal.arbre.expressions.AppelFonction;
+import yal.arbre.expressions.Parametre;
 
 import yal.exceptions.AnalyseSyntaxiqueException;
 
@@ -142,18 +143,23 @@ LDECL   ::=     LDECL:ld DECL:d
 
 DECL    ::=     /* Déclaration de variable */
                 ENTIER IDF:id POINTVIRGULE
-                {:
-                    RESULT =  new DeclarationVariable(id, idleft+1);
+                {: RESULT =  new DeclarationVariable(id, idleft+1);
                  :}
            |
-                /* Déclaration de fonction sans paramètres */
-                FONCTION IDF:id PARAMETRES DEBUT LINST:li FIN
-                {:
-                    RESULT = new DeclarationFonction(id, (BlocDInstructions)li, idleft + 1);
+                /* Déclaration de fonction sans variables locales */
+                FONCTION IDF:id PARAMETRES:p DEBUT LINST:li FIN
+            {: RESULT = new DeclarationFonction(id, (ArbreAbstrait) p, (BlocDInstructions)li, idleft + 1);
                 :}
                 ;
 
-PARAMETRES ::=      PARENTHESEOUVRANTE PARENTHESEFERMANTE;
+PARAMETRES ::=  /* Sans paramètres */
+                PARENTHESEOUVRANTE PARENTHESEFERMANTE
+           |
+                /* Avec un seul paramètre */
+                PARENTHESEOUVRANTE ENTIER IDF:id PARENTHESEFERMANTE
+                {: Variable p = new Variable(id, idleft + 1) ;
+                    RESULT = new DeclarationVariable(id, idleft + 1) ; :}
+                ;
 
 LINST   ::=     LINST:li  INST:i
                 {: ((BlocDInstructions)li).ajouter(i) ;
@@ -246,7 +252,12 @@ EXP     ::=     CSTENTIERE:c
                 NON EXP:e
                 {: RESULT = new Non(e, eleft + 1) ; :}
         |
-                IDF:id PARENTHESEOUVRANTE PARENTHESEFERMANTE
-                {: RESULT = new AppelFonction(id, idleft +1 ); :}
+                IDF:id PARENTHESEOUVRANTE PAR_EFF:p PARENTHESEFERMANTE
+                {: RESULT = new AppelFonction(id, (Expression) p, idleft +1 ); :}
+                ;
 
+PAR_EFF ::=     EXP:e
+                {: RESULT = e ; :}
+        |
+                /* Sans paramètres*/
                 ;

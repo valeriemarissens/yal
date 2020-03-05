@@ -15,6 +15,8 @@ public class Programme extends ArbreAbstrait {
         super(n);
         instructions = new ArrayList<>();
         fonctions = new ArrayList<>();
+
+        TDS.getInstance().entreeBloc(0); //TODO : voir où mettre la sortie
     }
 
     public void ajouter(ArbreAbstrait nouvelleInstruction){

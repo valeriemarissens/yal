@@ -1,7 +1,5 @@
 package yal.tableSymboles;
 
-import java.util.Objects;
-
 public class EntreeFonction extends Entree {
     private String idf;
 
@@ -11,5 +9,8 @@ public class EntreeFonction extends Entree {
         nbParametres = 0;
     }
 
-
+    @Override
+    public boolean estFonction() {
+        return true;
+    }
 }

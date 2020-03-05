@@ -21,12 +21,14 @@ public class TDS {
             symbole.setDeplacement(cptDeplacement);
             cptDeplacement -= 4;
 
-            if (pile.empty()){
-                symbole.setNbBloc(0);
-            }
-            else {
-                int nbBlocActuel = (int) pile.peek();
-                symbole.setNbBloc(nbBlocActuel + 1);
+            if (entree.estFonction()) {
+                if (pile.empty()) {
+                    symbole.setNbBloc(0);
+                }
+                else {
+                    int nbBlocActuel = (int) pile.peek();
+                    symbole.setNbBloc(nbBlocActuel + 1);
+                }
             }
 
             tableSymboles.put(entree,symbole);
