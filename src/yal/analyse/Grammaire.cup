@@ -2,6 +2,7 @@ package yal.analyse ;
 
 import java.util.*;
 import yal.arbre.* ;
+import yal.arbre.DeclarationParametre;
 import yal.arbre.instructions.* ;
 import yal.tableSymboles.* ;
 import yal.arbre.expressions.calculs.* ;
@@ -67,7 +68,7 @@ parser code {:
 /* Terminals (tokens returned by the scanner).  */
 
 terminal Symbol    PROGRAMME, DEBUT, FIN, ECRIRE, LIRE ;
-terminal Symbol    POINTVIRGULE, EGAL, PARENTHESEOUVRANTE, PARENTHESEFERMANTE ;
+terminal Symbol    POINTVIRGULE, EGAL, PARENTHESEOUVRANTE, PARENTHESEFERMANTE, VIRGULE ;
 terminal Symbol    PLUS, MOINS, FOIS, DIVISE;
 terminal Symbol    SI, ALORS, FINSI, SINON ;
 terminal Symbol    TANTQUE, REPETER, FINTANTQUE;
@@ -81,8 +82,10 @@ terminal String    RETOURNE;
 non terminal ArbreAbstrait PROG, LINST, INST ;
 non terminal Expression EXP ;
 non terminal LDECL, DECL ;
-non terminal IDF_FONCT, FIN_FONCT ;
+non terminal LDECL_VARIABLES_LOCALES;
+non terminal DeclarationVariableLocale DECL_VARIABLE_LOCALE;
 non terminal PARAMETRES, PAR_EFF;
+non terminal DeclarationParametre PARAMETRE;
 
 /* Precedences. */
 /* Produisent un shift/reduce conflict => utilisation du precedence left */
@@ -100,7 +103,7 @@ precedence left PARENTHESEOUVRANTE, PARENTHESEFERMANTE ;
  
 start with PROG ;
 
-PROG    ::=     PROGRAMME  IDF  DEBUT  LDECL:ld LINST:li  FIN
+PROG    ::=     PROGRAMME  IDF  DEBUT LDECL:ld LINST:li  FIN
                 {: Programme p = new Programme(lileft + 1) ;
 
                     // Ajout des instructions dans le programme
@@ -119,6 +122,31 @@ PROG    ::=     PROGRAMME  IDF  DEBUT  LDECL:ld LINST:li  FIN
                  :}
                 ;
 
+/* Obligé de faire un bloc séparé pour les déclarations de Variables Locales car
+    1- Besoin de savoir à quelle fonction appartient telle variable
+            (-> besoin d'un bloc de déclarations de variable à attribuer à une DéclarationFonction)
+    2- Besoin d'alterner entre déclarations de fonctions et déclarations de variables dans Programme
+            (-> pas le droit de faire LDECL_VARIABLES et LDECL_FONCTIONS séparemment)
+ */
+
+/* Déclaration de plusieurs variables locales */
+LDECL_VARIABLES_LOCALES   ::=
+                LDECL_VARIABLES_LOCALES:liste  DECL_VARIABLE_LOCALE:variable
+                {: ((EnsembleVariablesLocales)liste).ajouter(variable) ;
+                   RESULT = liste ; :}
+        |
+                DECL_VARIABLE_LOCALE:variable
+                {: EnsembleVariablesLocales ensemble = new EnsembleVariablesLocales(variableleft + 1) ;
+                   ensemble.ajouter(variable) ;
+                   RESULT = ensemble ; :}
+                ;
+
+DECL_VARIABLE_LOCALE ::=
+                ENTIER IDF:id POINTVIRGULE
+                {: RESULT = new DeclarationVariableLocale(id, idleft); :}
+                ;
+
+
 LDECL   ::=     LDECL:ld DECL:d
                 {:
                     ArbreAbstrait tmp = (ArbreAbstrait) d;
@@ -129,8 +157,8 @@ LDECL   ::=     LDECL:ld DECL:d
                     RESULT = (BlocDeclFonctions) ld;
                 :}
             |
-                DECL:d
-                {:
+                 DECL:d
+            {:
                     BlocDeclFonctions b = new BlocDeclFonctions(dleft + 1) ;
                     ArbreAbstrait tmp = (ArbreAbstrait) d;
                     String type = tmp.getType();
@@ -138,27 +166,29 @@ LDECL   ::=     LDECL:ld DECL:d
                         b.ajouter((DeclarationFonction)d);
                     }
                     RESULT = b ;
-                :}
+             :}
                 ;
 
-DECL    ::=     /* Déclaration de variable */
+
+DECL    ::=     /* Déclaration d'une variable */
                 ENTIER IDF:id POINTVIRGULE
-                {: RESULT =  new DeclarationVariable(id, idleft+1);
-                 :}
+                {: RESULT =  new DeclarationVariable(id, idleft+1); :}
            |
-                /* Déclaration de fonction sans variables locales */
-                FONCTION IDF:id PARAMETRES:p DEBUT LINST:li FIN
-            {: RESULT = new DeclarationFonction(id, (ArbreAbstrait) p, (BlocDInstructions)li, idleft + 1);
-                :}
-                ;
-
-PARAMETRES ::=  /* Sans paramètres */
-                PARENTHESEOUVRANTE PARENTHESEFERMANTE
+                /* Déclaration de fonction sans paramètres ni variables locales */
+                FONCTION IDF:id PARENTHESEOUVRANTE                  PARENTHESEFERMANTE DEBUT                                   LINST:li FIN
+                {: RESULT  = new DeclarationFonction(id, null, null, (BlocDInstructions)li, idleft+1); :}
            |
-                /* Avec un seul paramètre */
-                PARENTHESEOUVRANTE ENTIER IDF:id PARENTHESEFERMANTE
-                {: Variable p = new Variable(id, idleft + 1) ;
-                    RESULT = new DeclarationVariable(id, idleft + 1) ; :}
+                /* Déclaration de fonction avec paramètres et sans variables locales */
+                FONCTION IDF:id PARENTHESEOUVRANTE  PARAMETRES:p    PARENTHESEFERMANTE DEBUT                                   LINST:li FIN
+                {: RESULT = new DeclarationFonction(id, (EnsembleParametres)p, null, (BlocDInstructions)li, idleft + 1); :}
+           |
+                /* Déclaration de fonction sans paramètres et avec variables locales */
+                FONCTION IDF:id PARENTHESEOUVRANTE                  PARENTHESEFERMANTE DEBUT    LDECL_VARIABLES_LOCALES:ld     LINST:li FIN
+                {: RESULT = new DeclarationFonction(id, null, (EnsembleVariablesLocales)ld, (BlocDInstructions)li, idleft + 1); :}
+           |
+                /* Déclaration de fonction avec paramètres et avec variables locales */
+               FONCTION IDF:id PARENTHESEOUVRANTE PARAMETRES:p     PARENTHESEFERMANTE DEBUT    LDECL_VARIABLES_LOCALES:ld     LINST:li FIN
+                {: RESULT = new DeclarationFonction(id, (EnsembleParametres)p, (EnsembleVariablesLocales)ld, (BlocDInstructions)li, idleft + 1); :}
                 ;
 
 LINST   ::=     LINST:li  INST:i
@@ -256,6 +286,22 @@ EXP     ::=     CSTENTIERE:c
                 {: RESULT = new AppelFonction(id, (Expression) p, idleft +1 ); :}
                 ;
 
+PARAMETRE ::=   ENTIER IDF:id
+                {: RESULT = new DeclarationParametre(id, idleft + 1); :}
+                ;
+
+PARAMETRES ::=
+                PARAMETRES:parametres POINTVIRGULE PARAMETRE:parametre
+                {:  ((EnsembleParametres)parametres).ajouter(parametre) ;
+                    RESULT= parametres;
+                :}
+        |
+                PARAMETRE:parametre
+                {:  EnsembleParametres ensembleParametres = new EnsembleParametres(parametreleft +1);
+                    ensembleParametres.ajouter(parametre);
+                    RESULT = ensembleParametres;
+                :}
+                ;
 PAR_EFF ::=     EXP:e
                 {: RESULT = e ; :}
         |

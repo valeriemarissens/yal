@@ -5,7 +5,7 @@ public class EntreeVariable extends Entree {
 
     public EntreeVariable(String v, int n){
         super(v, n);
-        nbParametres = -1;
+        nbParametres = -1; // sert à distinguer idf d'une variable et idf d'une fonction (car peuvent avoir le même nom)
     }
 
     @Override

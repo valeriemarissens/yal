@@ -1,12 +1,7 @@
 package yal.arbre;
 
 
-import yal.arbre.expressions.ConstanteEntiere;
-import yal.arbre.expressions.Expression;
-import yal.arbre.expressions.Parametre;
-import yal.arbre.instructions.Affectation;
 import yal.exceptions.MessagesErreursSemantiques;
-import yal.tableSymboles.Entree;
 import yal.tableSymboles.EntreeFonction;
 import yal.tableSymboles.SymboleFonction;
 import yal.tableSymboles.TDS;
@@ -16,31 +11,36 @@ public class DeclarationFonction extends ArbreAbstrait {
     BlocDInstructions instructions;
     SymboleFonction symbole;
     EntreeFonction entree;
-    ArbreAbstrait parametre;
+    EnsembleParametres parametres;
+    EnsembleVariablesLocales variablesLocales;
 
-    public DeclarationFonction(String nomFonc, ArbreAbstrait p, BlocDInstructions blocy, int n) {
+    public DeclarationFonction(String nomFonc, EnsembleParametres parametres,  EnsembleVariablesLocales variablesLocales, BlocDInstructions blocy, int n) {
         super(n);
         nom = nomFonc;
         instructions = blocy;
-        parametre = p;
+        this.parametres = parametres;
+        this.variablesLocales = variablesLocales;
 
         entree = new EntreeFonction(nom, n) ;
-        symbole = new SymboleFonction(nom) ;
-        TDS.getInstance().ajouter(entree, symbole) ;
 
-        if (parametre != null){
-            //entree.setNbParametres(1); ; // TODO : compter nb param
-            String idParametre = ((DeclarationVariable)parametre).getIdVariable();
-            symbole.setIdParametre(idParametre);
+        if (parametres==null){
+            symbole = new SymboleFonction(nom, 0);
+        }else {
+            symbole = new SymboleFonction(nom, parametres.getNbParametres());
         }
 
+        TDS.getInstance().ajouter(entree, symbole) ;
         TDS.getInstance().entreeBloc(symbole.getNbBloc());
     }
 
     @Override
     public void verifier() {
-        if (parametre != null) {
-            parametre.verifier();
+        if (parametres != null) {
+            parametres.verifier();
+        }
+
+        if (variablesLocales!=null){
+            variablesLocales.verifier();
         }
 
         instructions.verifier();
@@ -77,9 +77,9 @@ public class DeclarationFonction extends ArbreAbstrait {
     private String toMIPSEntree(){
         StringBuilder mips = new StringBuilder();
 
-        if (parametre != null) {
+        if (parametres != null) {
             mips.append("\t # On empile le(s) paramètre(s). \n");
-            parametre.toMIPS();
+            //parametres.toMIPS();
             mips.append("\t sw $v0, 0($sp) \n");
             mips.append("\t add $sp, $sp, -4 \n");
             mips.append("\n");

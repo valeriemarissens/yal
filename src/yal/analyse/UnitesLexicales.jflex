@@ -60,6 +60,8 @@ espace = {finDeLigne}  | [ \t\f]
 
 ";"                    { return symbol(CodesLexicaux.POINTVIRGULE); }
 
+","                    { return symbol(CodesLexicaux.VIRGULE); }
+
 "="                    { return symbol(CodesLexicaux.EGAL); }
 
 "("                    { return symbol(CodesLexicaux.PARENTHESEOUVRANTE); }
