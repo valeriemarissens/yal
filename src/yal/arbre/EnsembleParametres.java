@@ -2,8 +2,9 @@ package yal.arbre;
 
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
-public class EnsembleParametres {
+public class EnsembleParametres implements  Iterable<DeclarationParametre> {
     private int noLigne;
     private ArrayList<DeclarationParametre> parametres;
 
@@ -20,5 +21,10 @@ public class EnsembleParametres {
 
     public int getNbParametres(){
         return parametres.size();
+    }
+
+    @Override
+    public Iterator<DeclarationParametre> iterator() {
+        return parametres.iterator();
     }
 }

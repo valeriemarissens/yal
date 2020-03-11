@@ -1,13 +1,15 @@
 package yal.arbre;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
-public class EnsembleVariablesLocales {
+public class EnsembleVariablesLocales implements Iterable<DeclarationVariableLocale> {
     ArrayList<DeclarationVariableLocale> variablesLocales;
     int noLigne;
 
     public EnsembleVariablesLocales(int noLigne){
         this.noLigne = noLigne;
+        variablesLocales = new ArrayList<>();
     }
 
     public void verifier(){
@@ -22,5 +24,10 @@ public class EnsembleVariablesLocales {
 
     public void ajouter(DeclarationVariableLocale variableLocale){
         variablesLocales.add(variableLocale);
+    }
+
+    @Override
+    public Iterator<DeclarationVariableLocale> iterator() {
+        return variablesLocales.iterator();
     }
 }

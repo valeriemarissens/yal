@@ -3,6 +3,7 @@ package yal.arbre;
 
 import yal.exceptions.MessagesErreursSemantiques;
 import yal.tableSymboles.EntreeFonction;
+import yal.tableSymboles.EntreeVariableLocale;
 import yal.tableSymboles.SymboleFonction;
 import yal.tableSymboles.TDS;
 
@@ -33,10 +34,12 @@ public class DeclarationFonction extends ArbreAbstrait {
         TDS.getInstance().entreeBloc(symbole.getNbBloc());
     }
 
+
     @Override
     public void verifier() {
         if (parametres != null) {
             parametres.verifier();
+
         }
 
         if (variablesLocales!=null){
