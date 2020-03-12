@@ -3,8 +3,9 @@ package yal.arbre;
 import yal.arbre.expressions.Expression;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
-public class EnsembleParametresAppel {
+public class EnsembleParametresAppel implements Iterable<Expression> {
     private int noLigne;
     ArrayList<Expression> parametres;
 
@@ -19,11 +20,16 @@ public class EnsembleParametresAppel {
         }
     }
 
-    public void ajouter(Expression expression){
-        parametres.add(expression);
+    public void ajouter(Expression param){
+        parametres.add(param);
     }
 
     public int getNbParametresAppel(){
         return parametres.size();
+    }
+
+    @Override
+    public Iterator<Expression> iterator() {
+        return parametres.iterator();
     }
 }

@@ -1,20 +1,15 @@
 package yal.arbre.expressions;
 
-import yal.arbre.EnsembleParametres;
 import yal.arbre.EnsembleParametresAppel;
-import yal.arbre.instructions.Affectation;
 import yal.exceptions.MessagesErreursSemantiques;
 import yal.tableSymboles.EntreeFonction;
 import yal.tableSymboles.SymboleFonction;
 import yal.tableSymboles.TDS;
 
-// Quelque part : TDS.getInstance().entreeBloc(s.getNbBloc()) ; => plutôt dans DeclarationFonction ? (CM pg 16)
-// Quelque part après (à retourne ?): TDS.getInstance().sortieBloc() ;
 public class AppelFonction extends Expression {
     String nom ;
     EntreeFonction entree;
     SymboleFonction symbole;
-    Affectation affectationParametre;
     EnsembleParametresAppel parametres;
 
     protected AppelFonction(int n) {
@@ -26,13 +21,17 @@ public class AppelFonction extends Expression {
         nom = nomFonction;
         this.parametres = parametres;
 
-        entree = new EntreeFonction(nomFonction, noLigne, parametres.getNbParametresAppel());
+        int nbParametresAppel = 0;
+        if (parametres != null){
+            nbParametresAppel = parametres.getNbParametresAppel();
+        }
+
+        entree = new EntreeFonction(nomFonction, noLigne, nbParametresAppel);
         chercherSymbole();
         estBooleen = false;
     }
 
     private void chercherSymbole() {
-
         symbole = (SymboleFonction)TDS.getInstance().identifier(entree);
     }
 
@@ -59,7 +58,19 @@ public class AppelFonction extends Expression {
      */
     @Override
     public String toMIPS() {
+        System.out.println(this.nom);
+        TDS.getInstance().entreeBloc(symbole.getNumBloc());
+
         StringBuilder mips = new StringBuilder();
+
+        mips.append("\n");
+        mips.append("\t # Début appel fonction "+nom+". \n");
+
+        // On empile les valeurs des paramètres donnés.
+        if (parametres != null) {
+            mips.append("\t # On empile les paramètres de l'appel. \n");
+            mips.append(toMIPSParametresAppel());
+        }
 
         // On stocke l'adresse où on est avec jal :
         // jal stocke l'adresse de l'instruction suivante dans $ra pour éviter les boucles.
@@ -68,6 +79,19 @@ public class AppelFonction extends Expression {
         mips.append("\n");
 
         // C'est DeclarationFonction qui s'occupe d'empiler $ra.
+        return mips.toString();
+    }
+
+    private String toMIPSParametresAppel(){
+        StringBuilder mips = new StringBuilder();
+
+        for (Expression parametre : parametres){
+            mips.append(parametre.toMIPS());
+            mips.append("\t sw $v0, 0($sp) \n");
+            mips.append("\t add $sp, $sp, -4 \n");
+            mips.append("\n");
+        }
+
         return mips.toString();
     }
 

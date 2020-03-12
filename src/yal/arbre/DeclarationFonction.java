@@ -1,7 +1,10 @@
 package yal.arbre;
 
 
+import yal.arbre.expressions.Variable;
+import yal.arbre.instructions.Retourne;
 import yal.exceptions.MessagesErreursSemantiques;
+import yal.outils.FabriqueIdentifiants;
 import yal.tableSymboles.EntreeFonction;
 import yal.tableSymboles.EntreeVariableLocale;
 import yal.tableSymboles.SymboleFonction;
@@ -22,8 +25,6 @@ public class DeclarationFonction extends ArbreAbstrait {
         this.parametres = parametres;
         this.variablesLocales = variablesLocales;
 
-
-
         if (parametres==null){
             entree = new EntreeFonction(nom, n, 0) ;
             symbole = new SymboleFonction(nom, 0);
@@ -34,8 +35,7 @@ public class DeclarationFonction extends ArbreAbstrait {
         }
 
         TDS.getInstance().ajouter(entree, symbole) ;
-        // Dans appel fonction ????
-        // TDS.getInstance().entreeBloc(symbole.getNbBloc());
+        symbole.setNumBloc(FabriqueIdentifiants.getInstance().getNumeroBloc());
     }
 
 
@@ -70,7 +70,7 @@ public class DeclarationFonction extends ArbreAbstrait {
         mips.append(symbole.getNomEtiquette());
         mips.append(" : \n");
 
-        // Code pour enregistrer l'adresse de retour
+        // Code pour empiler toutes les informations du bloc
         mips.append(toMIPSEntree());
 
         mips.append(instructions.toMIPS());
@@ -84,24 +84,56 @@ public class DeclarationFonction extends ArbreAbstrait {
     private String toMIPSEntree(){
         StringBuilder mips = new StringBuilder();
 
-        if (parametres != null) {
-            mips.append("\t # On empile le(s) paramètre(s). \n");
-            //parametres.toMIPS();
-            mips.append("\t sw $v0, 0($sp) \n");
-            mips.append("\t add $sp, $sp, -4 \n");
-            mips.append("\n");
-            // ici on a bien le paramètre dans $v0 et dans la pile
-        }
+        // Paramètres empilés précédemment par AppelFonction avant le branchement.
 
+        // Adresse de retour empilée.
         mips.append("\t # On empile l'adresse de retour pour retourner à l'endroit de l'appel. \n");
-        mips.append("\t sw $ra, 0($sp) \n");
-        mips.append("\t add $sp, $sp, -4 \n");
+        mips.append("\t move $v0, $ra \n");
+        mips.append(toMIPSEmpiler());
         mips.append("\n");
 
-        // On empile numéro de région ?
+        // Chaînage dynamique empilé.
+        // L'ancienne base de variables locales du bloc antérieur était dans $s2.
+        mips.append("\t # On empile le chaînage dynamique. \n");
+        mips.append("\t move $v0, $s2 \n");
+        mips.append(toMIPSEmpiler());
+        mips.append("\n");
 
-        // mips.append("\t # On empile les variables \n");
-        // TODO : variables to mips.
+        // Numéro de bloc empilé.
+        mips.append("\t # On empile le numéro de bloc. \n");
+        mips.append("\t li $v0, "+symbole.getNumBloc()+" \n");
+        mips.append(toMIPSEmpiler());
+
+        // Variables locales empilées.
+        if (variablesLocales != null) {
+            mips.append(toMIPSVariablesLocales());
+        }
+
+        return mips.toString();
+    }
+
+    private String toMIPSVariablesLocales(){
+        StringBuilder mips = new StringBuilder();
+
+        mips.append("\t # On empile les variables \n");
+        for (DeclarationVariableLocale variableLocale : variablesLocales) {
+            mips.append(variableLocale.toMIPS());
+            mips.append(toMIPSEmpiler());
+            mips.append("\n");
+        }
+
+        return mips.toString();
+    }
+
+    /**
+     * La valeur à empiler doit être dans $v0.
+     * @return empiler en MIPS.
+     */
+    private String toMIPSEmpiler(){
+        StringBuilder mips = new StringBuilder();
+
+        mips.append("\t sw $v0, 0($sp) \n");
+        mips.append("\t add $sp, $sp, -4 \n");
 
         return mips.toString();
     }

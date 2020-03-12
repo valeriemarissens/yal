@@ -37,7 +37,7 @@ public class Affectation extends Instruction {
         StringBuilder mips = new StringBuilder();
         mips.append("# Affectation "+partieGauche.toString()+" = "+partieDroite.toString()+" \n");
         mips.append(partieDroite.toMIPS());
-        mips.append("\t sw $v0, "+deplacementGauche+"($s7) \n");
+        mips.append("\t sw $v0, "+deplacementGauche+"($s2) \n");
 
         return mips.toString();
     }

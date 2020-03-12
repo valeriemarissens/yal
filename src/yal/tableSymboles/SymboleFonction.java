@@ -16,16 +16,19 @@ public class SymboleFonction extends Symbole {
         numBloc=n;
     }
 
-    public String getNomEtiquette(){
-        return "fonction_"+idf+"_"+nombreParametres;
-    }
-
     public void setIdParametre(String idParametre) {
         this.idParametre = idParametre;
+    }
+
+    public int getNumBloc(){
+        return numBloc;
     }
 
     public String getIdParametre(){
         return this.idParametre;
     }
 
+    public String getNomEtiquette(){
+        return "fonction_"+idf+"_"+nombreParametres;
+    }
 }

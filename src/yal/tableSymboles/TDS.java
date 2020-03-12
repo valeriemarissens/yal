@@ -1,6 +1,8 @@
 package yal.tableSymboles;
 
 import yal.exceptions.MessagesErreursSemantiques;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
 
@@ -9,11 +11,13 @@ public class TDS {
     private int cptDeplacement;
     private HashMap<Entree, Symbole> tableSymboles;
     private Stack pile;
+    private HashMap<Entree, ArrayList<Symbole>> nouvelleTableSymboles;
 
     private TDS(){
         tableSymboles = new HashMap<>();
         cptDeplacement = 0;
         pile = new Stack<Integer>();
+        nouvelleTableSymboles = new HashMap<>();
     }
 
     public void ajouter(Entree entree, Symbole symbole){
@@ -21,17 +25,6 @@ public class TDS {
             symbole.setDeplacement(cptDeplacement);
             cptDeplacement -= 4;
 
-            /* C'est pas à l'appel de fonction ça ?
-            if (entree.estFonction()) {
-                if (pile.empty()) {
-                    symbole.setNbBloc(0);
-                }
-                else {
-                    int nbBlocActuel = (int) pile.peek();
-                    symbole.setNbBloc(nbBlocActuel + 1);
-                }
-            }
-    */
             tableSymboles.put(entree,symbole);
         }
         else{
@@ -50,13 +43,17 @@ public class TDS {
      */
     public void entreeBloc(int nbBloc){
         pile.push(nbBloc);
+        System.out.println("ENTRÉE DANS BLOC "+nbBloc);
+        System.out.println();
     }
 
     /**
      * Dépile : on retourne dans le bloc précédent.
      */
     public void sortieBloc(){
-        pile.pop();
+        int nbBloc = (int) pile.pop();
+        System.out.println("SORTIE DU BLOC "+nbBloc);
+        System.out.println();
     }
 
     public static TDS getInstance(){
@@ -66,5 +63,13 @@ public class TDS {
     // Obsolète ?
     public int getTailleZoneVariable(){
         return cptDeplacement;
+    }
+
+    public boolean isEmptyPile(){
+        return pile.isEmpty();
+    }
+
+    public int peekPile(){
+        return (int) pile.peek();
     }
 }

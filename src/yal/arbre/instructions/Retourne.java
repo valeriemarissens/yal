@@ -5,12 +5,13 @@ import yal.exceptions.MessagesErreursSemantiques;
 import yal.tableSymboles.TDS;
 
 public class Retourne extends Instruction {
-    Expression expression;
+    private Expression expression;
+    private int nbVariablesLocales;
+
     public Retourne(Expression e, int n) {
         super(n);
         expression=e;
-
-//        TDS.getInstance().sortieBloc();
+        nbVariablesLocales = 0;
     }
 
     @Override
@@ -38,9 +39,19 @@ public class Retourne extends Instruction {
         mips.append("\n");
 
         mips.append("\t # On retourne d'où on vient. \n");
-        mips.append("\t add $sp, $sp, 4 \n");
+        // Il faut dépiler : les variables locales, le numéro de région
+        // et le chaînage dynamique.
+        // TODO: setNbVariables mais depuis où ? Seul DeclarationFonction connaît
+        //  ce nombre mais n'a pas accès à Retourne ...
+
+        nbVariablesLocales = 1; // pour le test
+        int deplacementADepiler = 4 * (2 + nbVariablesLocales);
+        mips.append("\t add $sp, $sp, "+deplacementADepiler+" \n");
         mips.append("\t lw $ra, 0($sp) \t\t # dépiler dans $ra \n");
         mips.append("\t jr $ra \n");
+
+        TDS.getInstance().sortieBloc();
+
         return mips.toString();
     }
 
@@ -52,5 +63,9 @@ public class Retourne extends Instruction {
     @Override
     public boolean contientRetourne() {
         return true;
+    }
+
+    public void setNbVariablesLocales(int nbVariablesLocales) {
+        this.nbVariablesLocales = nbVariablesLocales;
     }
 }
