@@ -28,18 +28,22 @@ public abstract class Entree {
 
     public int getNbParametres() {return nbParametres; }
 
+    public String toString(){
+        return "Entree "+ idf +" avec "  + nbParametres +" paramètres.";
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Entree entree = (Entree) o;
         return nbParametres == entree.nbParametres &&
-                Objects.equals(idf, entree.idf);
+                idf.equals(entree.idf);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idf);
+        return Objects.hash(idf, nbParametres);
     }
 
     public abstract boolean estFonction();

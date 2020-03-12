@@ -1,5 +1,7 @@
 package yal.arbre.expressions;
 
+import yal.arbre.EnsembleParametres;
+import yal.arbre.EnsembleParametresAppel;
 import yal.arbre.instructions.Affectation;
 import yal.exceptions.MessagesErreursSemantiques;
 import yal.tableSymboles.EntreeFonction;
@@ -12,24 +14,25 @@ public class AppelFonction extends Expression {
     String nom ;
     EntreeFonction entree;
     SymboleFonction symbole;
-    Expression parametre;
     Affectation affectationParametre;
+    EnsembleParametresAppel parametres;
 
     protected AppelFonction(int n) {
         super(n);
     }
 
-    public AppelFonction(String nomFonction, Expression p, int noLigne){
+    public AppelFonction(String nomFonction, EnsembleParametresAppel parametres, int noLigne){
         super(noLigne);
         nom = nomFonction;
-        parametre = p;
+        this.parametres = parametres;
 
-        entree = new EntreeFonction(nomFonction, noLigne);
+        entree = new EntreeFonction(nomFonction, noLigne, parametres.getNbParametresAppel());
         chercherSymbole();
         estBooleen = false;
     }
 
     private void chercherSymbole() {
+
         symbole = (SymboleFonction)TDS.getInstance().identifier(entree);
     }
 
@@ -38,8 +41,8 @@ public class AppelFonction extends Expression {
      */
     @Override
     public void verifier() {
-        if (parametre != null){
-            parametre.verifier();
+        if (parametres != null){
+            parametres.verifier();
         }
 
         chercherSymbole();
@@ -57,17 +60,6 @@ public class AppelFonction extends Expression {
     @Override
     public String toMIPS() {
         StringBuilder mips = new StringBuilder();
-
-        if (parametre != null) {
-            String idParam = symbole.getIdParametre();
-            affectationParametre = new Affectation(idParam, parametre, noLigne + 1);
-
-            //On affecte le(s) paramètre(s) :
-            mips.append("\t # On affecte le(s) paramètre(s) \n");
-            mips.append("\t ");
-            mips.append(affectationParametre.toMIPS());
-            mips.append("\n");
-        }
 
         // On stocke l'adresse où on est avec jal :
         // jal stocke l'adresse de l'instruction suivante dans $ra pour éviter les boucles.

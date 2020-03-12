@@ -84,7 +84,9 @@ non terminal Expression EXP ;
 non terminal LDECL, DECL ;
 non terminal LDECL_VARIABLES_LOCALES;
 non terminal DeclarationVariableLocale DECL_VARIABLE_LOCALE;
-non terminal PARAMETRES, PAR_EFF;
+non terminal PARAMETRES;
+non terminal EnsembleParametresAppel PAR_EFFS;
+non terminal Expression PAR_EFF;
 non terminal DeclarationParametre PARAMETRE;
 
 /* Precedences. */
@@ -282,8 +284,8 @@ EXP     ::=     CSTENTIERE:c
                 NON EXP:e
                 {: RESULT = new Non(e, eleft + 1) ; :}
         |
-                IDF:id PARENTHESEOUVRANTE PAR_EFF:p PARENTHESEFERMANTE
-                {: RESULT = new AppelFonction(id, (Expression) p, idleft +1 ); :}
+                IDF:id PARENTHESEOUVRANTE PAR_EFFS:parametres PARENTHESEFERMANTE
+                {: RESULT = new AppelFonction(id, (EnsembleParametresAppel) parametres, idleft +1 ); :}
                 ;
 
 PARAMETRE ::=   ENTIER IDF:id
@@ -302,8 +304,24 @@ PARAMETRES ::=
                     RESULT = ensembleParametres;
                 :}
                 ;
+
 PAR_EFF ::=     EXP:e
                 {: RESULT = e ; :}
+                ;
+
+PAR_EFFS ::=    PAR_EFFS:plusieurs_parametres VIRGULE PAR_EFF:un_parametre
+                {: ((EnsembleParametresAppel)plusieurs_parametres).ajouter(un_parametre) ;
+                    RESULT = plusieurs_parametres;
+                :}
+
         |
-                /* Sans paramètres*/
+                PAR_EFF:e
+                {: EnsembleParametresAppel parametres = new EnsembleParametresAppel(eleft+1);
+                   parametres.ajouter(e);
+                   RESULT = parametres;
+                :}
+
+
+        |
+                /* Sans paramètres, c'est le désert */
                 ;

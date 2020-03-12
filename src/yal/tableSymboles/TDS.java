@@ -21,6 +21,7 @@ public class TDS {
             symbole.setDeplacement(cptDeplacement);
             cptDeplacement -= 4;
 
+            /* C'est pas à l'appel de fonction ça ?
             if (entree.estFonction()) {
                 if (pile.empty()) {
                     symbole.setNbBloc(0);
@@ -30,7 +31,7 @@ public class TDS {
                     symbole.setNbBloc(nbBlocActuel + 1);
                 }
             }
-
+    */
             tableSymboles.put(entree,symbole);
         }
         else{

@@ -22,16 +22,20 @@ public class DeclarationFonction extends ArbreAbstrait {
         this.parametres = parametres;
         this.variablesLocales = variablesLocales;
 
-        entree = new EntreeFonction(nom, n) ;
+
 
         if (parametres==null){
+            entree = new EntreeFonction(nom, n, 0) ;
             symbole = new SymboleFonction(nom, 0);
-        }else {
-            symbole = new SymboleFonction(nom, parametres.getNbParametres());
+        }else{
+            int nbParametres = parametres.getNbParametres();
+            entree = new EntreeFonction(nom, n, nbParametres) ;
+            symbole = new SymboleFonction(nom, nbParametres);
         }
 
         TDS.getInstance().ajouter(entree, symbole) ;
-        TDS.getInstance().entreeBloc(symbole.getNbBloc());
+        // Dans appel fonction ????
+        // TDS.getInstance().entreeBloc(symbole.getNbBloc());
     }
 
 
