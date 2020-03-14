@@ -288,6 +288,7 @@ EXP     ::=     CSTENTIERE:c
                 {: RESULT = new AppelFonction(id, (EnsembleParametresAppel) parametres, idleft +1 ); :}
                 ;
 
+/* Paramètres quand on déclare la fonction */
 PARAMETRE ::=   ENTIER IDF:id
                 {: RESULT = new DeclarationParametre(id, idleft + 1); :}
                 ;
@@ -305,6 +306,7 @@ PARAMETRES ::=
                 :}
                 ;
 
+/* Paramètres quand on appelle la fonction */
 PAR_EFF ::=     EXP:e
                 {: RESULT = e ; :}
                 ;

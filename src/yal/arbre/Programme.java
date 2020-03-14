@@ -69,7 +69,6 @@ public class Programme extends ArbreAbstrait {
         mips.append("# Debut du programme mips\n");
         mips.append("main :\n");
 
-        System.out.println("programme");
         TDS.getInstance().entreeBloc(0);
 
         // Initialisation des piles
@@ -78,8 +77,13 @@ public class Programme extends ArbreAbstrait {
             int nbVariables = -tailleZoneVariables/4;
 
             mips.append("\t # Initialiser s7 avec sp (base des variables)\n");
-            mips.append("\t move $s7,$sp \n");
+            mips.append("\t move $s7, $sp \n");
             mips.append("\n");
+
+            mips.append("\t # Initialiser s2 avec sp (base des variables locales)\n");
+            mips.append("\t move $s2, $sp \n");
+            mips.append("\n");
+
             mips.append("\t # Réservation de l'espace pour "+nbVariables+" variable(s)\n");
             mips.append("\t addi $sp, $sp, "+tailleZoneVariables);
             mips.append("\n\n");
@@ -100,7 +104,6 @@ public class Programme extends ArbreAbstrait {
         // Ajout des fonctions
         mips.append(codeFonctionsToMIPS());
 
-        System.out.println("programme");
         TDS.getInstance().sortieBloc();
 
         return mips.toString();

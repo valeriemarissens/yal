@@ -26,7 +26,7 @@ public class Retourne extends Instruction {
     /**
      * S'occupe de calculer la valeur de retour de la fonction et gère le retour à l'endroit
      * où la fonction a été appelée.
-     * Faire le retour est plus simple (et intuitive ?) que de parcourir les instructions d'une fonction
+     * Faire le retour est plus simple (et intuitif ?) que de parcourir les instructions d'une fonction
      * et d'arrêter de les écrire dès qu'il y a le retourne (et surtout arrange les cas où il y a un retourne
      * dans une condition par ex, je crois, à tester).
      */
@@ -45,8 +45,9 @@ public class Retourne extends Instruction {
         //  ce nombre mais n'a pas accès à Retourne ...
 
         nbVariablesLocales = 1; // pour le test
-        int deplacementADepiler = 4 * (2 + nbVariablesLocales);
-        mips.append("\t add $sp, $sp, "+deplacementADepiler+" \n");
+        int deplacementADepiler = 4 * (nbVariablesLocales);
+        mips.append("\t add $s2, $s2, "+deplacementADepiler+" \n");
+        mips.append("\t add $sp, $sp, 4 \n");
         mips.append("\t lw $ra, 0($sp) \t\t # dépiler dans $ra \n");
         mips.append("\t jr $ra \n");
 

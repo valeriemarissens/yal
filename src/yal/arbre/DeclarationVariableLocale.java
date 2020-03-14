@@ -1,40 +1,30 @@
 package yal.arbre;
 
-import yal.tableSymboles.EntreeVariableLocale;
+import yal.tableSymboles.EntreeVariable;
+import yal.tableSymboles.SymboleVariable;
 
-public class DeclarationVariableLocale extends ArbreAbstrait {
-    private EntreeVariableLocale entree;
-    private String idf;
-    protected DeclarationVariableLocale(int n) {
-        super(n);
+public class DeclarationVariableLocale extends DeclarationVariable {
+    private EntreeVariable entree;
+    private SymboleVariable symbole;
+
+    /**
+     * La déclaration dans la TDS se fait dans EnsembleVariablesLocales car besoin d'avoir le n° de bloc de la fonction
+     * à laquelle cette variable appartient.
+     *
+     * @param idf
+     * @param n
+     */
+    public DeclarationVariableLocale(String idf, int n) {
+        super(idf, n);
+        entree = new EntreeVariable(idf, n);
+        symbole = new SymboleVariable();
     }
 
-    public DeclarationVariableLocale(String idf, int n){
-        super(n);
-        this.idf= idf;
+    public EntreeVariable getEntree() {
+        return entree;
     }
 
-    @Override
-    public void verifier() {
-
-    }
-
-    public String getIdf(){
-        return idf;
-    }
-
-    @Override
-    public String toMIPS() {
-        return "";
-    }
-
-    @Override
-    public String getType() {
-        return "DeclarationVariableLocale";
-    }
-
-    @Override
-    public boolean contientRetourne() {
-        return false;
+    public SymboleVariable getSymbole(){
+        return symbole;
     }
 }

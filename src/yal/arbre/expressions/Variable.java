@@ -8,7 +8,7 @@ import yal.tableSymboles.TDS;
 public class Variable extends Expression {
     private EntreeVariable entreeVariable;
     private Symbole symbole;
-
+    boolean estVariableLocale ;
     public Variable(String id, int n) {
         super(n);
         entreeVariable = new EntreeVariable(id, n);
@@ -19,15 +19,21 @@ public class Variable extends Expression {
         symbole = TDS.getInstance().identifier(entreeVariable);
     }
 
+    public boolean estVariableLocale(){
+        return estVariableLocale;
+    }
     /**
      * Vérifie que la variable soit déclarée précédemment.
      */
     @Override
     public void verifier() {
+        chercherSymbole();
+        estVariableLocale = symbole.getNumeroBloc() != 0;
         if (symbole == null){
             MessagesErreursSemantiques.getInstance().ajouter(noLigne,"La variable n'a pas été déclarée.");
         }
     }
+
 
     @Override
     public String getType() {
@@ -38,8 +44,12 @@ public class Variable extends Expression {
     @Override
     public String toMIPS() {
         StringBuilder mips = new StringBuilder();
-        if (symbole != null) {
+
+        if (symbole != null && !estVariableLocale) {
             mips.append("\t lw $v0, " + symbole.getDeplacement() + "($s7)");
+            mips.append("\t\t # on range la valeur de " + entreeVariable.getIdf() + " dans $v0 \n");
+        }else{
+            mips.append("\t lw $v0, " + symbole.getDeplacement() + "($s2)");
             mips.append("\t\t # on range la valeur de " + entreeVariable.getIdf() + " dans $v0 \n");
         }
         return mips.toString();
@@ -48,10 +58,6 @@ public class Variable extends Expression {
     @Override
     public String toString(){
         return entreeVariable.getIdf();
-    }
-
-    public EntreeVariable getEntreeVariable() {
-        return entreeVariable;
     }
 
     public int getDeplacement() {

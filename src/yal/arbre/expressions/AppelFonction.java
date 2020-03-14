@@ -58,7 +58,6 @@ public class AppelFonction extends Expression {
      */
     @Override
     public String toMIPS() {
-        System.out.println(this.nom);
         TDS.getInstance().entreeBloc(symbole.getNumBloc());
 
         StringBuilder mips = new StringBuilder();

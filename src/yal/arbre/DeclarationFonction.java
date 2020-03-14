@@ -1,12 +1,9 @@
 package yal.arbre;
 
 
-import yal.arbre.expressions.Variable;
-import yal.arbre.instructions.Retourne;
 import yal.exceptions.MessagesErreursSemantiques;
 import yal.outils.FabriqueIdentifiants;
 import yal.tableSymboles.EntreeFonction;
-import yal.tableSymboles.EntreeVariableLocale;
 import yal.tableSymboles.SymboleFonction;
 import yal.tableSymboles.TDS;
 
@@ -17,9 +14,11 @@ public class DeclarationFonction extends ArbreAbstrait {
     EntreeFonction entree;
     EnsembleParametres parametres;
     EnsembleVariablesLocales variablesLocales;
+    int numeroBloc;
 
     public DeclarationFonction(String nomFonc, EnsembleParametres parametres,  EnsembleVariablesLocales variablesLocales, BlocDInstructions blocy, int n) {
         super(n);
+
         nom = nomFonc;
         instructions = blocy;
         this.parametres = parametres;
@@ -35,8 +34,15 @@ public class DeclarationFonction extends ArbreAbstrait {
         }
 
         TDS.getInstance().ajouter(entree, symbole) ;
-        symbole.setNumBloc(FabriqueIdentifiants.getInstance().getNumeroBloc());
+        TDS.getInstance().ajouterNouvelleTDS();
+        numeroBloc = FabriqueIdentifiants.getInstance().getNumeroBloc();
+        symbole.setNumBloc(numeroBloc);
+
+        if (variablesLocales!=null){
+            variablesLocales.ajouterVariablesDansTDS(numeroBloc);
+        }
     }
+
 
 
     @Override
@@ -50,7 +56,10 @@ public class DeclarationFonction extends ArbreAbstrait {
             variablesLocales.verifier();
         }
 
+        TDS.getInstance().entreeBloc(numeroBloc);
         instructions.verifier();
+        TDS.getInstance().sortieBloc();
+
         if (!contientRetourne()){
             String messageExplicite = "La fonction doit retourner un entier.";
             MessagesErreursSemantiques.getInstance().ajouter(noLigne, messageExplicite);
@@ -92,18 +101,6 @@ public class DeclarationFonction extends ArbreAbstrait {
         mips.append(toMIPSEmpiler());
         mips.append("\n");
 
-        // Chaînage dynamique empilé.
-        // L'ancienne base de variables locales du bloc antérieur était dans $s7.
-        mips.append("\t # On empile le chaînage dynamique. \n");
-        mips.append("\t move $v0, $s7 \n");
-        mips.append(toMIPSEmpiler());
-        mips.append("\n");
-
-        // Numéro de bloc empilé.
-        mips.append("\t # On empile le numéro de bloc. \n");
-        mips.append("\t li $v0, "+symbole.getNumBloc()+" \n");
-        mips.append(toMIPSEmpiler());
-
         // Variables locales empilées.
         if (variablesLocales != null) {
             mips.append(toMIPSVariablesLocales());
@@ -116,11 +113,18 @@ public class DeclarationFonction extends ArbreAbstrait {
         StringBuilder mips = new StringBuilder();
 
         mips.append("\t # On empile les variables \n");
-        for (DeclarationVariableLocale variableLocale : variablesLocales) {
-            mips.append(variableLocale.toMIPS());
-            mips.append(toMIPSEmpiler());
-            mips.append("\n");
+        if (variablesLocales!=null){
+            for (DeclarationVariableLocale variableLocale : variablesLocales) {
+                mips.append(toMIPSEmpilerS2());
+                mips.append("\n");
+            }
         }
+        return mips.toString();
+    }
+
+    private String toMIPSEmpilerS2(){
+        StringBuilder mips = new StringBuilder();
+        mips.append("\t add $s2, $s2, -4 \n");
 
         return mips.toString();
     }

@@ -6,11 +6,13 @@ import yal.arbre.expressions.Variable;
 public class Affectation extends Instruction {
     private Variable partieGauche;
     private Expression partieDroite;
+    private String registre;
 
     public Affectation(String id, Expression e, int n) {
         super(n);
         partieGauche = new Variable(id,n);
         partieDroite = e;
+        registre = "($s7)";
     }
 
     /**
@@ -19,8 +21,13 @@ public class Affectation extends Instruction {
      */
     @Override
     public void verifier() { //TDS.identifier
+
         partieGauche.verifier();
         partieDroite.verifier();
+
+        if (partieGauche.estVariableLocale()){
+            registre = "($s2)";
+        }
     }
 
     /**
@@ -37,7 +44,7 @@ public class Affectation extends Instruction {
         StringBuilder mips = new StringBuilder();
         mips.append("# Affectation "+partieGauche.toString()+" = "+partieDroite.toString()+" \n");
         mips.append(partieDroite.toMIPS());
-        mips.append("\t sw $v0, "+deplacementGauche+"($s7) \n");
+        mips.append("\t sw $v0, "+deplacementGauche+registre+" \n");
 
         return mips.toString();
     }
