@@ -93,9 +93,9 @@ public class DeclarationFonction extends ArbreAbstrait {
         mips.append("\n");
 
         // Chaînage dynamique empilé.
-        // L'ancienne base de variables locales du bloc antérieur était dans $s2.
+        // L'ancienne base de variables locales du bloc antérieur était dans $s7.
         mips.append("\t # On empile le chaînage dynamique. \n");
-        mips.append("\t move $v0, $s2 \n");
+        mips.append("\t move $v0, $s7 \n");
         mips.append(toMIPSEmpiler());
         mips.append("\n");
 

@@ -20,6 +20,7 @@ public class TDS {
         nouvelleTableSymboles = new HashMap<>();
     }
 
+    // TODO :
     public void ajouter(Entree entree, Symbole symbole){
         if (!tableSymboles.containsKey(entree)){
             symbole.setDeplacement(cptDeplacement);
@@ -29,10 +30,12 @@ public class TDS {
         }
         else{
             int ligneErreur = entree.getLigne();
-            MessagesErreursSemantiques.getInstance().ajouter(ligneErreur,"la variable ou la fonction a déjà été déclarée.");
+            String messageExplicite = "la variable ou la fonction a déjà été déclarée.";
+            MessagesErreursSemantiques.getInstance().ajouter(ligneErreur,messageExplicite);
         }
     }
 
+    // TODO : identifier
     public Symbole identifier(Entree e){
         return tableSymboles.get(e);
     }
@@ -63,13 +66,5 @@ public class TDS {
     // Obsolète ?
     public int getTailleZoneVariable(){
         return cptDeplacement;
-    }
-
-    public boolean isEmptyPile(){
-        return pile.isEmpty();
-    }
-
-    public int peekPile(){
-        return (int) pile.peek();
     }
 }

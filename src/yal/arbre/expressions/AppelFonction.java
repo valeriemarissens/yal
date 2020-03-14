@@ -64,7 +64,7 @@ public class AppelFonction extends Expression {
         StringBuilder mips = new StringBuilder();
 
         mips.append("\n");
-        mips.append("\t # Début appel fonction "+nom+". \n");
+        mips.append("\t # Début appel fonction "+nom+"(). \n");
 
         // On empile les valeurs des paramètres donnés.
         if (parametres != null) {

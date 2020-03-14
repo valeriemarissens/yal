@@ -77,8 +77,8 @@ public class Programme extends ArbreAbstrait {
         if (tailleZoneVariables != 0) {
             int nbVariables = -tailleZoneVariables/4;
 
-            mips.append("\t # Initialiser s2 avec sp (base des variables)\n");
-            mips.append("\t move $s2,$sp \n");
+            mips.append("\t # Initialiser s7 avec sp (base des variables)\n");
+            mips.append("\t move $s7,$sp \n");
             mips.append("\n");
             mips.append("\t # Réservation de l'espace pour "+nbVariables+" variable(s)\n");
             mips.append("\t addi $sp, $sp, "+tailleZoneVariables);
