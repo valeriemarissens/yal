@@ -1,6 +1,8 @@
 package yal.arbre;
 
 
+import yal.arbre.instructions.Instruction;
+import yal.arbre.instructions.Retourne;
 import yal.exceptions.MessagesErreursSemantiques;
 import yal.outils.FabriqueIdentifiants;
 import yal.tableSymboles.EntreeFonction;
@@ -16,6 +18,14 @@ public class DeclarationFonction extends ArbreAbstrait {
     EnsembleVariablesLocales variablesLocales;
     int numeroBloc;
 
+    /**
+     *
+     * @param nomFonc
+     * @param parametres
+     * @param variablesLocales
+     * @param blocy
+     * @param n
+     */
     public DeclarationFonction(String nomFonc, EnsembleParametres parametres,  EnsembleVariablesLocales variablesLocales, BlocDInstructions blocy, int n) {
         super(n);
 
@@ -24,22 +34,38 @@ public class DeclarationFonction extends ArbreAbstrait {
         this.parametres = parametres;
         this.variablesLocales = variablesLocales;
 
-        if (parametres==null){
-            entree = new EntreeFonction(nom, n, 0) ;
+        int nbVariablesLocales = 0;
+
+
+        // Ajout de l'entrée dans la TDS
+        if (parametres == null) {
+            entree = new EntreeFonction(nom, n, 0);
             symbole = new SymboleFonction(nom, 0);
-        }else{
+        } else {
             int nbParametres = parametres.getNbParametres();
-            entree = new EntreeFonction(nom, n, nbParametres) ;
+            entree = new EntreeFonction(nom, n, nbParametres);
             symbole = new SymboleFonction(nom, nbParametres);
         }
 
-        TDS.getInstance().ajouter(entree, symbole) ;
+        // Ajout du symbole dans la TDS
+        TDS.getInstance().ajouter(entree, symbole);
         TDS.getInstance().ajouterNouvelleTDS();
         numeroBloc = FabriqueIdentifiants.getInstance().getNumeroBloc();
         symbole.setNumBloc(numeroBloc);
 
-        if (variablesLocales!=null){
+        // Ajout des variables locales dans la TDS
+        if (variablesLocales != null) {
             variablesLocales.ajouterVariablesDansTDS(numeroBloc);
+            nbVariablesLocales = variablesLocales.getNbVariablesLocales();
+        }
+
+        // Set du nb de variables locales dans le retourne
+        for (ArbreAbstrait i : instructions) {
+            String type = i.getType();
+            if (type.equals("Retourne")) {
+                ((Retourne) i).setNbVariablesLocales(nbVariablesLocales);
+            }
+
         }
     }
 
@@ -70,7 +96,9 @@ public class DeclarationFonction extends ArbreAbstrait {
     @Override
     /**
      * On y génère l'étiquette et le code MIPS des instructions à l'intérieur de la fonction.
-     * Le nom de l'étiquette est dans le symbole (nécessaire pour AppelFonction).     *
+     * Le nom de l'étiquette est dans le symbole (nécessaire pour AppelFonction).
+     *
+     * Empile l'adresse de retour et les variables locales de la fonction.
      */
     public String toMIPS() {
         StringBuilder mips = new StringBuilder();

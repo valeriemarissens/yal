@@ -39,12 +39,9 @@ public class Retourne extends Instruction {
         mips.append("\n");
 
         mips.append("\t # On retourne d'où on vient. \n");
-        // Il faut dépiler : les variables locales, le numéro de région
-        // et le chaînage dynamique.
-        // TODO: setNbVariables mais depuis où ? Seul DeclarationFonction connaît
-        //  ce nombre mais n'a pas accès à Retourne ...
 
-        nbVariablesLocales = 1; // pour le test
+        // Il faut dépiler les variables locales de s2 puis récupérer l'adresse de retour de sp.
+
         int deplacementADepiler = 4 * (nbVariablesLocales);
         mips.append("\t add $s2, $s2, "+deplacementADepiler+" \n");
         mips.append("\t add $sp, $sp, 4 \n");
