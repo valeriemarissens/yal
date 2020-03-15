@@ -17,6 +17,8 @@ public class DeclarationFonction extends ArbreAbstrait {
     EnsembleParametres parametres;
     EnsembleVariablesLocales variablesLocales;
     int numeroBloc;
+    private int nbParametres ;
+    private int nbVariablesLocales ;
 
     /**
      *
@@ -34,7 +36,8 @@ public class DeclarationFonction extends ArbreAbstrait {
         this.parametres = parametres;
         this.variablesLocales = variablesLocales;
 
-        int nbVariablesLocales = 0;
+        nbVariablesLocales = 0;
+        nbParametres = 0;
 
         TDS tds = TDS.getInstance();
 
@@ -43,8 +46,7 @@ public class DeclarationFonction extends ArbreAbstrait {
             entree = new EntreeFonction(nom, n, 0);
             symbole = new SymboleFonction(nom, 0);
         } else {
-
-            int nbParametres = parametres.getNbParametres();
+            nbParametres = parametres.getNbParametres();
             entree = new EntreeFonction(nom, n, nbParametres);
             symbole = new SymboleFonction(nom, nbParametres);
         }
@@ -57,6 +59,7 @@ public class DeclarationFonction extends ArbreAbstrait {
 
         // Ajout des paramètres dans la TDS
         if (parametres!= null) {
+            nbParametres = parametres.getNbParametres();
             parametres.ajouterParametresDansTDS(numeroBloc);
         }
 
@@ -71,6 +74,7 @@ public class DeclarationFonction extends ArbreAbstrait {
             String type = i.getType();
             if (type.equals("Retourne")) {
                 ((Retourne) i).setNbVariablesLocales(nbVariablesLocales);
+                ((Retourne) i).setNbParametres(nbParametres);
             }
 
         }
@@ -149,24 +153,17 @@ public class DeclarationFonction extends ArbreAbstrait {
     private String toMIPSVariablesLocales(){
         StringBuilder mips = new StringBuilder();
 
-        mips.append("\t # On empile les variables locales \n");
-        if (variablesLocales!=null){
-            for (DeclarationVariableLocale variableLocale : variablesLocales) {
-                mips.append(toMIPSEmpilerS2());
-                mips.append("\n");
-            }
-
-        }
+        mips.append("\t # Réservation de place pour les variables locales \n");
+        mips.append("\t add $sp, $sp, -");
+        mips.append(nbVariablesLocales*4);
+        mips.append("\n ");
+        mips.append("\t add $s2, $s2, -");
+        mips.append(nbVariablesLocales*4);
+        mips.append("\n ");
         mips.append("\n");
         return mips.toString();
     }
 
-    private String toMIPSEmpilerS2(){
-        StringBuilder mips = new StringBuilder();
-        mips.append("\t add $s2, $s2, -4 \n");
-
-        return mips.toString();
-    }
 
     /**
      * La valeur à empiler doit être dans $v0.

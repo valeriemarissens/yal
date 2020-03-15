@@ -77,6 +77,7 @@ public class TDS {
     public void ajouterParametre(int numeroBloc, Entree entree, Symbole symbole){
         int compteur = FabriqueIdentifiants.getInstance().getCompteurParametre();
         ajouter(numeroBloc, entree, symbole, compteur);
+        System.out.println("Le paramètre "+ entree.getIdf() + " a le déplacement " + symbole.getDeplacement());
      }
 
     public Symbole identifier(Entree e){

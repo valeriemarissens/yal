@@ -64,7 +64,7 @@ public class Variable extends Expression {
 
         // L'ordre est important car tout paramètre est aussi une variable locale
         if (estParametre){
-            registre = "($sp)";
+            registre = "($s3)";
         }
 
         if (symbole != null) {

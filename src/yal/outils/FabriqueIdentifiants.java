@@ -49,7 +49,7 @@ public class FabriqueIdentifiants {
      * Reset au début de chaque nouvelle déclaration d'un ensemble de paramètres (voir la classe EnsembleParametres)
      */
     public void resetCompteurParametre(){
-        compteurParametre = 4;
+        compteurParametre = 0;
     }
 
     private FabriqueIdentifiants() {
@@ -60,7 +60,7 @@ public class FabriqueIdentifiants {
         // On commence les variables au 0 de la pile
         compteurVariableLocale = 4;
 
-        // On commence les variables au 4 de la pile
-        compteurParametre = 4;
+        // On commence les variables au 0 de la pile
+        compteurParametre = 0;
     }
 }

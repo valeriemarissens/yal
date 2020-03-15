@@ -7,6 +7,7 @@ import yal.tableSymboles.TDS;
 public class Retourne extends Instruction {
     private Expression expression;
     private int nbVariablesLocales;
+    private int nbParametres;
 
     public Retourne(Expression e, int n) {
         super(n);
@@ -38,15 +39,35 @@ public class Retourne extends Instruction {
         mips.append("\t # Le résultat de notre fonction est maintenant dans $v0. \n");
         mips.append("\n");
 
-        mips.append("\t # On retourne d'où on vient. \n");
+        mips.append("\t # On prépare le départ de la fonction. \n \n");
 
         // Il faut dépiler les variables locales de s2 puis récupérer l'adresse de retour de sp.
 
-        int deplacementADepiler = 4 * (nbVariablesLocales);
+        int deplacementADepiler = 4 * nbVariablesLocales;
+        mips.append("\t # On dépile les variables locales. \n ");
         mips.append("\t add $s2, $s2, "+deplacementADepiler+" \n");
+        mips.append("\t add $sp, $sp, "+deplacementADepiler+" \n");
+        mips.append("\n");
+
+
+
+
+        mips.append("\t # On dépile l'adresse de retour. \n");
         mips.append("\t add $sp, $sp, 4 \n");
-        mips.append("\t lw $ra, 0($sp) \t\t # dépiler dans $ra \n");
+        mips.append("\t lw $ra, 0($sp) \t\t # dépiler dans $ra \n \n");
+
+
+        int deplacementADepilerParametres = 4 * nbParametres;
+        mips.append("\t # On dépile les paramètres. \n ");
+        mips.append("\t add $s3, $s3, "+deplacementADepilerParametres+" \n");
+        mips.append("\t add $sp, $sp, "+deplacementADepilerParametres+" \n");
+        mips.append("\n \n");
+
+
+
+        mips.append("\t # On se rend à l'adresse de retour. \n");
         mips.append("\t jr $ra \n");
+
 
         TDS.getInstance().sortieBloc();
 
@@ -63,6 +84,7 @@ public class Retourne extends Instruction {
         return true;
     }
 
+    public void setNbParametres(int nbParametres) { this.nbParametres = nbParametres; }
     public void setNbVariablesLocales(int nbVariablesLocales) {
         this.nbVariablesLocales = nbVariablesLocales;
     }

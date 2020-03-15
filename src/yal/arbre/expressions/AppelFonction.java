@@ -65,10 +65,18 @@ public class AppelFonction extends Expression {
         mips.append("\n");
         mips.append("\t # Début appel fonction "+nom+"(). \n");
 
+
         // On empile les valeurs des paramètres donnés.
         if (parametres != null) {
-            mips.append("\t # On empile les paramètres de l'appel. \n");
+            parametres.reverse();
+            mips.append("# Réservation de place pour les paramètres. \n ");
+            mips.append("\t add $sp, $sp, -");
+            mips.append(parametres.getNbParametresAppel()*4);
+            mips.append("\n \n");
+
+            mips.append("# On empile les paramètres de l'appel. \n");
             mips.append(toMIPSParametresAppel());
+            mips.append("\n ");
         }
 
         // On stocke l'adresse où on est avec jal :
@@ -87,11 +95,10 @@ public class AppelFonction extends Expression {
      */
     private String toMIPSParametresAppel(){
         StringBuilder mips = new StringBuilder();
-        parametres.reverse();
         for (Expression parametre : parametres){
             mips.append(parametre.toMIPS());
-            mips.append("\t sw $v0, 0($sp) \n");
-            mips.append("\t add $sp, $sp, -4 \n");
+            mips.append("\t sw $v0, 0($s3) \n");
+            mips.append("\t add $s3, $s3, -4 \n");
             mips.append("\n");
         }
 

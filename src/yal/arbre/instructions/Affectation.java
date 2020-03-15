@@ -30,7 +30,7 @@ public class Affectation extends Instruction {
         }
 
         if (partieGauche.estParametre()){
-            registre = "($sp)";
+            registre = "($s3)";
         }
     }
 
