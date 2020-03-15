@@ -3,6 +3,7 @@ package yal.arbre;
 import yal.arbre.expressions.Expression;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
 public class EnsembleParametresAppel implements Iterable<Expression> {
@@ -18,6 +19,10 @@ public class EnsembleParametresAppel implements Iterable<Expression> {
         for (Expression expression : parametres){
             expression.verifier();
         }
+    }
+
+    public void reverse(){
+        Collections.reverse(parametres);
     }
 
     public void ajouter(Expression param){

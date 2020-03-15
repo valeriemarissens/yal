@@ -30,11 +30,12 @@ public class EnsembleVariablesLocales implements Iterable<DeclarationVariableLoc
     public void ajouterVariablesDansTDS(int numeroBloc){
         // On commence à énumérer toutes les variables locales d'une fonction donc il faut reset par rapport à la précédente
         FabriqueIdentifiants.getInstance().resetCompteurVariableLocale();
+        TDS tds = TDS.getInstance();
         for (DeclarationVariableLocale variableLocale : variablesLocales){
             Entree entree = variableLocale.getEntree();
             Symbole symbole = variableLocale.getSymbole();
 
-            TDS.getInstance().ajouterVariableLocale(numeroBloc, entree, symbole);
+            tds.ajouterVariableLocale(numeroBloc, entree, symbole);
         }
     }
 

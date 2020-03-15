@@ -81,9 +81,13 @@ public class AppelFonction extends Expression {
         return mips.toString();
     }
 
+    /**
+     * Il faut les empiler dans l'ordre inverse.
+     * @return
+     */
     private String toMIPSParametresAppel(){
         StringBuilder mips = new StringBuilder();
-
+        parametres.reverse();
         for (Expression parametre : parametres){
             mips.append(parametre.toMIPS());
             mips.append("\t sw $v0, 0($sp) \n");

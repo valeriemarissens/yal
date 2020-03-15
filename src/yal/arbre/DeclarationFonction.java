@@ -36,22 +36,29 @@ public class DeclarationFonction extends ArbreAbstrait {
 
         int nbVariablesLocales = 0;
 
+        TDS tds = TDS.getInstance();
 
         // Ajout de l'entrée dans la TDS
         if (parametres == null) {
             entree = new EntreeFonction(nom, n, 0);
             symbole = new SymboleFonction(nom, 0);
         } else {
+
             int nbParametres = parametres.getNbParametres();
             entree = new EntreeFonction(nom, n, nbParametres);
             symbole = new SymboleFonction(nom, nbParametres);
         }
 
         // Ajout du symbole dans la TDS
-        TDS.getInstance().ajouter(entree, symbole);
-        TDS.getInstance().ajouterNouvelleTDS();
+        tds.ajouter(entree, symbole);
+        tds.ajouterNouvelleTDS();
         numeroBloc = FabriqueIdentifiants.getInstance().getNumeroBloc();
         symbole.setNumBloc(numeroBloc);
+
+        // Ajout des paramètres dans la TDS
+        if (parametres!= null) {
+            parametres.ajouterParametresDansTDS(numeroBloc);
+        }
 
         // Ajout des variables locales dans la TDS
         if (variablesLocales != null) {
@@ -67,6 +74,7 @@ public class DeclarationFonction extends ArbreAbstrait {
             }
 
         }
+
     }
 
 
@@ -82,6 +90,7 @@ public class DeclarationFonction extends ArbreAbstrait {
             variablesLocales.verifier();
         }
 
+        // On vérifie que les variables déclarées dans la fonction sont OK
         TDS.getInstance().entreeBloc(numeroBloc);
         instructions.verifier();
         TDS.getInstance().sortieBloc();
@@ -140,13 +149,15 @@ public class DeclarationFonction extends ArbreAbstrait {
     private String toMIPSVariablesLocales(){
         StringBuilder mips = new StringBuilder();
 
-        mips.append("\t # On empile les variables \n");
+        mips.append("\t # On empile les variables locales \n");
         if (variablesLocales!=null){
             for (DeclarationVariableLocale variableLocale : variablesLocales) {
                 mips.append(toMIPSEmpilerS2());
                 mips.append("\n");
             }
+
         }
+        mips.append("\n");
         return mips.toString();
     }
 

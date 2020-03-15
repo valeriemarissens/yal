@@ -5,6 +5,7 @@ public class FabriqueIdentifiants {
     private int compteurBoucle;
     private int compteurBloc;
     private int compteurVariableLocale;
+    private int compteurParametre;
     private static FabriqueIdentifiants ourInstance = new FabriqueIdentifiants();
 
     public static FabriqueIdentifiants getInstance() {
@@ -31,6 +32,12 @@ public class FabriqueIdentifiants {
         return compteurVariableLocale;
     }
 
+    public int getCompteurParametre(){
+        compteurParametre += 4;
+        return compteurParametre;
+    }
+
+
     /**
      * Reset au début de chaque nouvelle déclaration d'un ensemble de variables locales (voir la classe EnsembleVariablesLocales)
      */
@@ -38,11 +45,22 @@ public class FabriqueIdentifiants {
         compteurVariableLocale = 4;
     }
 
+    /**
+     * Reset au début de chaque nouvelle déclaration d'un ensemble de paramètres (voir la classe EnsembleParametres)
+     */
+    public void resetCompteurParametre(){
+        compteurParametre = 4;
+    }
+
     private FabriqueIdentifiants() {
         compteurCdt = 0;
         compteurBoucle = 0;
         compteurBloc = 0;
+
         // On commence les variables au 0 de la pile
         compteurVariableLocale = 4;
+
+        // On commence les variables au 4 de la pile
+        compteurParametre = 4;
     }
 }

@@ -23,6 +23,10 @@ public class TDS {
         pile.push((int)0);
     }
 
+    public static TDS getInstance(){
+        return instance;
+    }
+
     public void ajouter(Entree entree, Symbole symbole){
         if (!tableSymbolesPP.containsKey(entree)){
             symbole.setDeplacement(cptDeplacement);
@@ -43,9 +47,21 @@ public class TDS {
     }
 
     public void ajouterVariableLocale(int numeroBloc, Entree entree, Symbole symbole){
-        HashMap<Entree, Symbole> donneesFonction = listeTDS.get(numeroBloc);
         int compteur = FabriqueIdentifiants.getInstance().getCompteurVariableLocale();
+        ajouter(numeroBloc, entree, symbole, compteur);
+        }
 
+    /**
+     * Fonction appelée par ajouterVariableLocale(...) ou ajouterParametre(...) pour la factorisation.
+     * La seule différence entre les deux est le compteur.
+     * Une variable locale ne peut pas avoir le même idf qu'un paramètre.
+     * @param numeroBloc
+     * @param entree
+     * @param symbole
+     * @param compteur
+     */
+    private void ajouter(int numeroBloc, Entree entree, Symbole symbole, int compteur){
+        HashMap<Entree, Symbole> donneesFonction = listeTDS.get(numeroBloc);
             if (!donneesFonction.containsKey(entree)){
                 symbole.setDeplacement(compteur);
                 symbole.setNumeroBloc(numeroBloc);
@@ -53,10 +69,15 @@ public class TDS {
             }
             else{
                 int ligneErreur = entree.getLigne();
-                String messageExplicite = "la variable a déjà été déclarée.";
+                String messageExplicite = "la variable a déjà été déclarée en tant que paramètre ou en tant que variable locale.";
                 MessagesErreursSemantiques.getInstance().ajouter(ligneErreur,messageExplicite);
             }
         }
+
+    public void ajouterParametre(int numeroBloc, Entree entree, Symbole symbole){
+        int compteur = FabriqueIdentifiants.getInstance().getCompteurParametre();
+        ajouter(numeroBloc, entree, symbole, compteur);
+     }
 
     public Symbole identifier(Entree e){
         int numeroBloc = (int)pile.peek();
@@ -84,12 +105,12 @@ public class TDS {
         int nbBloc = (int) pile.pop();
     }
 
-    public static TDS getInstance(){
-        return instance;
-    }
-
     // Obsolète ?
     public int getTailleZoneVariable(){
         return cptDeplacement;
+    }
+
+    public String toString(int numeroBloc){
+        return listeTDS.get(numeroBloc).toString();
     }
 }

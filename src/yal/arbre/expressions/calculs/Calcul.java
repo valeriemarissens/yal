@@ -66,6 +66,7 @@ public abstract class Calcul extends Expression {
             mips.append(calculOperation());
             mips.append("\t # Fin : ");
             mips.append(titreOperation());
+            mips.append("\n");
 
 
         return mips.toString();

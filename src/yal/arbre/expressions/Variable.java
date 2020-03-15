@@ -3,12 +3,16 @@ package yal.arbre.expressions;
 import yal.exceptions.MessagesErreursSemantiques;
 import yal.tableSymboles.EntreeVariable;
 import yal.tableSymboles.Symbole;
+import yal.tableSymboles.SymboleVariable;
 import yal.tableSymboles.TDS;
 
 public class Variable extends Expression {
     private EntreeVariable entreeVariable;
-    private Symbole symbole;
+    private SymboleVariable symbole;
     boolean estVariableLocale ;
+    boolean estParametre;
+    private String registre;
+
     public Variable(String id, int n) {
         super(n);
         entreeVariable = new EntreeVariable(id, n);
@@ -16,11 +20,15 @@ public class Variable extends Expression {
     }
 
     private void chercherSymbole() {
-        symbole = TDS.getInstance().identifier(entreeVariable);
+        symbole = (SymboleVariable) TDS.getInstance().identifier(entreeVariable);
     }
 
     public boolean estVariableLocale(){
         return estVariableLocale;
+    }
+
+    public boolean estParametre(){
+        return estParametre;
     }
     /**
      * Vérifie que la variable soit déclarée précédemment.
@@ -32,10 +40,10 @@ public class Variable extends Expression {
             MessagesErreursSemantiques.getInstance().ajouter(noLigne,"La variable n'a pas été déclarée.");
         }else {
             estVariableLocale = symbole.getNumeroBloc() != 0;
+            estParametre = symbole.estParametre();
         }
 
     }
-
 
     @Override
     public String getType() {
@@ -47,13 +55,23 @@ public class Variable extends Expression {
     public String toMIPS() {
         StringBuilder mips = new StringBuilder();
 
-        if (symbole != null && !estVariableLocale) {
-            mips.append("\t lw $v0, " + symbole.getDeplacement() + "($s7)");
-            mips.append("\t\t # on range la valeur de " + entreeVariable.getIdf() + " dans $v0 \n");
-        }else{
-            mips.append("\t lw $v0, " + symbole.getDeplacement() + "($s2)");
+
+        if (estVariableLocale){
+            registre = "($s2)";
+        }else {
+            registre = "($s7)";
+        }
+
+        // L'ordre est important car tout paramètre est aussi une variable locale
+        if (estParametre){
+            registre = "($sp)";
+        }
+
+        if (symbole != null) {
+            mips.append("\t lw $v0, " + symbole.getDeplacement() + registre );
             mips.append("\t\t # on range la valeur de " + entreeVariable.getIdf() + " dans $v0 \n");
         }
+
         return mips.toString();
     }
 

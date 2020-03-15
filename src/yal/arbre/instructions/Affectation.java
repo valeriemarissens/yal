@@ -28,6 +28,10 @@ public class Affectation extends Instruction {
         if (partieGauche.estVariableLocale()){
             registre = "($s2)";
         }
+
+        if (partieGauche.estParametre()){
+            registre = "($sp)";
+        }
     }
 
     /**
