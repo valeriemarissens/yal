@@ -28,10 +28,12 @@ public class Variable extends Expression {
     @Override
     public void verifier() {
         chercherSymbole();
-        estVariableLocale = symbole.getNumeroBloc() != 0;
         if (symbole == null){
             MessagesErreursSemantiques.getInstance().ajouter(noLigne,"La variable n'a pas été déclarée.");
+        }else {
+            estVariableLocale = symbole.getNumeroBloc() != 0;
         }
+
     }
 
 
