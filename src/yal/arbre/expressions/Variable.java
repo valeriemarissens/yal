@@ -41,6 +41,19 @@ public class Variable extends Expression {
         }else {
             estVariableLocale = symbole.getNumeroBloc() != 0;
             estParametre = symbole.estParametre();
+
+            if (estVariableLocale){
+                registre = "($s2)";
+            }else {
+                registre = "($s7)";
+            }
+
+            // L'ordre est important car tout paramètre est aussi une variable locale
+            if (estParametre){
+                registre = "($s3)";
+
+            }
+
         }
 
     }
@@ -51,21 +64,16 @@ public class Variable extends Expression {
     }
 
 
+    public String getRegistre(){
+        return registre;
+    }
+
     @Override
     public String toMIPS() {
         StringBuilder mips = new StringBuilder();
-
-
-        if (estVariableLocale){
-            registre = "($s2)";
-        }else {
-            registre = "($s7)";
-        }
-
-        // L'ordre est important car tout paramètre est aussi une variable locale
-        if (estParametre){
-            registre = "($s3)";
-        }
+        // Même si on passe par vérifier, il faut quand même re-appeler vérifier pour mettre la valeur dans "registre"...
+        // Sinon, registre est null pour x raison(s).
+        verifier();
 
         if (symbole != null) {
             mips.append("\t lw $v0, " + symbole.getDeplacement() + registre );

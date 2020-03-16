@@ -19,6 +19,7 @@ public class Lire extends Instruction {
     @Override
     public void verifier() {
         variable.verifier();
+
     }
 
     /**
@@ -33,7 +34,7 @@ public class Lire extends Instruction {
         mips.append("\t move $a0, $v0 \n");
         mips.append("\t li $v0, 5 \n");
         mips.append("\t syscall \n");
-        mips.append("\t sw $v0, "+variable.getDeplacement()+"($s7)"+"\n");
+        mips.append("\t sw $v0, "+variable.getDeplacement()+variable.getRegistre()+"\n");
 
         return mips.toString();
     }
