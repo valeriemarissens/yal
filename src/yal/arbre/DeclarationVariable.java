@@ -11,7 +11,8 @@ public class DeclarationVariable extends ArbreAbstrait {
         super(n);
         e = new EntreeVariable(idf, n+ 1) ;
         SymboleVariable s = new SymboleVariable() ;
-        TDS.getInstance().ajouter(e,s) ;
+
+        TDS.getInstance().ajouter(e, s);
     }
 
     @Override
@@ -30,9 +31,5 @@ public class DeclarationVariable extends ArbreAbstrait {
     @Override
     public boolean contientRetourne() {
         return false;
-    }
-
-    public String getIdVariable(){
-        return e.getIdf();
     }
 }

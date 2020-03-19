@@ -2,7 +2,6 @@ package yal.arbre.expressions;
 
 import yal.exceptions.MessagesErreursSemantiques;
 import yal.tableSymboles.EntreeVariable;
-import yal.tableSymboles.Symbole;
 import yal.tableSymboles.SymboleVariable;
 import yal.tableSymboles.TDS;
 
@@ -95,6 +94,5 @@ public class Variable extends Expression {
         }
         return deplacement;
     }
-
 
 }

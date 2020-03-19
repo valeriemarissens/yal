@@ -49,7 +49,7 @@ public class TDS {
     public void ajouterVariableLocale(int numeroBloc, Entree entree, Symbole symbole){
         int compteur = FabriqueIdentifiants.getInstance().getCompteurVariableLocale();
         ajouter(numeroBloc, entree, symbole, compteur);
-        }
+    }
 
     /**
      * Fonction appelée par ajouterVariableLocale(...) ou ajouterParametre(...) pour la factorisation.
@@ -61,6 +61,8 @@ public class TDS {
      * @param compteur
      */
     private void ajouter(int numeroBloc, Entree entree, Symbole symbole, int compteur){
+        // Réservation de l'espace pour les variables locales aussi
+        cptDeplacement -= 4;
         HashMap<Entree, Symbole> donneesFonction = listeTDS.get(numeroBloc);
             if (!donneesFonction.containsKey(entree)){
                 symbole.setDeplacement(compteur);

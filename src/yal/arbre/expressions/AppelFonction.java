@@ -69,12 +69,12 @@ public class AppelFonction extends Expression {
         // On empile les valeurs des paramètres donnés.
         if (parametres != null) {
             parametres.reverse();
-            mips.append("# Réservation de place pour les paramètres. \n ");
+            mips.append("\t # Réservation de place pour les paramètres. \n ");
             mips.append("\t add $sp, $sp, -");
             mips.append(parametres.getNbParametresAppel()*4);
             mips.append("\n \n");
 
-            mips.append("# On empile les paramètres de l'appel. \n");
+            mips.append("\t # On empile les paramètres de l'appel. \n");
             mips.append(toMIPSParametresAppel());
             mips.append("\n ");
         }

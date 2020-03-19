@@ -6,7 +6,6 @@ import yal.exceptions.MessagesErreursSemantiques;
 import yal.outils.FabriqueIdentifiants;
 
 public class Boucle extends Instruction {
-
     private Expression expression;
     private ArbreAbstrait bloc;
     private int identifiant;
@@ -103,6 +102,10 @@ public class Boucle extends Instruction {
         code.append("\n\n");
 
         return code.toString();
+    }
+
+    public ArbreAbstrait getBloc(){
+        return bloc;
     }
 
 }

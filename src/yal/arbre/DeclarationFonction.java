@@ -1,6 +1,8 @@
 package yal.arbre;
 
 
+import yal.arbre.instructions.Boucle;
+import yal.arbre.instructions.Condition;
 import yal.arbre.instructions.Instruction;
 import yal.arbre.instructions.Retourne;
 import yal.exceptions.MessagesErreursSemantiques;
@@ -58,7 +60,7 @@ public class DeclarationFonction extends ArbreAbstrait {
         symbole.setNumBloc(numeroBloc);
 
         // Ajout des paramètres dans la TDS
-        if (parametres!= null) {
+        if (parametres != null) {
             nbParametres = parametres.getNbParametres();
             parametres.ajouterParametresDansTDS(numeroBloc);
         }
@@ -72,13 +74,61 @@ public class DeclarationFonction extends ArbreAbstrait {
         // Set du nb de variables locales dans le retourne
         for (ArbreAbstrait i : instructions) {
             String type = i.getType();
-            if (type.equals("Retourne")) {
-                ((Retourne) i).setNbVariablesLocales(nbVariablesLocales);
-                ((Retourne) i).setNbParametres(nbParametres);
+            //Il faut mettre le nb de variables locales dans les retournes imbriqués aussi
+            // c'est-à-dire dans Boucle et Condition.
+            switch (type) {
+                case "Retourne" :
+                    ((Retourne) i).setNbVariablesLocales(nbVariablesLocales);
+                    ((Retourne) i).setNbParametres(nbParametres);
+                    break;
+                case "Condition" :
+                    Condition c = (Condition) i;
+                    ArbreAbstrait blocSi = c.getBlocSi();
+                    ArbreAbstrait blocSinon = c.getBlocSinon();
+                    if (c.contientRetourne()) {
+                        if ((blocSi.contientRetourne())) {
+                            if (blocSi.getType().equals("BlocDInstructions")) {
+                                BlocDInstructions b = (BlocDInstructions)blocSi;
+                                for (ArbreAbstrait k : b) {
+                                    if (k.getType().equals("Retourne")) {
+                                        ((Retourne) k).setNbVariablesLocales(nbVariablesLocales);
+                                        ((Retourne) k).setNbParametres(nbParametres);
+                                    }
+                                }
+                            }
+                        }
+                        if (blocSinon != null) {
+                            if ((blocSinon.contientRetourne())) {
+                                if (blocSinon.getType().equals("BlocDInstructions")) {
+                                    BlocDInstructions b = (BlocDInstructions) blocSinon;
+                                    for (ArbreAbstrait k : b) {
+                                        if (k.getType().equals("Retourne")) {
+                                            ((Retourne) k).setNbVariablesLocales(nbVariablesLocales);
+                                            ((Retourne) k).setNbParametres(nbParametres);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
+                case "Boucle":
+                    Boucle boucle = (Boucle)i;
+                    ArbreAbstrait bloc = boucle.getBloc();
+                    if (bloc.contientRetourne()){
+                        if (bloc.getType().equals("BlocDInstructions")){
+                            for (ArbreAbstrait k : (BlocDInstructions)bloc){
+                                if (k.getType().equals("Retourne")){
+                                    ((Retourne) k).setNbVariablesLocales(nbVariablesLocales);
+                                    ((Retourne) k).setNbParametres(nbParametres);
+                                }
+                            }
+                        }
+                    }
+                    break;
+
             }
-
         }
-
     }
 
 

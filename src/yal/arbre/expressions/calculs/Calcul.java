@@ -54,13 +54,15 @@ public abstract class Calcul extends Expression {
             // expGauche est empilée :
             mips.append("\t sw $v0, 0($sp) \t# empiler $v0 \n");
             mips.append("\t add $sp, $sp, -4 \n");
+            mips.append("\n");
 
             // expDroite est dans $v0 :
             mips.append(expDroite.toMIPS());
 
             // on dépile expGauche dans $t8
             mips.append("\t add $sp, $sp, 4 \n");
-            mips.append("\t lw $t8, 0($sp) \t\t # dépiler dans $t8 \n");
+            mips.append("\t lw $t8, 0($sp) \t # dépiler dans $t8 \n");
+            mips.append("\n");
         }
             // expGauche dans $t8 et expDroite dans $v0
             mips.append(calculOperation());

@@ -7,12 +7,12 @@ import yal.outils.FabriqueIdentifiants;
 
 public class Condition extends InstructionBloc {
     private int identifiant;
-    String nomEtiquetteSi ;
-    String nomEtiquetteSinon;
-    String nomEtiquetteFinsi;
-    ArbreAbstrait blocSi;
-    ArbreAbstrait blocSinon;
-    Expression expression;
+    private String nomEtiquetteSi ;
+    private String nomEtiquetteSinon;
+    private String nomEtiquetteFinsi;
+    private ArbreAbstrait blocSi;
+    private ArbreAbstrait blocSinon;
+    private Expression expression;
     private boolean estInutile = false;
 
 
@@ -71,7 +71,6 @@ public class Condition extends InstructionBloc {
         }
         return false;
     }
-
 
     @Override
     public void verifier() {
@@ -148,7 +147,7 @@ public class Condition extends InstructionBloc {
 
             code.append(expression.toMIPS());
 
-            code.append("# Évaluation comparaison et branchement \n");
+            code.append("\t # Évaluation comparaison et branchement \n");
 
             // Si $v0 = 0, alors la comparaison est fausse : étiquette sinon
             // beq $v0, $0, sinon
@@ -161,5 +160,12 @@ public class Condition extends InstructionBloc {
         return code.toString();
     }
 
+    public ArbreAbstrait getBlocSi(){
+        return blocSi;
+    }
+
+    public ArbreAbstrait getBlocSinon(){
+        return blocSinon;
+    }
 
 }

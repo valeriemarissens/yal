@@ -5,7 +5,6 @@ import yal.exceptions.SemantiqueException;
 import yal.tableSymboles.TDS;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Programme extends ArbreAbstrait {
     private ArrayList<ArbreAbstrait> instructions;
@@ -76,7 +75,7 @@ public class Programme extends ArbreAbstrait {
         if (tailleZoneVariables != 0) {
             int nbVariables = -tailleZoneVariables/4;
 
-            mips.append("\t # Initialiser s7 avec sp (base des variables)\n");
+            mips.append("\t # Initialiser s7 avec sp (base des variables du programme principal)\n");
             mips.append("\t move $s7, $sp \n");
             mips.append("\n");
 
@@ -136,7 +135,6 @@ public class Programme extends ArbreAbstrait {
 
         for (DeclarationFonction fonction : fonctions){
             mips.append(fonction.toMIPS());
-            //System.out.println(fonction.toMIPS());
             mips.append("\n");
         }
 

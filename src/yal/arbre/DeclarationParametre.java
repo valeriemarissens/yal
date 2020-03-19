@@ -4,11 +4,11 @@ import yal.tableSymboles.EntreeVariable;
 import yal.tableSymboles.SymboleVariable;
 
 public class DeclarationParametre {
-
     private String idf;
     private int noLigne;
     private EntreeVariable entree;
     private SymboleVariable symbole ;
+
     public DeclarationParametre(String idf, int noLigne){
         this.idf = idf;
         this.noLigne = noLigne;

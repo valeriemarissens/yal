@@ -43,26 +43,25 @@ public class Retourne extends Instruction {
 
         // Il faut dépiler les variables locales de s2 puis récupérer l'adresse de retour de sp.
 
-        int deplacementADepiler = 4 * nbVariablesLocales;
-        mips.append("\t # On dépile les variables locales. \n ");
-        mips.append("\t add $s2, $s2, "+deplacementADepiler+" \n");
-        mips.append("\t add $sp, $sp, "+deplacementADepiler+" \n");
-        mips.append("\n");
-
-
-
+        if (nbVariablesLocales > 0) {
+            int deplacementADepiler = 4 * nbVariablesLocales;
+            mips.append("\t # On dépile les variables locales. \n ");
+            mips.append("\t add $s2, $s2, " + deplacementADepiler + " \n");
+            mips.append("\t add $sp, $sp, " + deplacementADepiler + " \n");
+            mips.append("\n");
+        }
 
         mips.append("\t # On dépile l'adresse de retour. \n");
         mips.append("\t add $sp, $sp, 4 \n");
         mips.append("\t lw $ra, 0($sp) \t\t # dépiler dans $ra \n \n");
 
-
-        int deplacementADepilerParametres = 4 * nbParametres;
-        mips.append("\t # On dépile les paramètres. \n ");
-        mips.append("\t add $s3, $s3, "+deplacementADepilerParametres+" \n");
-        mips.append("\t add $sp, $sp, "+deplacementADepilerParametres+" \n");
-        mips.append("\n \n");
-
+        if (nbParametres > 0) {
+            int deplacementADepilerParametres = 4 * nbParametres;
+            mips.append("\t # On dépile les paramètres. \n ");
+            mips.append("\t add $s3, $s3, " + deplacementADepilerParametres + " \n");
+            mips.append("\t add $sp, $sp, " + deplacementADepilerParametres + " \n");
+            mips.append("\n \n");
+        }
 
 
         mips.append("\t # On se rend à l'adresse de retour. \n");
@@ -85,6 +84,7 @@ public class Retourne extends Instruction {
     }
 
     public void setNbParametres(int nbParametres) { this.nbParametres = nbParametres; }
+
     public void setNbVariablesLocales(int nbVariablesLocales) {
         this.nbVariablesLocales = nbVariablesLocales;
     }
