@@ -69,6 +69,7 @@ parser code {:
 
 terminal Symbol    PROGRAMME, DEBUT, FIN, ECRIRE, LIRE ;
 terminal Symbol    POINTVIRGULE, EGAL, PARENTHESEOUVRANTE, PARENTHESEFERMANTE, VIRGULE ;
+terminal Symbol    CROCHETOUVRANT, CROCHETFERMANT ;
 terminal Symbol    PLUS, MOINS, FOIS, DIVISE;
 terminal Symbol    SI, ALORS, FINSI, SINON ;
 terminal Symbol    TANTQUE, REPETER, FINTANTQUE;
@@ -189,8 +190,12 @@ DECL    ::=     /* Déclaration d'une variable */
                 {: RESULT = new DeclarationFonction(id, null, (EnsembleVariablesLocales)ld, (BlocDInstructions)li, idleft + 1); :}
            |
                 /* Déclaration de fonction avec paramètres et avec variables locales */
-               FONCTION IDF:id PARENTHESEOUVRANTE PARAMETRES:p     PARENTHESEFERMANTE DEBUT    LDECL_VARIABLES_LOCALES:ld     LINST:li FIN
+                FONCTION IDF:id PARENTHESEOUVRANTE PARAMETRES:p     PARENTHESEFERMANTE DEBUT    LDECL_VARIABLES_LOCALES:ld     LINST:li FIN
                 {: RESULT = new DeclarationFonction(id, (EnsembleParametres)p, (EnsembleVariablesLocales)ld, (BlocDInstructions)li, idleft + 1); :}
+           |
+                /* Déclaration de tableau */
+                ENTIER IDF:id CROCHETOUVRANT EXP:e CROCHETFERMANT POINTVIRGULE
+                {: RESULT = new DeclarationTableau(id, e, idleft + 1); :}
                 ;
 
 LINST   ::=     LINST:li  INST:i

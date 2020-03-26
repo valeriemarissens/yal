@@ -3,7 +3,6 @@ package yal.arbre;
 import yal.arbre.expressions.Expression;
 
 public class DeclarationParametreAppel extends Expression {
-
     public DeclarationParametreAppel(int n) {
         super(n);
     }

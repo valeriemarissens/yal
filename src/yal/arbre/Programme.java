@@ -61,6 +61,8 @@ public class Programme extends ArbreAbstrait {
         mips.append("faux: .asciiz \"faux\"");
         mips.append("\n");
         mips.append("divisionZero : .asciiz \"ERREUR EXECUTION : Vous avez essayé de diviser par zéro.\"");
+        mips.append("\n");
+        mips.append("tailleNegative : .asciiz \"ERREUR EXECUTION : La taille du tableau est négative.\"");
         mips.append("\n\n");
 
         // Programme général

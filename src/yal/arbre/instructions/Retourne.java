@@ -67,7 +67,6 @@ public class Retourne extends Instruction {
         mips.append("\t # On se rend à l'adresse de retour. \n");
         mips.append("\t jr $ra \n");
 
-
         TDS.getInstance().sortieBloc();
 
         return mips.toString();

@@ -68,6 +68,10 @@ espace = {finDeLigne}  | [ \t\f]
 
 ")"                    { return symbol(CodesLexicaux.PARENTHESEFERMANTE); }
 
+"["                    { return symbol(CodesLexicaux.CROCHETOUVRANT); }
+
+"]"                    { return symbol(CodesLexicaux.CROCHETFERMANT); }
+
 "-"                    { return symbol(CodesLexicaux.MOINS); }
 
 "+"                    { return symbol(CodesLexicaux.PLUS); }
