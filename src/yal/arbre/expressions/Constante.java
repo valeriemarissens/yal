@@ -23,4 +23,9 @@ public abstract class Constante extends Expression {
         return false;
     }
 
+
+    public int getValeur(){
+        return Integer.parseInt(cste);
+    }
+
 }

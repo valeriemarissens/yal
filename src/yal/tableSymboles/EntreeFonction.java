@@ -14,4 +14,9 @@ public class EntreeFonction extends Entree {
     public boolean estFonction() {
         return true;
     }
+
+    @Override
+    public String getType() {
+        return "EntreeFonction";
+    }
 }

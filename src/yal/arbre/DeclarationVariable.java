@@ -9,7 +9,7 @@ public class DeclarationVariable extends ArbreAbstrait {
 
     public DeclarationVariable(String idf, int n) {
         super(n);
-        e = new EntreeVariable(idf, n+ 1) ;
+        e = new EntreeVariable(idf, n + 1) ;
         SymboleVariable s = new SymboleVariable() ;
 
         TDS.getInstance().ajouter(e, s);

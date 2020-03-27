@@ -18,4 +18,5 @@ public class ConstanteEntiere extends Constante {
     public String getType() {
         return "ConstanteEntiere";
     }
+
 }

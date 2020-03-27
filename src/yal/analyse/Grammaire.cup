@@ -82,7 +82,7 @@ terminal String    RETOURNE;
 
 non terminal ArbreAbstrait PROG, LINST, INST ;
 non terminal Expression EXP ;
-non terminal LDECL, DECL ;
+non terminal ArbreAbstrait LDECL, DECL ;
 non terminal LDECL_VARIABLES_LOCALES;
 non terminal DeclarationVariableLocale DECL_VARIABLE_LOCALE;
 non terminal PARAMETRES;
@@ -109,11 +109,11 @@ start with PROG ;
 PROG    ::=     PROGRAMME  IDF  DEBUT LDECL:ld LINST:li  FIN
                 {: Programme p = new Programme(lileft + 1) ;
 
-                    // Ajout des instructions dans le programme
-                   p.ajouter(li) ;
+                    /* Ajout des fonctions et tableaux dans le programme */
+                    p.ajouterDeclarations(ld);
 
-                    // Ajout des fonctions dans le programme
-                   p.setFonctions((BlocDeclFonctions) ld);
+                    /* Ajout des instructions dans le programme */
+                   p.ajouter(li) ;
 
                    RESULT =  p ;
                 :}
@@ -135,12 +135,27 @@ PROG    ::=     PROGRAMME  IDF  DEBUT LDECL:ld LINST:li  FIN
 /* Déclaration de plusieurs variables locales */
 LDECL_VARIABLES_LOCALES   ::=
                 LDECL_VARIABLES_LOCALES:liste  DECL_VARIABLE_LOCALE:variable
-                {: ((EnsembleVariablesLocales)liste).ajouter(variable) ;
-                   RESULT = liste ; :}
+
+                {:
+                    /* Si c'est un tableau, ne pas ajouter aux vars locales car se gère seul. */
+                    String typeVariable = ((ArbreAbstrait) variable).getType();
+                    if (typeVariable.equals("DeclarationVariableLocale")){
+                        ((EnsembleVariablesLocales)liste).ajouter(variable) ;
+                    }
+
+                     RESULT = liste ;
+                   :}
         |
                 DECL_VARIABLE_LOCALE:variable
-                {: EnsembleVariablesLocales ensemble = new EnsembleVariablesLocales(variableleft + 1) ;
-                   ensemble.ajouter(variable) ;
+                {:
+                    EnsembleVariablesLocales ensemble = new EnsembleVariablesLocales(variableleft + 1) ;
+
+                    /* Si c'est un tableau, ne pas ajouter aux vars locales car se gère seul. */
+                   String typeVariable = ((ArbreAbstrait) variable).getType();
+                   if (typeVariable.equals("DeclarationVariableLocale")){
+                    ensemble.ajouter(variable) ;
+                   }
+
                    RESULT = ensemble ; :}
                 ;
 
@@ -152,23 +167,33 @@ DECL_VARIABLE_LOCALE ::=
 
 LDECL   ::=     LDECL:ld DECL:d
                 {:
-                    ArbreAbstrait tmp = (ArbreAbstrait) d;
-                    String type = tmp.getType();
+                    ArbreAbstrait declaration = (ArbreAbstrait) d;
+                    BlocDeclarations blocDeclarations = (BlocDeclarations) ld;
+
+                    String type = declaration.getType();
+
                     if (type.equals("DeclarationFonction")){
-                        ((BlocDeclFonctions)ld).ajouter((DeclarationFonction)d);
+                        blocDeclarations.ajouter((DeclarationFonction) declaration);
+                    }else if (type.equals("DeclarationTableau")){
+                        blocDeclarations.ajouter((DeclarationTableau) declaration);
                     }
-                    RESULT = (BlocDeclFonctions) ld;
+                    RESULT = blocDeclarations;
                 :}
             |
                  DECL:d
             {:
-                    BlocDeclFonctions b = new BlocDeclFonctions(dleft + 1) ;
-                    ArbreAbstrait tmp = (ArbreAbstrait) d;
-                    String type = tmp.getType();
+                    ArbreAbstrait declaration = (ArbreAbstrait) d;
+                    BlocDeclarations blocDeclarations = new BlocDeclarations(dleft + 1) ;
+
+                    String type = declaration.getType();
+
                     if (type.equals("DeclarationFonction")){
-                        b.ajouter((DeclarationFonction)d);
+                        blocDeclarations.ajouter((DeclarationFonction)declaration);
+                    }else if (type.equals("DeclarationTableau")){
+                        blocDeclarations.ajouter((DeclarationTableau)declaration);
                     }
-                    RESULT = b ;
+
+                    RESULT = blocDeclarations ;
              :}
                 ;
 
@@ -194,8 +219,11 @@ DECL    ::=     /* Déclaration d'une variable */
                 {: RESULT = new DeclarationFonction(id, (EnsembleParametres)p, (EnsembleVariablesLocales)ld, (BlocDInstructions)li, idleft + 1); :}
            |
                 /* Déclaration de tableau */
-                ENTIER IDF:id CROCHETOUVRANT EXP:e CROCHETFERMANT POINTVIRGULE
-                {: RESULT = new DeclarationTableau(id, e, idleft + 1); :}
+                ENTIER CROCHETOUVRANT EXP:e CROCHETFERMANT IDF:id POINTVIRGULE
+                {:
+                     int numeroBloc = TDS.getInstance().getBlocCourant();
+                    RESULT = new DeclarationTableau(id, e, numeroBloc, idleft + 1);
+                :}
                 ;
 
 LINST   ::=     LINST:li  INST:i

@@ -8,22 +8,19 @@ import java.util.ArrayList;
 
 public class Programme extends ArbreAbstrait {
     private ArrayList<ArbreAbstrait> instructions;
-    private ArrayList<DeclarationFonction> fonctions;
-
+    private BlocDeclarations blocDeclarations;
     public Programme(int n){
         super(n);
         instructions = new ArrayList<>();
-        fonctions = new ArrayList<>();
     }
 
     public void ajouter(ArbreAbstrait nouvelleInstruction){
         instructions.add(nouvelleInstruction);
     }
 
-    public void setFonctions(BlocDeclFonctions bloc){
-        for (DeclarationFonction fonction : bloc){
-            fonctions.add(fonction);
-        }
+
+    public void ajouterDeclarations(ArbreAbstrait blocDeclarations){
+        this.blocDeclarations = (BlocDeclarations) blocDeclarations;
     }
 
     @Override
@@ -36,12 +33,20 @@ public class Programme extends ArbreAbstrait {
             }
         }
 
+
+        if (blocDeclarations!=null) {
+            blocDeclarations.verifier();
+
+            // TODO : enlever le else et SOUT après debug
+        }else {
+            System.out.println("Le bloc de déclarations est nul.");
+        }
+
         for (ArbreAbstrait instruction : instructions) {
             instruction.verifier();
         }
-        for (DeclarationFonction fonction : fonctions){
-            fonction.verifier();
-        }
+
+
 
         MessagesErreursSemantiques messages = MessagesErreursSemantiques.getInstance();
         if (!messages.isEmpty()){
@@ -94,6 +99,12 @@ public class Programme extends ArbreAbstrait {
             mips.append("\n\n");
         }
 
+        // Ajout des déclarations des tableaux
+
+        if (blocDeclarations!= null){
+            mips.append(blocDeclarations.tableauxToMIPS());
+        }
+
         // Instructions du programme
         for (ArbreAbstrait instruction : instructions) {
             mips.append(instruction.toMIPS());
@@ -106,8 +117,10 @@ public class Programme extends ArbreAbstrait {
         mips.append("\t li $v0, 10\n");
         mips.append("\t syscall\n");
 
-        // Ajout des fonctions
-        mips.append(codeFonctionsToMIPS());
+        // Ajout des déclarations des fonctions à la fin
+        if (blocDeclarations!=null) {
+            mips.append(blocDeclarations.fonctionsToMIPS());
+        }
 
         TDS.getInstance().sortieBloc();
 
@@ -129,17 +142,5 @@ public class Programme extends ArbreAbstrait {
         return false;
     }
 
-    private String codeFonctionsToMIPS(){
-        StringBuilder mips = new StringBuilder();
 
-        mips.append("\n\n");
-        mips.append("# Fonctions : \n ");
-
-        for (DeclarationFonction fonction : fonctions){
-            mips.append(fonction.toMIPS());
-            mips.append("\n");
-        }
-
-        return mips.toString();
-    }
 }

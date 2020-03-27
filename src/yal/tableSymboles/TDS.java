@@ -30,7 +30,13 @@ public class TDS {
     public void ajouter(Entree entree, Symbole symbole){
         if (!tableSymbolesPP.containsKey(entree)){
             symbole.setDeplacement(cptDeplacement);
-            cptDeplacement -= 4;
+
+            /* On n'augmente le nombre de place à réserver que si l'entrée est une variable
+            (tableau ou constante). */
+            String typeEntree = entree.getType();
+            if (typeEntree.equals("EntreeVariable")){
+                cptDeplacement -= 4;
+            }
 
             tableSymbolesPP.put(entree,symbole);
         }
@@ -62,7 +68,8 @@ public class TDS {
      */
     private void ajouter(int numeroBloc, Entree entree, Symbole symbole, int compteur){
         // Réservation de l'espace pour les variables locales aussi
-        cptDeplacement -= 4;
+        // TODO : Est-ce que ce cptDeplacement est utile ici puisqu'on soustrait sp dans les fonctions ???
+        //cptDeplacement -= 4;
         HashMap<Entree, Symbole> donneesFonction = listeTDS.get(numeroBloc);
             if (!donneesFonction.containsKey(entree)){
                 symbole.setDeplacement(compteur);
@@ -114,5 +121,9 @@ public class TDS {
 
     public String toString(int numeroBloc){
         return listeTDS.get(numeroBloc).toString();
+    }
+
+    public int getBlocCourant(){
+        return (int)pile.peek();
     }
 }

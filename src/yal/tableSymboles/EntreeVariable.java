@@ -13,5 +13,10 @@ public class EntreeVariable extends Entree {
         return false;
     }
 
+    @Override
+    public String getType() {
+        return "EntreeVariable";
+    }
+
 
 }

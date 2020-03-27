@@ -31,6 +31,8 @@ public class EnsembleVariablesLocales implements Iterable<DeclarationVariableLoc
         // On commence à énumérer toutes les variables locales d'une fonction donc il faut reset par rapport à la précédente
         FabriqueIdentifiants.getInstance().resetCompteurVariableLocale();
         TDS tds = TDS.getInstance();
+
+        // Le tableau s'ajoute tout seul.
         for (DeclarationVariableLocale variableLocale : variablesLocales){
             Entree entree = variableLocale.getEntree();
             Symbole symbole = variableLocale.getSymbole();
