@@ -1,6 +1,7 @@
 package yal.arbre;
 
 import yal.arbre.expressions.Expression;
+import yal.exceptions.MessagesErreursSemantiques;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,6 +19,12 @@ public class EnsembleParametresAppel implements Iterable<Expression> {
     public void verifier(){
         for (Expression expression : parametres){
             expression.verifier();
+
+            /* Les paramètres sont des entiers. */
+            if (expression.estBooleen()){
+                String messageExplicite = "Vous avez appelé une fonction avec un paramètre qui n'est pas un entier.";
+                MessagesErreursSemantiques.getInstance().ajouter(noLigne,messageExplicite);
+            }
         }
     }
 

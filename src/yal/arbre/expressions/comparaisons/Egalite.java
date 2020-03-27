@@ -14,8 +14,6 @@ public class Egalite extends CalculBooleen {
         if (op.equals("!=")) difference = true;
     }
 
-
-
     public String titreOperation(){
         return " égalité entre deux expressions. \n";
     }
@@ -38,7 +36,6 @@ public class Egalite extends CalculBooleen {
 
         return code.toString();
     }
-
 
     @Override
     public String toString(){
