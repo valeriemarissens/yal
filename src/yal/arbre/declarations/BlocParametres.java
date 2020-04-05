@@ -1,6 +1,7 @@
-package yal.arbre;
+package yal.arbre.declarations;
 
 
+import yal.arbre.declarations.DeclarationParametre;
 import yal.outils.FabriqueIdentifiants;
 import yal.tableSymboles.Entree;
 import yal.tableSymboles.Symbole;
@@ -9,11 +10,13 @@ import yal.tableSymboles.TDS;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class EnsembleParametres implements  Iterable<DeclarationParametre> {
+public class BlocParametres extends  BlocDeclarations implements Iterable<DeclarationParametre> {
     private int noLigne;
     private ArrayList<DeclarationParametre> parametres;
+    private int numeroBloc;
 
-    public EnsembleParametres(int noLigne){
+    public BlocParametres(int noLigne){
+        super(noLigne);
         this.noLigne= noLigne;
         parametres = new ArrayList<>();
     }
@@ -22,7 +25,7 @@ public class EnsembleParametres implements  Iterable<DeclarationParametre> {
         parametres.add(param);
     }
 
-    public void ajouterParametresDansTDS(int numeroBloc){
+    public void ajouterTDS(){
         FabriqueIdentifiants.getInstance().resetCompteurParametre();
         TDS tds = TDS.getInstance();
         for (DeclarationParametre parametres : parametres){
@@ -32,6 +35,7 @@ public class EnsembleParametres implements  Iterable<DeclarationParametre> {
             tds.ajouterParametre(numeroBloc, entree, symbole);
         }
     }
+
     public void verifier(){}
 
     public int getNbParametres(){

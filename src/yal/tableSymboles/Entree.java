@@ -49,4 +49,8 @@ public abstract class Entree {
     public abstract boolean estFonction();
 
     public abstract String getType();
+
+    public boolean estTableau(){
+        return false;
+    }
 }

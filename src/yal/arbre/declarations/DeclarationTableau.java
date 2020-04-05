@@ -1,5 +1,6 @@
-package yal.arbre;
+package yal.arbre.declarations;
 
+import yal.arbre.ArbreAbstrait;
 import yal.arbre.expressions.ConstanteEntiere;
 import yal.arbre.expressions.Expression;
 import yal.exceptions.MessagesErreursSemantiques;
@@ -9,7 +10,7 @@ import yal.tableSymboles.EntreeVariable;
 import yal.tableSymboles.SymboleVariable;
 import yal.tableSymboles.TDS;
 
-public class DeclarationTableau extends ArbreAbstrait {
+public class DeclarationTableau extends Declaration {
     private Expression taille;
     private String registre;
     private boolean estVariableLocale;
@@ -27,17 +28,14 @@ public class DeclarationTableau extends ArbreAbstrait {
             estVariableLocale = true;
         }
 
-        /* On enregistre le tableau comme une variable normale dans la TDS.*/
-        Entree entree = new EntreeVariable(idf, n) ;
-        SymboleVariable symbole = new SymboleVariable();
+        entree = new EntreeVariable(idf, n) ;
 
-        /* Selon si ce tableau est une variable locale ou non, la fonction utilisée diffère. */
-        if (!estVariableLocale){
-            TDS.getInstance().ajouter(entree, symbole);
-        }else {
-            TDS.getInstance().ajouterVariableLocale(numeroBloc, entree, symbole);
-        }
 
+         symbole = new SymboleVariable();
+
+        // L'entrée précise que c'est un tableau pour le compteur (en effet, un tableau prend 3 places au lieu
+        // d'une).
+        ((EntreeVariable) entree).setEstTableau(true);
     }
 
     @Override

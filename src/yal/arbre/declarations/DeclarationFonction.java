@@ -1,77 +1,98 @@
-package yal.arbre;
+package yal.arbre.declarations;
 
 
+import yal.arbre.ArbreAbstrait;
+import yal.arbre.BlocDInstructions;
 import yal.arbre.instructions.Boucle;
 import yal.arbre.instructions.Condition;
-import yal.arbre.instructions.Instruction;
 import yal.arbre.instructions.Retourne;
 import yal.exceptions.MessagesErreursSemantiques;
-import yal.outils.FabriqueIdentifiants;
 import yal.tableSymboles.EntreeFonction;
 import yal.tableSymboles.SymboleFonction;
 import yal.tableSymboles.TDS;
 
-public class DeclarationFonction extends ArbreAbstrait {
-    String nom;
+public class DeclarationFonction extends Declaration {
+    String idf;
+    BlocParametres parametres;
+    BlocDeclarations declarations;
     BlocDInstructions instructions;
-    SymboleFonction symbole;
-    EntreeFonction entree;
-    EnsembleParametres parametres;
-    EnsembleVariablesLocales variablesLocales;
+
     int numeroBloc;
-    private int nbParametres ;
-    private int nbVariablesLocales ;
 
-    /**
-     *
-     * @param nomFonc
-     * @param parametres
-     * @param variablesLocales
-     * @param blocy
-     * @param n
-     */
-    public DeclarationFonction(String nomFonc, EnsembleParametres parametres,  EnsembleVariablesLocales variablesLocales, BlocDInstructions blocy, int n) {
-        super(n);
 
-        nom = nomFonc;
-        instructions = blocy;
+    public DeclarationFonction(String idf, int numeroBloc, BlocParametres parametres, BlocDeclarations declarations, BlocDInstructions instructions, int noLigne) {
+        super(noLigne);
+
+        this.idf = idf;
+        this.numeroBloc = numeroBloc;
         this.parametres = parametres;
-        this.variablesLocales = variablesLocales;
+        this.declarations = declarations;
+        this.instructions = instructions;
 
-        nbVariablesLocales = 0;
-        nbParametres = 0;
+        gererBlocsInexistants();
 
-        TDS tds = TDS.getInstance();
+        /* Il faut donner aux bloc de déclarations leurs numéros de bloc pour qu'ils ajoutent dans la bonne TDS. */
+        this.declarations.setNumeroBloc(numeroBloc);
+        this.parametres.setNumeroBloc(numeroBloc);
 
-        // Ajout de l'entrée dans la TDS
-        if (parametres == null) {
-            entree = new EntreeFonction(nom, n, 0);
-            symbole = new SymboleFonction(nom, 0);
-        } else {
-            nbParametres = parametres.getNbParametres();
-            entree = new EntreeFonction(nom, n, nbParametres);
-            symbole = new SymboleFonction(nom, nbParametres);
-        }
+        // On ajoute la déclaration de cette fonction dans la TDS du PP; on y crée l'entrée et le symbole.
+        ajouterTDS(0);
 
-        // Ajout du symbole dans la TDS
-        tds.ajouter(entree, symbole);
-        tds.ajouterNouvelleTDS();
-        numeroBloc = FabriqueIdentifiants.getInstance().getNumeroBloc();
-        symbole.setNumBloc(numeroBloc);
-
-        // Ajout des paramètres dans la TDS
-        if (parametres != null) {
-            nbParametres = parametres.getNbParametres();
-            parametres.ajouterParametresDansTDS(numeroBloc);
-        }
-
-        // Ajout des variables locales dans la TDS
-        if (variablesLocales != null) {
-            variablesLocales.ajouterVariablesDansTDS(numeroBloc);
-            nbVariablesLocales = variablesLocales.getNbVariablesLocales();
-        }
+        /* Ajout des variables et des paramètres dans la TDS. */
+        this.declarations.ajouterTDS();
+        this.parametres.ajouterTDS();
 
         // Set du nb de variables locales dans le retourne
+        setRetourne();
+    }
+
+    /**
+     * Il peut arriver qu'il n'y ait ni déclarations, ni paramètres.
+     * Dans ce cas, on va les instancier tout de même pour simplifier le code de vérifications.
+     */
+    private void gererBlocsInexistants() {
+        /* S'il n'y a pas de bloc de déclarations... */
+        if (declarations == null) declarations = new BlocDeclarations(noLigne);
+
+        /* S'il n'y a pas de paramètres... */
+        if (parametres == null) parametres = new BlocParametres(noLigne);
+
+
+    }
+
+
+    /**
+     * On ajoute la fonction dans les déclarations du PP.
+     *
+     * On configure l'entrée et le symbole avec le nombre de paramètres.
+     * Configurer l'entrée sert à distinguer l'idf de cette fonction de l'idf d'une variable ou d'une fonction à plusieurs
+     * paramètres.
+     * Configurer le symbole permet de choisir la bonne fonction selon le nombre de paramètres.
+     *
+     * @param numeroBloc : 0 car une déclaration de fonction ne peut que se trouver dans le PP.
+     */
+    @Override
+    public void ajouterTDS(int numeroBloc){
+        TDS tds = TDS.getInstance();
+
+        int nbParametres = parametres.getNbParametres();
+
+        entree = new EntreeFonction(idf, noLigne, nbParametres);
+        symbole = new SymboleFonction(idf, nbParametres);
+        ((SymboleFonction)symbole).setNumBloc(numeroBloc);
+
+        // Ajout du symbole dans la TDS
+        tds.ajouter(numeroBloc, entree, symbole);
+        tds.ajouterNouvelleTDS();
+
+    }
+
+    /**
+     * Set le nombre de variables locales dans le retourne de la fonction.
+     */
+    private void setRetourne(){
+        int nbVariablesLocales = declarations.getNbConstantes();
+        int nbParametres = parametres.getNbParametres();
         for (ArbreAbstrait i : instructions) {
             String type = i.getType();
             //Il faut mettre le nb de variables locales dans les retournes imbriqués aussi
@@ -135,20 +156,21 @@ public class DeclarationFonction extends ArbreAbstrait {
 
     @Override
     public void verifier() {
-        if (parametres != null) {
-            parametres.verifier();
 
+        if (instructions==null){
+            String messageExplicite = "Une fonction doit comporter des instructions.";
+            MessagesErreursSemantiques.getInstance().ajouter(noLigne, messageExplicite);
         }
 
-        if (variablesLocales!=null){
-            variablesLocales.verifier();
-        }
+        /* On vérifie les variables du bloc de déclarations. */
+        declarations.verifier();
 
-        // On vérifie que les variables déclarées dans la fonction sont OK
+        /* On vérifie les instructions à l'intérieur du bloc de la fonction (== on vérifie les variables). */
         TDS.getInstance().entreeBloc(numeroBloc);
         instructions.verifier();
         TDS.getInstance().sortieBloc();
 
+        /* Si la fonction ne contient pas retourne, ce n'est pas OK. */
         if (!contientRetourne()){
             String messageExplicite = "La fonction doit retourner un entier.";
             MessagesErreursSemantiques.getInstance().ajouter(noLigne, messageExplicite);
@@ -159,7 +181,7 @@ public class DeclarationFonction extends ArbreAbstrait {
     @Override
     /**
      * On y génère l'étiquette et le code MIPS des instructions à l'intérieur de la fonction.
-     * Le nom de l'étiquette est dans le symbole (nécessaire pour AppelFonction).
+     * Le idf de l'étiquette est dans le symbole (nécessaire pour AppelFonction).
      *
      * Empile l'adresse de retour et les variables locales de la fonction.
      */
@@ -167,7 +189,7 @@ public class DeclarationFonction extends ArbreAbstrait {
         StringBuilder mips = new StringBuilder();
 
         // Génère l'étiquette
-        mips.append(symbole.getNomEtiquette());
+        mips.append( ((SymboleFonction)symbole).getNomEtiquette());
         mips.append(" : \n");
 
         // Code pour empiler toutes les informations du bloc
@@ -192,8 +214,10 @@ public class DeclarationFonction extends ArbreAbstrait {
         mips.append(toMIPSEmpiler());
         mips.append("\n");
 
-        // Variables locales empilées.
-        if (variablesLocales != null) {
+        // TODO : gérer les tableaux.
+        int nbVariables = declarations.getNbConstantes();
+
+        if (nbVariables != 0) {
             mips.append(toMIPSVariablesLocales());
         }
 
@@ -203,12 +227,13 @@ public class DeclarationFonction extends ArbreAbstrait {
     private String toMIPSVariablesLocales(){
         StringBuilder mips = new StringBuilder();
 
+        int placeAReserver = declarations.getPlaceAReserver();
         mips.append("\t # Réservation de place pour les variables locales \n");
         mips.append("\t add $sp, $sp, -");
-        mips.append(nbVariablesLocales*4);
+        mips.append(placeAReserver);
         mips.append("\n ");
         mips.append("\t add $s2, $s2, -");
-        mips.append(nbVariablesLocales*4);
+        mips.append(placeAReserver);
         mips.append("\n ");
         mips.append("\n");
         return mips.toString();
@@ -244,7 +269,7 @@ public class DeclarationFonction extends ArbreAbstrait {
      */
     public void toSoutDebug(){
         System.out.println("Ces sout EXCLUSIFS vous sont proposés par la classe Fonction de yal.arbre !");
-        System.out.println(nom);
+        System.out.println(idf);
         System.out.println(instructions.toMIPS());
     }
 

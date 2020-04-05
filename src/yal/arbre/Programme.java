@@ -1,5 +1,6 @@
 package yal.arbre;
 
+import yal.arbre.declarations.BlocDeclarationsPP;
 import yal.exceptions.MessagesErreursSemantiques;
 import yal.exceptions.SemantiqueException;
 import yal.tableSymboles.TDS;
@@ -8,7 +9,8 @@ import java.util.ArrayList;
 
 public class Programme extends ArbreAbstrait {
     private ArrayList<ArbreAbstrait> instructions;
-    private BlocDeclarations blocDeclarations;
+    private BlocDeclarationsPP blocDeclarationsPP;
+
     public Programme(int n){
         super(n);
         instructions = new ArrayList<>();
@@ -20,7 +22,8 @@ public class Programme extends ArbreAbstrait {
 
 
     public void ajouterDeclarations(ArbreAbstrait blocDeclarations){
-        this.blocDeclarations = (BlocDeclarations) blocDeclarations;
+        this.blocDeclarationsPP = (BlocDeclarationsPP) blocDeclarations;
+        this.blocDeclarationsPP.ajouterTDS();
     }
 
     @Override
@@ -34,8 +37,8 @@ public class Programme extends ArbreAbstrait {
         }
 
 
-        if (blocDeclarations!=null) {
-            blocDeclarations.verifier();
+        if (blocDeclarationsPP !=null) {
+            blocDeclarationsPP.verifier();
 
             // TODO : enlever le else et SOUT après debug
         }else {
@@ -101,8 +104,8 @@ public class Programme extends ArbreAbstrait {
 
         // Ajout des déclarations des tableaux
 
-        if (blocDeclarations!= null){
-            mips.append(blocDeclarations.tableauxToMIPS());
+        if (blocDeclarationsPP != null){
+            mips.append(blocDeclarationsPP.tableauxToMIPS());
         }
 
         // Instructions du programme
@@ -118,8 +121,8 @@ public class Programme extends ArbreAbstrait {
         mips.append("\t syscall\n");
 
         // Ajout des déclarations des fonctions à la fin
-        if (blocDeclarations!=null) {
-            mips.append(blocDeclarations.fonctionsToMIPS());
+        if (blocDeclarationsPP !=null) {
+            mips.append(blocDeclarationsPP.fonctionsToMIPS());
         }
 
         TDS.getInstance().sortieBloc();

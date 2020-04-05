@@ -2,8 +2,9 @@ package yal.analyse ;
 
 import java.util.*;
 import yal.arbre.* ;
-import yal.arbre.DeclarationParametre;
+import yal.arbre.declarations.*;
 import yal.arbre.instructions.* ;
+import yal.outils.*;
 import yal.tableSymboles.* ;
 import yal.arbre.expressions.calculs.* ;
 import yal.arbre.expressions.comparaisons.* ;
@@ -83,12 +84,12 @@ terminal String    RETOURNE;
 non terminal ArbreAbstrait PROG, LINST, INST ;
 non terminal Expression EXP ;
 non terminal ArbreAbstrait LDECL, DECL ;
-non terminal LDECL_VARIABLES_LOCALES;
-non terminal DeclarationVariableLocale DECL_VARIABLE_LOCALE;
-non terminal PARAMETRES;
+non terminal ArbreAbstrait LDECL_LOCAL;
+non terminal ArbreAbstrait DECL_LOCAL;
+non terminal BlocParametres PARAMETRES;
+non terminal DeclarationParametre PARAMETRE;
 non terminal EnsembleParametresAppel PAR_EFFS;
 non terminal Expression PAR_EFF;
-non terminal DeclarationParametre PARAMETRE;
 
 /* Precedences. */
 /* Produisent un shift/reduce conflict => utilisation du precedence left */
@@ -132,91 +133,139 @@ PROG    ::=     PROGRAMME  IDF  DEBUT LDECL:ld LINST:li  FIN
             (-> pas le droit de faire LDECL_VARIABLES et LDECL_FONCTIONS séparemment)
  */
 
-/* Déclaration de plusieurs variables locales */
-LDECL_VARIABLES_LOCALES   ::=
-                LDECL_VARIABLES_LOCALES:liste  DECL_VARIABLE_LOCALE:variable
+/* Déclaration d'une ou plusieurs variables locales. */
+LDECL_LOCAL  ::=
+                LDECL_LOCAL:declarations  DECL_LOCAL:declaration
 
                 {:
+                    /* TODO : arrêter ça (la ligne en bas). */
                     /* Si c'est un tableau, ne pas ajouter aux vars locales car se gère seul. */
-                    String typeVariable = ((ArbreAbstrait) variable).getType();
-                    if (typeVariable.equals("DeclarationVariableLocale")){
-                        ((EnsembleVariablesLocales)liste).ajouter(variable) ;
+                    String type = declaration.getType();
+
+                    switch (type){
+                    case "DeclarationConstante" :
+                        ((BlocDeclarations) declarations).ajouter((DeclarationConstante) declaration);
+                        break;
+                    case "DeclarationTableau":
+                        ((BlocDeclarations) declarations).ajouter((DeclarationTableau) declaration);
+                        break;
                     }
 
-                     RESULT = liste ;
-                   :}
+                     RESULT = declarations ;
+                 :}
         |
-                DECL_VARIABLE_LOCALE:variable
+                DECL_LOCAL:declaration
                 {:
-                    EnsembleVariablesLocales ensemble = new EnsembleVariablesLocales(variableleft + 1) ;
+                    BlocDeclarations declarations = new BlocDeclarations(declarationleft + 1) ;
 
+                    /* TODO : idem, le tableau ne devrait pas se gérer seul. */
                     /* Si c'est un tableau, ne pas ajouter aux vars locales car se gère seul. */
-                   String typeVariable = ((ArbreAbstrait) variable).getType();
-                   if (typeVariable.equals("DeclarationVariableLocale")){
-                    ensemble.ajouter(variable) ;
-                   }
+                    String type = declaration.getType();
 
-                   RESULT = ensemble ; :}
+                    switch (type){
+                    case "DeclarationConstante" :
+                        declarations.ajouter((DeclarationConstante) declaration);
+                        break;
+                    case "DeclarationTableau":
+                        declarations.ajouter((DeclarationTableau) declaration);
+                        break;
+                    }
+
+
+
+                   RESULT = declarations ;
+                 :}
                 ;
 
-DECL_VARIABLE_LOCALE ::=
+DECL_LOCAL ::=
                 ENTIER IDF:id POINTVIRGULE
-                {: RESULT = new DeclarationVariableLocale(id, idleft); :}
+                {: RESULT = new DeclarationConstante(id, idleft); :}
+                /* TODO : ajouter tableau */
                 ;
 
 
 LDECL   ::=     LDECL:ld DECL:d
                 {:
                     ArbreAbstrait declaration = (ArbreAbstrait) d;
-                    BlocDeclarations blocDeclarations = (BlocDeclarations) ld;
+                    BlocDeclarationsPP declarations = (BlocDeclarationsPP) ld;
 
+                    /* Besoin de caster pour ajouter car règle non terminale arbre abstrait */
                     String type = declaration.getType();
 
-                    if (type.equals("DeclarationFonction")){
-                        blocDeclarations.ajouter((DeclarationFonction) declaration);
-                    }else if (type.equals("DeclarationTableau")){
-                        blocDeclarations.ajouter((DeclarationTableau) declaration);
+                    switch (type){
+                        case "DeclarationConstante":
+                            declarations.ajouter( (DeclarationConstante) declaration);
+                            break;
+                         case "DeclarationFonction":
+                            declarations.ajouter( (DeclarationFonction) declaration);
+                            break;
+                        case "DeclarationTableau":
+                            declarations.ajouter( (DeclarationTableau) declaration);
+                            break;
+
                     }
-                    RESULT = blocDeclarations;
+
+                    RESULT = declarations;
                 :}
             |
                  DECL:d
             {:
                     ArbreAbstrait declaration = (ArbreAbstrait) d;
-                    BlocDeclarations blocDeclarations = new BlocDeclarations(dleft + 1) ;
+                    BlocDeclarationsPP declarations = new BlocDeclarationsPP(dleft + 1) ;
 
+                   /* Besoin de caster pour ajouter car règle non terminale arbre abstrait */
                     String type = declaration.getType();
 
-                    if (type.equals("DeclarationFonction")){
-                        blocDeclarations.ajouter((DeclarationFonction)declaration);
-                    }else if (type.equals("DeclarationTableau")){
-                        blocDeclarations.ajouter((DeclarationTableau)declaration);
+                    switch (type){
+                        case "DeclarationConstante":
+                            declarations.ajouter( (DeclarationConstante) declaration);
+                            break;
+                         case "DeclarationFonction":
+                            declarations.ajouter( (DeclarationFonction) declaration);
+                            break;
+                        case "DeclarationTableau":
+                            declarations.ajouter( (DeclarationTableau) declaration);
+                            break;
+
                     }
 
-                    RESULT = blocDeclarations ;
+                    RESULT = declarations ;
              :}
                 ;
 
 
 DECL    ::=     /* Déclaration d'une variable */
                 ENTIER IDF:id POINTVIRGULE
-                {: RESULT =  new DeclarationVariable(id, idleft+1); :}
+                {: RESULT =  new DeclarationConstante(id, idleft+1); :}
            |
                 /* Déclaration de fonction sans paramètres ni variables locales */
                 FONCTION IDF:id PARENTHESEOUVRANTE                  PARENTHESEFERMANTE DEBUT                                   LINST:li FIN
-                {: RESULT  = new DeclarationFonction(id, null, null, (BlocDInstructions)li, idleft+1); :}
+                {:
+                    int numeroBloc  = FabriqueIdentifiants.getInstance().getNumeroBloc();
+                    RESULT  = new DeclarationFonction(id, numeroBloc, null, null, (BlocDInstructions)li, idleft+1);
+
+                     :}
            |
                 /* Déclaration de fonction avec paramètres et sans variables locales */
                 FONCTION IDF:id PARENTHESEOUVRANTE  PARAMETRES:p    PARENTHESEFERMANTE DEBUT                                   LINST:li FIN
-                {: RESULT = new DeclarationFonction(id, (EnsembleParametres)p, null, (BlocDInstructions)li, idleft + 1); :}
+                {:
+                    int numeroBloc  = FabriqueIdentifiants.getInstance().getNumeroBloc();
+                    RESULT = new DeclarationFonction(id, numeroBloc, (BlocParametres) p, null, (BlocDInstructions)li, idleft + 1); :}
            |
                 /* Déclaration de fonction sans paramètres et avec variables locales */
-                FONCTION IDF:id PARENTHESEOUVRANTE                  PARENTHESEFERMANTE DEBUT    LDECL_VARIABLES_LOCALES:ld     LINST:li FIN
-                {: RESULT = new DeclarationFonction(id, null, (EnsembleVariablesLocales)ld, (BlocDInstructions)li, idleft + 1); :}
+                FONCTION IDF:id PARENTHESEOUVRANTE                  PARENTHESEFERMANTE DEBUT    LDECL_LOCAL:ld     LINST:li FIN
+                {:
+                    int numeroBloc  = FabriqueIdentifiants.getInstance().getNumeroBloc();
+                    RESULT = new DeclarationFonction(id, numeroBloc, null, (BlocDeclarations) ld, (BlocDInstructions) li, idleft + 1); :}
            |
                 /* Déclaration de fonction avec paramètres et avec variables locales */
-                FONCTION IDF:id PARENTHESEOUVRANTE PARAMETRES:p     PARENTHESEFERMANTE DEBUT    LDECL_VARIABLES_LOCALES:ld     LINST:li FIN
-                {: RESULT = new DeclarationFonction(id, (EnsembleParametres)p, (EnsembleVariablesLocales)ld, (BlocDInstructions)li, idleft + 1); :}
+                FONCTION IDF:id PARENTHESEOUVRANTE PARAMETRES:p     PARENTHESEFERMANTE DEBUT    LDECL_LOCAL:ld     LINST:li FIN
+
+                {:
+                    int numeroBloc = FabriqueIdentifiants.getInstance().getNumeroBloc();
+                    RESULT = new DeclarationFonction(id, numeroBloc,  (BlocParametres) p, (BlocDeclarations) ld, (BlocDInstructions)li, idleft + 1);
+
+                 :}
            |
                 /* Déclaration de tableau */
                 ENTIER CROCHETOUVRANT EXP:e CROCHETFERMANT IDF:id POINTVIRGULE
@@ -328,14 +377,14 @@ PARAMETRE ::=   ENTIER IDF:id
 
 PARAMETRES ::=
                 PARAMETRES:parametres POINTVIRGULE PARAMETRE:parametre
-                {:  ((EnsembleParametres)parametres).ajouter(parametre) ;
+                {:  ((BlocParametres)parametres).ajouter(parametre) ;
                     RESULT= parametres;
                 :}
         |
                 PARAMETRE:parametre
-                {:  EnsembleParametres ensembleParametres = new EnsembleParametres(parametreleft +1);
-                    ensembleParametres.ajouter(parametre);
-                    RESULT = ensembleParametres;
+                {:  BlocParametres parametres = new BlocParametres(parametreleft +1);
+                    parametres.ajouter(parametre);
+                    RESULT = parametres;
                 :}
                 ;
 

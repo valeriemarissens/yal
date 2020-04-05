@@ -46,7 +46,7 @@ public class FabriqueIdentifiants {
     }
 
     /**
-     * Reset au début de chaque nouvelle déclaration d'un ensemble de paramètres (voir la classe EnsembleParametres)
+     * Reset au début de chaque nouvelle déclaration d'un ensemble de paramètres (voir la classe BlocParametres)
      */
     public void resetCompteurParametre(){
         compteurParametre = 0;

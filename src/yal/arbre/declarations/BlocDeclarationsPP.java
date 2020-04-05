@@ -1,30 +1,38 @@
-package yal.arbre;
+package yal.arbre.declarations;
 
 import java.util.ArrayList;
 
-public class BlocDeclarations extends ArbreAbstrait{
+/**
+ * Lorsqu'on déclare une variable (constante, tableau ou fonction) dans le PP,
+ * on instancie cette classe.
+ *
+ */
+public class BlocDeclarationsPP extends BlocDeclarations {
     ArrayList<DeclarationFonction> fonctions;
-    ArrayList<DeclarationTableau> tableaux;
 
-    public BlocDeclarations(int n) {
+    public BlocDeclarationsPP(int n) {
         super(n);
+        numeroBloc = 0;
         fonctions = new ArrayList<>();
-        tableaux = new ArrayList<>();
 
         // TODO : enlever sout
         System.out.println("Un bloc de déclarations a été créé.");
     }
 
+    /**
+     * Depuis Grammaire.cup, on ajoute une fonction dans les déclarations.
+     * @param fonction
+     */
     public void ajouter(DeclarationFonction fonction) {
         fonctions.add(fonction) ;
     }
 
-    public void ajouter(DeclarationTableau tableau) {
-        // TODO : enlever sout
-        System.out.println("Un tableau a été déclaré.");
-        tableaux.add(tableau);
-    }
-
+    /**
+     * Puisqu'on est dans le PP, on doit vérifier les initialisations :
+     *              - des fonctions,
+     *              - des tableaux,
+     *              - des variables (rien à vérifier).
+     */
     @Override
     public void verifier() {
         for (DeclarationFonction f : fonctions){
@@ -35,6 +43,12 @@ public class BlocDeclarations extends ArbreAbstrait{
         }
     }
 
+    /**
+     * On divise en deux parties le MIPS car le texte MIPS doit afficher les fonctions en bas du code mais les déclarations
+     * de tableaux en haut du code.
+     * Donc, cette fonction n'est pas utilisée, ce sont tableauxToMIPS() et fonctionsToMIPS() qui le sont.
+     * @return
+     */
     @Override
     public String toMIPS() {
         return "";
@@ -73,17 +87,7 @@ public class BlocDeclarations extends ArbreAbstrait{
 
     @Override
     public String getType() {
-        return "BlocDeclarations";
-    }
-
-    @Override
-    public boolean contientRetourne() {
-        for (DeclarationFonction f : fonctions){
-            if (f.contientRetourne()){
-                return true;
-            }
-        }
-        return false;
+        return "BlocDeclarationsPP";
     }
 
 
