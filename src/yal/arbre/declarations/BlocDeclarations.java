@@ -13,9 +13,9 @@ import java.util.ArrayList;
  * dans le PP ou dans une fonction.
  */
 public class BlocDeclarations extends ArbreAbstrait {
-    protected ArrayList<DeclarationConstante> constantes;
+    private ArrayList<DeclarationConstante> constantes;
     protected ArrayList<DeclarationTableau> tableaux;
-    protected int numeroBloc;
+    private int numeroBloc;
 
     /**
      * Le numéro de bloc est set par la fonction, ou est 0 par défaut (PP).
@@ -113,6 +113,7 @@ public class BlocDeclarations extends ArbreAbstrait {
             Entree entree = constante.getEntree();
             Symbole symbole = constante.getSymbole();
 
+            System.out.println("BlocDecl, tds.ajouter numBloc: "+numeroBloc);
             tds.ajouter(numeroBloc, entree, symbole);
         }
     }

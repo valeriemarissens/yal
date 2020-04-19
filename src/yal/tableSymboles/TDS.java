@@ -96,6 +96,7 @@ public class TDS {
      * @param compteur
      */
     private void ajouter(int numeroBloc, Entree entree, Symbole symbole, int compteur){
+        System.out.println("Ajout dans Bloc n"+numeroBloc+" de idf : "+entree.getIdf()+ " type : "+ entree.getType());
         // Réservation de l'espace pour les variables locales aussi
         // TODO : Est-ce que ce cptDeplacement est utile ici puisqu'on soustrait sp dans les fonctions ???
         //cptDeplacement -= 4;

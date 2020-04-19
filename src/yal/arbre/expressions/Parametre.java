@@ -9,7 +9,6 @@ public class Parametre extends DeclarationConstante {
         super(id, n);
 
         Variable p = new Variable(id, n) ;
-
     }
 
     @Override

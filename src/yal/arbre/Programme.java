@@ -121,7 +121,7 @@ public class Programme extends ArbreAbstrait {
         mips.append("\t syscall\n");
 
         // Ajout des déclarations des fonctions à la fin
-        if (blocDeclarationsPP !=null) {
+        if (blocDeclarationsPP != null) {
             mips.append(blocDeclarationsPP.fonctionsToMIPS());
         }
 

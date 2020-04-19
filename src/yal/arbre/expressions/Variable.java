@@ -29,6 +29,7 @@ public class Variable extends Expression {
     public boolean estParametre(){
         return estParametre;
     }
+
     /**
      * Vérifie que la variable soit déclarée précédemment.
      */
@@ -36,7 +37,7 @@ public class Variable extends Expression {
     public void verifier() {
         chercherSymbole();
         if (symbole == null){
-            MessagesErreursSemantiques.getInstance().ajouter(noLigne,"La variable n'a pas été déclarée.");
+            MessagesErreursSemantiques.getInstance().ajouter(noLigne,"La variable "+toString()+" n'a pas été déclarée.");
         }else {
             estVariableLocale = symbole.getNumeroBloc() != 0;
             estParametre = symbole.estParametre();
