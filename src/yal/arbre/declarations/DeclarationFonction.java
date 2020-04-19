@@ -12,12 +12,11 @@ import yal.tableSymboles.SymboleFonction;
 import yal.tableSymboles.TDS;
 
 public class DeclarationFonction extends Declaration {
-    String idf;
-    BlocParametres parametres;
-    BlocDeclarations declarations;
-    BlocDInstructions instructions;
-
-    int numeroBloc;
+    private String idf;
+    private BlocParametres parametres;
+    private BlocDeclarations declarations;
+    private BlocDInstructions instructions;
+    private int numeroBloc;
 
 
     public DeclarationFonction(String idf, int numeroBloc, BlocParametres parametres, BlocDeclarations declarations, BlocDInstructions instructions, int noLigne) {
@@ -39,6 +38,7 @@ public class DeclarationFonction extends Declaration {
         ajouterTDS(0);
 
         /* Ajout des variables et des paramètres dans la TDS. */
+        System.out.println("DeclFonc ajouterTDS : "+numeroBloc);
         this.declarations.ajouterTDS();
         this.parametres.ajouterTDS();
 
@@ -202,7 +202,6 @@ public class DeclarationFonction extends Declaration {
         return mips.toString();
     }
 
-
     private String toMIPSEntree(){
         StringBuilder mips = new StringBuilder();
 
@@ -230,9 +229,6 @@ public class DeclarationFonction extends Declaration {
         int placeAReserver = declarations.getPlaceAReserver();
         mips.append("\t # Réservation de place pour les variables locales \n");
         mips.append("\t add $sp, $sp, -");
-        mips.append(placeAReserver);
-        mips.append("\n ");
-        mips.append("\t add $s2, $s2, -");
         mips.append(placeAReserver);
         mips.append("\n ");
         mips.append("\n");

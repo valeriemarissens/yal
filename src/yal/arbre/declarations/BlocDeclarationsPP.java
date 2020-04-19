@@ -8,11 +8,11 @@ import java.util.ArrayList;
  *
  */
 public class BlocDeclarationsPP extends BlocDeclarations {
-    ArrayList<DeclarationFonction> fonctions;
+    private ArrayList<DeclarationFonction> fonctions;
 
     public BlocDeclarationsPP(int n) {
         super(n);
-        numeroBloc = 0;
+        setNumeroBloc(0);
         fonctions = new ArrayList<>();
 
         // TODO : enlever sout
@@ -61,9 +61,11 @@ public class BlocDeclarationsPP extends BlocDeclarations {
     public String tableauxToMIPS(){
         StringBuilder mips = new StringBuilder();
 
-        mips.append("# Déclaration, initialisation des tableaux \n");
-        for (DeclarationTableau tableau : tableaux){
-            mips.append(tableau.toMIPS());
+        if (tableaux.size() != 0) {
+            mips.append("\t # Déclaration, initialisation des tableaux \n");
+            for (DeclarationTableau tableau : tableaux) {
+                mips.append(tableau.toMIPS());
+            }
         }
 
         return mips.toString();
@@ -76,10 +78,11 @@ public class BlocDeclarationsPP extends BlocDeclarations {
     public String fonctionsToMIPS() {
         StringBuilder mips = new StringBuilder();
 
-
-        mips.append("# Déclaration des fonctions \n");
-        for (DeclarationFonction fonction : fonctions){
-            mips.append(fonction.toMIPS());
+        if (fonctions.size() != 0) {
+            mips.append("# Déclaration des fonctions \n");
+            for (DeclarationFonction fonction : fonctions) {
+                mips.append(fonction.toMIPS());
+            }
         }
 
         return mips.toString();

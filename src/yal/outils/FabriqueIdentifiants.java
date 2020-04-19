@@ -24,6 +24,7 @@ public class FabriqueIdentifiants {
 
     public int getNumeroBloc(){
         compteurBloc++;
+        System.out.println("nouveau bloc: "+compteurBloc);
         return compteurBloc;
     }
 
