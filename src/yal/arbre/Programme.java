@@ -97,7 +97,7 @@ public class Programme extends ArbreAbstrait {
             mips.append("\t move $s3, $sp \n");
             mips.append("\n");
 
-            mips.append("\t # Réservation de l'espace pour "+nbVariables+" variable(s)\n");
+            mips.append("\t # Réservation de l'espace pour les variables du programme principal. \n");
             mips.append("\t addi $sp, $sp, "+tailleZoneVariables);
             mips.append("\n\n");
         }

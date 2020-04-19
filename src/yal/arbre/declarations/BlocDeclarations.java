@@ -23,7 +23,6 @@ public class BlocDeclarations extends ArbreAbstrait {
      */
     public BlocDeclarations(int noLigne) {
         super(noLigne);
-
         /* Initialisation des collections. */
         constantes = new ArrayList<>();
         tableaux = new ArrayList<>();
@@ -95,6 +94,11 @@ public class BlocDeclarations extends ArbreAbstrait {
     }
 
     public void ajouterTDS(){
+        // Si on est dans une fonction
+        if (numeroBloc!=0){
+            // On commence à énumérer toutes les variables locales d'une fonction donc il faut reset par rapport à la précédente
+            FabriqueIdentifiants.getInstance().resetCompteurVariableLocale();
+        }
         ajouterConstantes();
         ajouterTableaux();
     }
@@ -103,11 +107,8 @@ public class BlocDeclarations extends ArbreAbstrait {
      * Ajoute les constantes dans la TDS.
      */
     private void ajouterConstantes(){
-        // On commence à énumérer toutes les variables locales d'une fonction donc il faut reset par rapport à la précédente
-        FabriqueIdentifiants.getInstance().resetCompteurVariableLocale();
         TDS tds = TDS.getInstance();
 
-        // Le tableau s'ajoute tout seul.
         for (DeclarationConstante constante : constantes) {
             Entree entree = constante.getEntree();
             Symbole symbole = constante.getSymbole();
@@ -120,7 +121,13 @@ public class BlocDeclarations extends ArbreAbstrait {
      * Ajoute les tableaux dans la TDS.
      */
     private void ajouterTableaux(){
+        TDS tds = TDS.getInstance();
+        for (DeclarationTableau tableau : tableaux){
+            Entree entree = tableau.getEntree();
+            Symbole symbole = tableau.getSymbole();
 
+            tds.ajouter(numeroBloc, entree, symbole);
+        }
     }
 
     /**

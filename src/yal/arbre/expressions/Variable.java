@@ -7,18 +7,18 @@ import yal.tableSymboles.TDS;
 
 public class Variable extends Expression {
     private EntreeVariable entreeVariable;
-    private SymboleVariable symbole;
+    protected SymboleVariable symbole;
     boolean estVariableLocale ;
     boolean estParametre;
-    private String registre;
+    protected String registre;
 
-    public Variable(String id, int n) {
-        super(n);
-        entreeVariable = new EntreeVariable(id, n);
+    public Variable(String idf, int noLigne) {
+        super(noLigne);
+        entreeVariable = new EntreeVariable(idf, noLigne);
         chercherSymbole();
     }
 
-    private void chercherSymbole() {
+    protected void chercherSymbole() {
         symbole = (SymboleVariable) TDS.getInstance().identifier(entreeVariable);
     }
 

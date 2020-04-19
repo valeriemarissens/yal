@@ -36,7 +36,6 @@ public class TDS {
      * @param symbole : symbole de la variable ou fonction.
      */
     public void ajouter(int numeroBloc, Entree entree, Symbole symbole){
-        System.out.println("Ajout dans Bloc n"+numeroBloc+" de idf : "+entree.getIdf()+ " type : "+ entree.getType());
         if (numeroBloc==0){
             ajouter(entree, symbole);
         }else{

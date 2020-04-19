@@ -1,6 +1,7 @@
 package yal.arbre.instructions;
 
 import yal.arbre.expressions.Expression;
+import yal.exceptions.MessagesErreursSemantiques;
 import yal.outils.FabriqueIdentifiants;
 
 public class Ecrire extends Instruction {

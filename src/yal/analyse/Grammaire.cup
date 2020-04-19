@@ -13,6 +13,9 @@ import yal.arbre.expressions.Constante;
 import yal.arbre.expressions.ConstanteEntiere;
 import yal.arbre.expressions.Expression;
 import yal.arbre.expressions.Variable;
+import yal.arbre.expressions.AppelTableau;
+import yal.arbre.expressions.LongueurTableau;
+import yal.arbre.expressions.IndexTableau;
 import yal.arbre.expressions.AppelFonction;
 import yal.arbre.expressions.Parametre;
 
@@ -69,7 +72,7 @@ parser code {:
 /* Terminals (tokens returned by the scanner).  */
 
 terminal Symbol    PROGRAMME, DEBUT, FIN, ECRIRE, LIRE ;
-terminal Symbol    POINTVIRGULE, EGAL, PARENTHESEOUVRANTE, PARENTHESEFERMANTE, VIRGULE ;
+terminal Symbol    POINTVIRGULE, EGAL, PARENTHESEOUVRANTE, PARENTHESEFERMANTE, VIRGULE, POINT ;
 terminal Symbol    CROCHETOUVRANT, CROCHETFERMANT ;
 terminal Symbol    PLUS, MOINS, FOIS, DIVISE;
 terminal Symbol    SI, ALORS, FINSI, SINON ;
@@ -77,7 +80,7 @@ terminal Symbol    TANTQUE, REPETER, FINTANTQUE;
 terminal Symbol    ET, OU, NON ;
 terminal String    IDF, CSTENTIERE, ENTIER, FONCTION ;
 terminal String    SUPERIEUR, INFERIEUR, DOUBLEEGAL, PASEGAL ;
-terminal String    RETOURNE;
+terminal String    RETOURNE, LONGUEUR;
    
 /* Non terminals used in the grammar section.  */
 
@@ -289,6 +292,11 @@ INST    ::=     /* AFFECT */
                 IDF:id EGAL EXP:e POINTVIRGULE
                 {: RESULT = new Affectation(id, e, eleft + 1) ; :}
         |
+                /* Affectation tableau */
+                IDF:idf CROCHETOUVRANT EXP:e CROCHETFERMANT EGAL EXP:ee POINTVIRGULE
+                {: RESULT = new Affectation(idf, ee, eleft + 1, e); :}
+        |
+
                 /* LIRE */
                 LIRE IDF:id POINTVIRGULE
                 {: RESULT = new Lire(id, idleft + 1) ; :}
@@ -368,6 +376,14 @@ EXP     ::=     CSTENTIERE:c
         |
                 IDF:id PARENTHESEOUVRANTE PAR_EFFS:parametres PARENTHESEFERMANTE
                 {: RESULT = new AppelFonction(id, (EnsembleParametresAppel) parametres, idleft +1 ); :}
+        |
+                IDF:idf CROCHETOUVRANT EXP:exp CROCHETFERMANT
+                {: RESULT = new IndexTableau(idf, idfleft + 1, exp) ; :}
+
+        |
+                IDF:idf POINT LONGUEUR
+                {: RESULT = new LongueurTableau(idf, idfleft + 1); :}
+
                 ;
 
 /* Paramètres quand on déclare la fonction */

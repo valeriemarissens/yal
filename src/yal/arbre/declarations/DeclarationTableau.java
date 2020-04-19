@@ -1,14 +1,11 @@
 package yal.arbre.declarations;
 
-import yal.arbre.ArbreAbstrait;
 import yal.arbre.expressions.ConstanteEntiere;
 import yal.arbre.expressions.Expression;
 import yal.exceptions.MessagesErreursSemantiques;
 import yal.outils.FabriqueIdentifiants;
-import yal.tableSymboles.Entree;
 import yal.tableSymboles.EntreeVariable;
 import yal.tableSymboles.SymboleVariable;
-import yal.tableSymboles.TDS;
 
 public class DeclarationTableau extends Declaration {
     private Expression taille;
@@ -21,19 +18,17 @@ public class DeclarationTableau extends Declaration {
         this.idf = idf;
         this.taille = e;
         if (numeroBloc==0){
-            registre="s7";
+            registre="($s7)";
             estVariableLocale = false;
         }else{
-            registre="s2";
+            registre="($s2)";
             estVariableLocale = true;
         }
 
         entree = new EntreeVariable(idf, n) ;
+        symbole = new SymboleVariable();
 
-
-         symbole = new SymboleVariable();
-
-        // L'entrée précise que c'est un tableau pour le compteur (en effet, un tableau prend 3 places au lieu
+        // L'entrée précise que c'est un tableau pour le compteur (en effet, un tableau prend 2 places au lieu
         // d'une).
         ((EntreeVariable) entree).setEstTableau(true);
     }
@@ -79,6 +74,7 @@ public class DeclarationTableau extends Declaration {
      */
     @Override
     public String toMIPS() {
+        int deplacement = symbole.getDeplacement();
         StringBuilder mips = new StringBuilder();
         mips.append("\t # Déclaration du tableau "+ idf + "\n");
 
@@ -87,34 +83,39 @@ public class DeclarationTableau extends Declaration {
         /* Sinon, jump à fin de programme ("end :"). */
         mips.append(verificationTailleToMIPS());
 
-        mips.append("\t # On réserve la place pour le descriptif. \n");
-        mips.append("\t addi $sp, $sp, -12 \n");
-        mips.append("\n");
-
         // Descriptif :
-        mips.append("\t # On empile la taille du tableau. \n");
+        mips.append("\t # On sauvegarde la taille du tableau. \n");
+
+        /* La taille est maintenant dans $v0 */
         mips.append(taille.toMIPS());
-        mips.append("\t sw $v0, 0($"+registre+") \n");
-        mips.append("\t addi $" + registre + ", $"+ registre +", -4 \n");
+        mips.append("\t sw $v0, "+ deplacement + registre + "\n");
+
         mips.append("\n");
 
-        mips.append("\t # On pré-empile l'adresse de l'origine virtuelle. \n");
-        mips.append("\t addi $" + registre + ", $"+ registre +", -4 \n");
-        mips.append("\n");
-
-        mips.append("\t # On cherche l'adresse actuelle de sp car c'est le début de notre tableau.");
+        mips.append("\t # On cherche l'adresse actuelle de sp car c'est le début de notre tableau. \n");
         mips.append("\t la $t3, 0($sp) \n");
 
-        mips.append("\t # On sauvegarde l'adresse à l'emplacement de l'@OV du descriptif. ");
-        mips.append("\t sw $t3, 4($"+registre+") \n");
+        mips.append("\n");
 
-        mips.append("\t # On empile le descriptif dans la zone de variables locales.");
+        mips.append("\t # On sauvegarde l'adresse à l'emplacement de l'@OV du descriptif. \n");
+        mips.append("\t sw $t3, " + (deplacement - 4) + registre+" \n");
+
 
         // Élements du tableau :
-        int deplacementTaille = 4 * 2;
-        mips.append("\t # On réserve la place pour les éléments du tableau dans $sp \n");
-        mips.append("\t addi $sp, $sp, -"+ deplacementTaille +" \n");
 
+        /* Calcul en MIPS de la taille des éléments du tableau. */
+        mips.append("\t # On calcule la place à laisser dans $sp pour les éléments (4 par élément). \n");
+        mips.append("\t li $t8, 4 \n");
+        mips.append("\t mult $t8, $v0 \t\t # $t8 * $v0 \n");
+        mips.append("\t mflo $v0  \t\t# on range la résultat dans $v0 \n");
+        mips.append("\n");
+        mips.append("\t # On réserve la place dans $sp. \n");
+        mips.append("\t sub $sp, $sp, $v0 \n");
+
+        /* On remet dans $v0 la taille du tableau. */
+        mips.append(taille.toMIPS());
+
+        mips.append("\n");
         /* On initialise les éléments du tableau à 0. */
         mips.append(elementsTableauToMIPS());
 
@@ -131,11 +132,8 @@ public class DeclarationTableau extends Declaration {
         mips.append("\n");
         mips.append("\t # On vérifie que taille > 0. \n");
         mips.append(taille.toMIPS());
-        mips.append("\t move $t8, $v0 \n");
 
-        // Dans ce cas, taille < 0, donc on va au Sinon :
-        mips.append("\t slt $v0, $t8, $v0 \n");
-        mips.append("\t beq $v0, $0, ");
+        mips.append("\t blez $v0, ");
         mips.append(nomEtiquetteSinon);
         mips.append("\n");
 
@@ -186,13 +184,15 @@ public class DeclarationTableau extends Declaration {
      * /!\ $v0  = 0 à la fin de cette fonction.
      */
     private String elementsTableauToMIPS(){
+        String nomEtiquette = "boucle_initialisation_tableau_"+idf;
+        String nomEtiquetteFin = "fin_"+nomEtiquette;
         StringBuilder mips = new StringBuilder();
         mips.append("\n");
         mips.append("\t # On empile les éléments du tableau dans $sp. \n");
 
-        String nomEtiquette = "boucle_initialisation_tableau_"+idf;
+
         // Boucle :
-        /* Tant que $v0 n'est pas égal à 0 ...*/
+        /* Tant que $v0 n'est pas égal à 0 ... ($v0 est la taille du tableau) */
         mips.append(nomEtiquette);
         mips.append(" : \n");
 
@@ -201,7 +201,7 @@ public class DeclarationTableau extends Declaration {
         mips.append("\t li $t8, 0 \n");
 
         /* Si $v0 est égal à 0, on quitte. */
-        mips.append("\t beq $v0, $t8, end \n");
+        mips.append("\t beq $v0, $t8,"+ nomEtiquetteFin + "\n");
         mips.append("\n");
 
         /* On range $t8 dans $t3, qui est l'emplacement du i-eme élément du tableau. */
@@ -219,6 +219,8 @@ public class DeclarationTableau extends Declaration {
         mips.append(nomEtiquette);
         mips.append(" \n");
         mips.append("\n");
+
+        mips.append(nomEtiquetteFin + ": \n\n");
 
         return mips.toString();
     }

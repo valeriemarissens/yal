@@ -58,9 +58,13 @@ espace = {finDeLigne}  | [ \t\f]
 
 "retourne"             { return symbol(CodesLexicaux.RETOURNE); }
 
+"longueur"              {return symbol(CodesLexicaux.LONGUEUR); }
+
 ";"                    { return symbol(CodesLexicaux.POINTVIRGULE); }
 
 ","                    { return symbol(CodesLexicaux.VIRGULE); }
+
+"."                     { return symbol(CodesLexicaux.POINT); }
 
 "="                    { return symbol(CodesLexicaux.EGAL); }
 

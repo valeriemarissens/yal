@@ -15,8 +15,6 @@ public class BlocDeclarationsPP extends BlocDeclarations {
         numeroBloc = 0;
         fonctions = new ArrayList<>();
 
-        // TODO : enlever sout
-        System.out.println("Un bloc de déclarations a été créé.");
     }
 
     /**
