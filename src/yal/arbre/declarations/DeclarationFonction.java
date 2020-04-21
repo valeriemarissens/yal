@@ -89,6 +89,8 @@ public class DeclarationFonction extends Declaration {
     private void setRetourne(){
         int nbVariablesLocales = declarations.getPlaceAReserver();
         int nbParametres = parametres.getNbParametres();
+        String mipsLiberationTableaux = declarations.libererTableauxToMIPS();
+
         for (ArbreAbstrait i : instructions) {
             String type = i.getType();
             //Il faut mettre le nb de variables locales dans les retournes imbriqués aussi
@@ -97,6 +99,7 @@ public class DeclarationFonction extends Declaration {
                 case "Retourne" :
                     ((Retourne) i).setPlaceVariablesLocales(nbVariablesLocales);
                     ((Retourne) i).setNbParametres(nbParametres);
+                    ((Retourne) i).setLiberationTableaux(mipsLiberationTableaux);
                     break;
                 case "Condition" :
                     Condition c = (Condition) i;
@@ -110,6 +113,7 @@ public class DeclarationFonction extends Declaration {
                                     if (k.getType().equals("Retourne")) {
                                         ((Retourne) k).setPlaceVariablesLocales(nbVariablesLocales);
                                         ((Retourne) k).setNbParametres(nbParametres);
+                                        ((Retourne) k).setLiberationTableaux(mipsLiberationTableaux);
                                     }
                                 }
                             }
@@ -122,6 +126,7 @@ public class DeclarationFonction extends Declaration {
                                         if (k.getType().equals("Retourne")) {
                                             ((Retourne) k).setPlaceVariablesLocales(nbVariablesLocales);
                                             ((Retourne) k).setNbParametres(nbParametres);
+                                            ((Retourne) k).setLiberationTableaux(mipsLiberationTableaux);
                                         }
                                     }
                                 }
@@ -138,6 +143,7 @@ public class DeclarationFonction extends Declaration {
                                 if (k.getType().equals("Retourne")){
                                     ((Retourne) k).setPlaceVariablesLocales(nbVariablesLocales);
                                     ((Retourne) k).setNbParametres(nbParametres);
+                                    ((Retourne) k).setLiberationTableaux(mipsLiberationTableaux);
                                 }
                             }
                         }

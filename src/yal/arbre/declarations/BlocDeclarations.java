@@ -148,6 +148,35 @@ public class BlocDeclarations extends ArbreAbstrait {
     }
 
     /**
+     * Cette fonction est utilisée dans les fonctions.
+     * Elle libère l'espace des éléments des tableaux dans la pile $sp à la sortie d'une fonction.
+     * @return
+     */
+    public String libererTableauxToMIPS(){
+        StringBuilder mips = new StringBuilder();
+        if (tableaux.size() != 0){
+            mips.append("\t # Libération des tableaux \n");
+
+            for (DeclarationTableau tableau : tableaux){
+                Symbole symbole = tableau.getSymbole();
+                String registre = "($s2)";
+                mips.append("\t # On va chercher l'adresse du descriptif du tableau, dont la valeur correspond à la taille du tableau. \n");
+                mips.append("\t lw $v0, " + symbole.getDeplacement() + registre + "\n" );
+
+                mips.append("\t # On multiplie cette valeur par la taille d'un entier (= 4).\n");
+                mips.append("\t li $t8, 4 \n");
+                mips.append("\t mult $t8, $v0  \n");
+                mips.append("\t mflo $v0 \n");
+
+                mips.append("\t # Et on l'ajoute à $sp. \n");
+                mips.append("\t add $sp, $sp, $v0 \n ");
+            }
+
+        }
+        return mips.toString();
+    }
+
+    /**
      * @return la place à réserver pour les constantes et les tableaux.
      */
     public int getPlaceAReserver(){

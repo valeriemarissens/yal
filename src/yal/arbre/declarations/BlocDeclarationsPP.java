@@ -71,6 +71,10 @@ public class BlocDeclarationsPP extends BlocDeclarations {
         return mips.toString();
     }
 
+    public String libererTableauxToMIPS(){
+        return "";
+    }
+
     @Override
     public String getType() {
         return "BlocDeclarationsPP";

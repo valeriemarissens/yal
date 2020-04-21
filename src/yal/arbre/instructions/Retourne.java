@@ -8,6 +8,7 @@ public class Retourne extends Instruction {
     private Expression expression;
     private int placeVariablesLocales;
     private int nbParametres;
+    private String mipsLiberationTableaux;
 
     public Retourne(Expression e, int n) {
         super(n);
@@ -44,9 +45,17 @@ public class Retourne extends Instruction {
         // Il faut dépiler les variables locales de s2 puis récupérer l'adresse de retour de sp.
 
         if (placeVariablesLocales > 0) {
-            mips.append("\t # On dépile les variables locales. \n ");
+            mips.append("\t # On dépile les variables locales. \n \n");
+            mips.append(mipsLiberationTableaux);
+            mips.append("\n");
+
+            // TODO : est-ce que c'est vraiment utile d'add à $s2 ?
+            //  Est-ce que juste le faire à $sp n'est pas suffisant comme les deux sont liés ?
+            // et est-ce que c'est ça qui fait beuguer le retour de la fct avec tableau ?
+            mips.append("\t # On dépile maintenant les constantes (dont les descriptifs des tableaux). \n");
             mips.append("\t add $s2, $s2, " + placeVariablesLocales + " \n");
             mips.append("\t add $sp, $sp, " + placeVariablesLocales + " \n");
+
             mips.append("\n");
         }
 
@@ -86,4 +95,6 @@ public class Retourne extends Instruction {
     public void setPlaceVariablesLocales(int placeVariablesLocales) {
         this.placeVariablesLocales = placeVariablesLocales;
     }
+
+    public void setLiberationTableaux(String mips) { this.mipsLiberationTableaux = mips; }
 }

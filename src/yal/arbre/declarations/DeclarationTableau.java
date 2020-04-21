@@ -104,8 +104,8 @@ public class DeclarationTableau extends Declaration {
         /* Calcul en MIPS de la taille des éléments du tableau. */
         mips.append("\t # On calcule la place à laisser dans $sp pour les éléments (4 par élément). \n");
         mips.append("\t li $t8, 4 \n");
-        mips.append("\t mult $t8, $v0 \t\t # $t8 * $v0 \n");
-        mips.append("\t mflo $v0  \t\t# on range la résultat dans $v0 \n");
+        mips.append("\t mult $t8, $v0  \n");
+        mips.append("\t mflo $v0 \n");
         mips.append("\n");
         mips.append("\t # On réserve la place dans $sp. \n");
         mips.append("\t sub $sp, $sp, $v0 \n");

@@ -82,12 +82,14 @@ public class TDS {
 
     private void ajouterVariableLocale(int numeroBloc, Entree entree, Symbole symbole){
         FabriqueIdentifiants fabrique = FabriqueIdentifiants.getInstance();
+
+        int compteur = fabrique.getCompteurVariableLocale();
+        ajouter(numeroBloc, entree, symbole, compteur);
+
         // Un tableau coûte une place en plus.
         if (entree.estTableau()){
             fabrique.retirer2CompteurVariableLocale();
         }
-        int compteur = fabrique.getCompteurVariableLocale();
-        ajouter(numeroBloc, entree, symbole, compteur);
     }
 
     /**
