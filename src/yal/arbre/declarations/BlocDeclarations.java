@@ -113,7 +113,6 @@ public class BlocDeclarations extends ArbreAbstrait {
             Entree entree = constante.getEntree();
             Symbole symbole = constante.getSymbole();
 
-            System.out.println("BlocDecl, tds.ajouter numBloc: "+numeroBloc);
             tds.ajouter(numeroBloc, entree, symbole);
         }
     }
@@ -129,6 +128,23 @@ public class BlocDeclarations extends ArbreAbstrait {
 
             tds.ajouter(numeroBloc, entree, symbole);
         }
+    }
+
+    /**
+     * Code d'initialisation des tableaux au début du programme.
+     * @return
+     */
+    public String tableauxToMIPS(){
+        StringBuilder mips = new StringBuilder();
+
+        if (tableaux.size() != 0) {
+            mips.append("\t # Déclaration, initialisation des tableaux \n");
+            for (DeclarationTableau tableau : tableaux) {
+                mips.append(tableau.toMIPS());
+            }
+        }
+
+        return mips.toString();
     }
 
     /**

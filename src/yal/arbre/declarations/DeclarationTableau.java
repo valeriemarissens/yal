@@ -11,11 +11,8 @@ public class DeclarationTableau extends Declaration {
     private Expression taille;
     private String registre;
     private boolean estVariableLocale;
-    private String idf;
-
     public DeclarationTableau(String idf, Expression e, int numeroBloc, int n) {
-        super(n);
-        this.idf = idf;
+        super(idf, n);
         this.taille = e;
         if (numeroBloc==0){
             registre="($s7)";

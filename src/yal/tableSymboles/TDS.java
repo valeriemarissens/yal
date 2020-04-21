@@ -81,7 +81,12 @@ public class TDS {
     }
 
     private void ajouterVariableLocale(int numeroBloc, Entree entree, Symbole symbole){
-        int compteur = FabriqueIdentifiants.getInstance().getCompteurVariableLocale();
+        FabriqueIdentifiants fabrique = FabriqueIdentifiants.getInstance();
+        // Un tableau coûte une place en plus.
+        if (entree.estTableau()){
+            fabrique.retirer2CompteurVariableLocale();
+        }
+        int compteur = fabrique.getCompteurVariableLocale();
         ajouter(numeroBloc, entree, symbole, compteur);
     }
 
@@ -96,10 +101,6 @@ public class TDS {
      * @param compteur
      */
     private void ajouter(int numeroBloc, Entree entree, Symbole symbole, int compteur){
-        System.out.println("Ajout dans Bloc n"+numeroBloc+" de idf : "+entree.getIdf()+ " type : "+ entree.getType());
-        // Réservation de l'espace pour les variables locales aussi
-        // TODO : Est-ce que ce cptDeplacement est utile ici puisqu'on soustrait sp dans les fonctions ???
-        //cptDeplacement -= 4;
         HashMap<Entree, Symbole> donneesFonction = listeTDS.get(numeroBloc);
             if (!donneesFonction.containsKey(entree)){
                 symbole.setDeplacement(compteur);
@@ -144,7 +145,6 @@ public class TDS {
         int nbBloc = (int) pile.pop();
     }
 
-    // TODO : Obsolète ?
     public int getTailleZoneVariable(){
         return cptDeplacement;
     }

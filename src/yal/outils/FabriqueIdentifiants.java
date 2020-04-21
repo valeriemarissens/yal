@@ -24,7 +24,6 @@ public class FabriqueIdentifiants {
 
     public int getNumeroBloc(){
         compteurBloc++;
-        System.out.println("nouveau bloc: "+compteurBloc);
         return compteurBloc;
     }
 
@@ -36,6 +35,10 @@ public class FabriqueIdentifiants {
     public int getCompteurParametre(){
         compteurParametre += 4;
         return compteurParametre;
+    }
+
+    public void retirer2CompteurVariableLocale(){
+        compteurVariableLocale -= 2;
     }
 
 

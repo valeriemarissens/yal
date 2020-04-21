@@ -52,22 +52,7 @@ public class BlocDeclarationsPP extends BlocDeclarations {
         return "";
     }
 
-    /**
-     * Code d'initialisation des tableaux au début du programme.
-     * @return
-     */
-    public String tableauxToMIPS(){
-        StringBuilder mips = new StringBuilder();
 
-        if (tableaux.size() != 0) {
-            mips.append("\t # Déclaration, initialisation des tableaux \n");
-            for (DeclarationTableau tableau : tableaux) {
-                mips.append(tableau.toMIPS());
-            }
-        }
-
-        return mips.toString();
-    }
 
     /**
      * Code des instructions des fonctions à la fin du programme.

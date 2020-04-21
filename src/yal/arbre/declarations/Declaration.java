@@ -6,17 +6,18 @@ import yal.tableSymboles.Symbole;
 import yal.tableSymboles.TDS;
 
 public abstract class Declaration extends ArbreAbstrait {
+    protected String idf;
     protected Entree entree;
     protected Symbole symbole;
 
-    protected Declaration(int n) {
+    protected Declaration(String idf, int n) {
         super(n);
+        this.idf = idf;
     }
 
     @Override
-    public void verifier() {
+    public void verifier() {}
 
-    }
 
     @Override
     public String toMIPS() {

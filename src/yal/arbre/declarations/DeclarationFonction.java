@@ -12,7 +12,6 @@ import yal.tableSymboles.SymboleFonction;
 import yal.tableSymboles.TDS;
 
 public class DeclarationFonction extends Declaration {
-    private String idf;
     private BlocParametres parametres;
     private BlocDeclarations declarations;
     private BlocDInstructions instructions;
@@ -20,9 +19,7 @@ public class DeclarationFonction extends Declaration {
 
 
     public DeclarationFonction(String idf, int numeroBloc, BlocParametres parametres, BlocDeclarations declarations, BlocDInstructions instructions, int noLigne) {
-        super(noLigne);
-
-        this.idf = idf;
+        super(idf, noLigne);
         this.numeroBloc = numeroBloc;
         this.parametres = parametres;
         this.declarations = declarations;
@@ -38,7 +35,6 @@ public class DeclarationFonction extends Declaration {
         ajouterTDS(0);
 
         /* Ajout des variables et des paramètres dans la TDS. */
-        System.out.println("DeclFonc ajouterTDS : "+numeroBloc);
         this.declarations.ajouterTDS();
         this.parametres.ajouterTDS();
 
@@ -91,7 +87,7 @@ public class DeclarationFonction extends Declaration {
      * Set le nombre de variables locales dans le retourne de la fonction.
      */
     private void setRetourne(){
-        int nbVariablesLocales = declarations.getNbConstantes();
+        int nbVariablesLocales = declarations.getPlaceAReserver();
         int nbParametres = parametres.getNbParametres();
         for (ArbreAbstrait i : instructions) {
             String type = i.getType();
@@ -99,7 +95,7 @@ public class DeclarationFonction extends Declaration {
             // c'est-à-dire dans Boucle et Condition.
             switch (type) {
                 case "Retourne" :
-                    ((Retourne) i).setNbVariablesLocales(nbVariablesLocales);
+                    ((Retourne) i).setPlaceVariablesLocales(nbVariablesLocales);
                     ((Retourne) i).setNbParametres(nbParametres);
                     break;
                 case "Condition" :
@@ -112,7 +108,7 @@ public class DeclarationFonction extends Declaration {
                                 BlocDInstructions b = (BlocDInstructions)blocSi;
                                 for (ArbreAbstrait k : b) {
                                     if (k.getType().equals("Retourne")) {
-                                        ((Retourne) k).setNbVariablesLocales(nbVariablesLocales);
+                                        ((Retourne) k).setPlaceVariablesLocales(nbVariablesLocales);
                                         ((Retourne) k).setNbParametres(nbParametres);
                                     }
                                 }
@@ -124,7 +120,7 @@ public class DeclarationFonction extends Declaration {
                                     BlocDInstructions b = (BlocDInstructions) blocSinon;
                                     for (ArbreAbstrait k : b) {
                                         if (k.getType().equals("Retourne")) {
-                                            ((Retourne) k).setNbVariablesLocales(nbVariablesLocales);
+                                            ((Retourne) k).setPlaceVariablesLocales(nbVariablesLocales);
                                             ((Retourne) k).setNbParametres(nbParametres);
                                         }
                                     }
@@ -140,7 +136,7 @@ public class DeclarationFonction extends Declaration {
                         if (bloc.getType().equals("BlocDInstructions")){
                             for (ArbreAbstrait k : (BlocDInstructions)bloc){
                                 if (k.getType().equals("Retourne")){
-                                    ((Retourne) k).setNbVariablesLocales(nbVariablesLocales);
+                                    ((Retourne) k).setPlaceVariablesLocales(nbVariablesLocales);
                                     ((Retourne) k).setNbParametres(nbParametres);
                                 }
                             }
@@ -213,16 +209,20 @@ public class DeclarationFonction extends Declaration {
         mips.append(toMIPSEmpiler());
         mips.append("\n");
 
-        // TODO : gérer les tableaux.
-        int nbVariables = declarations.getNbConstantes();
+        int nbVariables = declarations.getNbConstantes() + declarations.getNbTableaux();
 
         if (nbVariables != 0) {
             mips.append(toMIPSVariablesLocales());
         }
 
+
         return mips.toString();
     }
 
+    /**
+     * TODO: à faire dans BlocDeclarations ? ???
+     * @return
+     */
     private String toMIPSVariablesLocales(){
         StringBuilder mips = new StringBuilder();
 
@@ -232,6 +232,10 @@ public class DeclarationFonction extends Declaration {
         mips.append(placeAReserver);
         mips.append("\n ");
         mips.append("\n");
+
+        if (declarations.getNbTableaux() > 0){
+            mips.append(declarations.tableauxToMIPS());
+        }
         return mips.toString();
     }
 
@@ -259,14 +263,5 @@ public class DeclarationFonction extends Declaration {
         return instructions.contientRetourne();
     }
 
-
-    /**
-     * Pour vérifier qu'il y a bien les instructions écrites dans la fonction
-     */
-    public void toSoutDebug(){
-        System.out.println("Ces sout EXCLUSIFS vous sont proposés par la classe Fonction de yal.arbre !");
-        System.out.println(idf);
-        System.out.println(instructions.toMIPS());
-    }
 
 }

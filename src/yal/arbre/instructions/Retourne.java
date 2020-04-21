@@ -6,13 +6,13 @@ import yal.tableSymboles.TDS;
 
 public class Retourne extends Instruction {
     private Expression expression;
-    private int nbVariablesLocales;
+    private int placeVariablesLocales;
     private int nbParametres;
 
     public Retourne(Expression e, int n) {
         super(n);
         expression=e;
-        nbVariablesLocales = 0;
+        placeVariablesLocales = 0;
     }
 
     @Override
@@ -43,11 +43,10 @@ public class Retourne extends Instruction {
 
         // Il faut dépiler les variables locales de s2 puis récupérer l'adresse de retour de sp.
 
-        if (nbVariablesLocales > 0) {
-            int deplacementADepiler = 4 * nbVariablesLocales;
+        if (placeVariablesLocales > 0) {
             mips.append("\t # On dépile les variables locales. \n ");
-            mips.append("\t add $s2, $s2, " + deplacementADepiler + " \n");
-            mips.append("\t add $sp, $sp, " + deplacementADepiler + " \n");
+            mips.append("\t add $s2, $s2, " + placeVariablesLocales + " \n");
+            mips.append("\t add $sp, $sp, " + placeVariablesLocales + " \n");
             mips.append("\n");
         }
 
@@ -84,7 +83,7 @@ public class Retourne extends Instruction {
 
     public void setNbParametres(int nbParametres) { this.nbParametres = nbParametres; }
 
-    public void setNbVariablesLocales(int nbVariablesLocales) {
-        this.nbVariablesLocales = nbVariablesLocales;
+    public void setPlaceVariablesLocales(int placeVariablesLocales) {
+        this.placeVariablesLocales = placeVariablesLocales;
     }
 }

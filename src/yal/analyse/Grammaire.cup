@@ -141,8 +141,6 @@ LDECL_LOCAL  ::=
                 LDECL_LOCAL:declarations  DECL_LOCAL:declaration
 
                 {:
-                    /* TODO : arrêter ça (la ligne en bas). */
-                    /* Si c'est un tableau, ne pas ajouter aux vars locales car se gère seul. */
                     String type = declaration.getType();
 
                     switch (type){
@@ -183,7 +181,12 @@ LDECL_LOCAL  ::=
 DECL_LOCAL ::=
                 ENTIER IDF:id POINTVIRGULE
                 {: RESULT = new DeclarationConstante(id, idleft); :}
-                /* TODO : ajouter tableau */
+             |
+                ENTIER CROCHETOUVRANT EXP:e CROCHETFERMANT IDF:id POINTVIRGULE
+                {:
+                    int numeroBloc = TDS.getInstance().getBlocCourant();
+                    RESULT = new DeclarationTableau(id, e, numeroBloc, idleft + 1);
+                :}
                 ;
 
 

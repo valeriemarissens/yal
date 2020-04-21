@@ -5,13 +5,10 @@ import yal.tableSymboles.*;
 public class DeclarationConstante extends Declaration {
 
     public DeclarationConstante(String idf, int n) {
-        super(n);
+        super(idf, n);
         entree = new EntreeVariable(idf, n + 1) ;
         symbole = new SymboleVariable() ;
     }
-
-    @Override
-    public void verifier() {}
 
     @Override
     public String toMIPS() {
