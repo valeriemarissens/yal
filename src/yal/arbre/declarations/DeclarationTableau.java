@@ -2,6 +2,7 @@ package yal.arbre.declarations;
 
 import yal.arbre.expressions.ConstanteEntiere;
 import yal.arbre.expressions.Expression;
+import yal.arbre.instructions.Affectation;
 import yal.exceptions.MessagesErreursSemantiques;
 import yal.outils.FabriqueIdentifiants;
 import yal.tableSymboles.EntreeVariable;
@@ -90,7 +91,7 @@ public class DeclarationTableau extends Declaration {
         mips.append("\n");
 
         mips.append("\t # On cherche l'adresse actuelle de sp car c'est le début de notre tableau. \n");
-        mips.append("\t la $t3, 0($sp) \n");
+        mips.append("\t move $t3, $sp \n");
 
         mips.append("\n");
 
@@ -114,7 +115,7 @@ public class DeclarationTableau extends Declaration {
 
         mips.append("\n");
         /* On initialise les éléments du tableau à 0. */
-        mips.append(elementsTableauToMIPS());
+        mips.append(initialisationTableau());
 
         return mips.toString();
     }
@@ -180,7 +181,7 @@ public class DeclarationTableau extends Declaration {
      *
      * /!\ $v0  = 0 à la fin de cette fonction.
      */
-    private String elementsTableauToMIPS(){
+    private String initialisationTableau(){
         String nomEtiquette = "boucle_initialisation_tableau_"+idf;
         String nomEtiquetteFin = "fin_"+nomEtiquette;
         StringBuilder mips = new StringBuilder();
@@ -202,7 +203,8 @@ public class DeclarationTableau extends Declaration {
         mips.append("\n");
 
         /* On range $t8 dans $t3, qui est l'emplacement du i-eme élément du tableau. */
-        mips.append("\t sw $t8, 0($t3) \n");
+        /* Petit souci avec tableau[0], d'où le 4($t3) qui a réglé le beug, à voir si le dernier élément est ok du coup... */
+        mips.append("\t sw $t8, 4($t3) \n");
 
         /* On va chercher l'élément suivant. */
         mips.append("\t addi $t3, $t3, -4 \n");
@@ -218,6 +220,7 @@ public class DeclarationTableau extends Declaration {
         mips.append("\n");
 
         mips.append(nomEtiquetteFin + ": \n\n");
+
 
         return mips.toString();
     }
