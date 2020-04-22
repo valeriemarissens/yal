@@ -47,8 +47,8 @@ public class IndexTableau extends AppelTableau {
         // L'adresse de la première valeur du tableau est dans $t3.
         mips.append(toMIPSDebutTableau());
         mips.append("\t # On multiplie notre valeur d'index par 4 (taille d'un int). \n");
-        mips.append("\t li $t8, 4 \n");
-        mips.append("\t mult $t8, $v0 \n");
+        mips.append("\t li $t5, 4 \n");
+        mips.append("\t mult $t5, $v0 \n");
         mips.append("\t mflo $v0 \n");
         mips.append("\t # On retire la valeur de l'index à $t3 (= notre début de tableau). \n" );
         mips.append("\t sub $t3, $t3, $v0 \n");

@@ -74,7 +74,7 @@ public class Variable extends Expression {
         // Même si on passe par vérifier, il faut quand même re-appeler vérifier pour mettre la valeur dans "registre"...
         // Sinon, registre est null pour x raison(s).
         verifier();
-
+        
         if (symbole != null) {
             mips.append("\t lw $v0, " + symbole.getDeplacement() + registre );
             mips.append("\t\t # on range la valeur de " + entreeVariable.getIdf() + " dans $v0 \n");

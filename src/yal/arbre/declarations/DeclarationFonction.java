@@ -33,6 +33,8 @@ public class DeclarationFonction extends Declaration {
 
         // On ajoute la déclaration de cette fonction dans la TDS du PP; on y crée l'entrée et le symbole.
         ajouterTDS(0);
+        ((SymboleFonction) this.symbole).setNumBloc(numeroBloc);
+
 
         /* Ajout des variables et des paramètres dans la TDS. */
         this.declarations.ajouterTDS();
@@ -188,6 +190,7 @@ public class DeclarationFonction extends Declaration {
      * Empile l'adresse de retour et les variables locales de la fonction.
      */
     public String toMIPS() {
+        TDS.getInstance().entreeBloc(numeroBloc);
         StringBuilder mips = new StringBuilder();
 
         // Génère l'étiquette

@@ -39,10 +39,6 @@ public class Programme extends ArbreAbstrait {
 
         if (blocDeclarationsPP !=null) {
             blocDeclarationsPP.verifier();
-
-            // TODO : enlever le else et SOUT après debug
-        }else {
-            System.out.println("Le bloc de déclarations est nul.");
         }
 
         for (ArbreAbstrait instruction : instructions) {

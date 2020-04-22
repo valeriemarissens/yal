@@ -55,12 +55,13 @@ public class TDS {
 
             /* On n'augmente le nombre de place à réserver que si l'entrée est une variable
             (tableau ou constante). */
-            if (!entree.estTableau()){
+            if (!entree.estTableau() && !entree.estFonction()){
                 cptDeplacement -= 4;
 
                 /* Le tableau prend plus de place à cause de son descriptif. */
-            }else{
+            }else if (entree.estTableau() && !entree.estFonction()){
                 cptDeplacement -= 8;
+                /* Si c'est une fonction. */
             }
 
             tdsPP.put(entree,symbole);
@@ -104,6 +105,7 @@ public class TDS {
      */
     private void ajouter(int numeroBloc, Entree entree, Symbole symbole, int compteur){
         HashMap<Entree, Symbole> donneesFonction = listeTDS.get(numeroBloc);
+
             if (!donneesFonction.containsKey(entree)){
                 symbole.setDeplacement(compteur);
                 symbole.setNumeroBloc(numeroBloc);
