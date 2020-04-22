@@ -66,6 +66,9 @@ public class BlocDeclarations extends ArbreAbstrait {
 
     public void setNumeroBloc(int numeroBloc){
         this.numeroBloc = numeroBloc;
+        for (DeclarationTableau tableau : tableaux) {
+            tableau.setNumeroBloc(numeroBloc);
+        }
     }
 
 
@@ -161,15 +164,15 @@ public class BlocDeclarations extends ArbreAbstrait {
                 Symbole symbole = tableau.getSymbole();
                 String registre = "($s2)";
                 mips.append("\t # On va chercher l'adresse du descriptif du tableau, dont la valeur correspond à la taille du tableau. \n");
-                mips.append("\t lw $v0, " + symbole.getDeplacement() + registre + "\n" );
+                mips.append("\t lw $t4, " + symbole.getDeplacement() + registre + "\n" );
 
                 mips.append("\t # On multiplie cette valeur par la taille d'un entier (= 4).\n");
                 mips.append("\t li $t8, 4 \n");
-                mips.append("\t mult $t8, $v0  \n");
-                mips.append("\t mflo $v0 \n");
+                mips.append("\t mult $t8, $t4  \n");
+                mips.append("\t mflo $t4 \n");
 
                 mips.append("\t # Et on l'ajoute à $sp. \n");
-                mips.append("\t add $sp, $sp, $v0 \n ");
+                mips.append("\t add $sp, $sp, $t4 \n ");
             }
 
         }

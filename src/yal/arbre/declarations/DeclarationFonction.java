@@ -226,7 +226,6 @@ public class DeclarationFonction extends Declaration {
     }
 
     /**
-     * TODO: à faire dans BlocDeclarations ? ???
      * @return
      */
     private String toMIPSVariablesLocales(){
@@ -234,10 +233,12 @@ public class DeclarationFonction extends Declaration {
 
         int placeAReserver = declarations.getPlaceAReserver();
         mips.append("\t # Réservation de place pour les variables locales \n");
+        mips.append("\t move $s2, $sp \n");
         mips.append("\t add $sp, $sp, -");
         mips.append(placeAReserver);
         mips.append("\n ");
         mips.append("\n");
+
 
         if (declarations.getNbTableaux() > 0){
             mips.append(declarations.tableauxToMIPS());

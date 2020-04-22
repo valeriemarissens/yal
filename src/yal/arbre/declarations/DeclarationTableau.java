@@ -12,16 +12,13 @@ public class DeclarationTableau extends Declaration {
     private Expression taille;
     private String registre;
     private boolean estVariableLocale;
-    public DeclarationTableau(String idf, Expression e, int numeroBloc, int n) {
+
+    public DeclarationTableau(String idf, Expression e, int n) {
         super(idf, n);
         this.taille = e;
-        if (numeroBloc==0){
-            registre="($s7)";
-            estVariableLocale = false;
-        }else{
-            registre="($s2)";
-            estVariableLocale = true;
-        }
+
+        registre="($s7)";
+        estVariableLocale = false;
 
         entree = new EntreeVariable(idf, n) ;
         symbole = new SymboleVariable();
@@ -55,6 +52,16 @@ public class DeclarationTableau extends Declaration {
             }
         }
 
+    }
+
+    public void setNumeroBloc(int numeroBloc){
+        if (numeroBloc==0){
+            registre="($s7)";
+            estVariableLocale = false;
+        }else{
+            registre="($s2)";
+            estVariableLocale = true;
+        }
     }
 
     /**

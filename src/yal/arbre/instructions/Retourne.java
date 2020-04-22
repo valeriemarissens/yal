@@ -49,12 +49,9 @@ public class Retourne extends Instruction {
             mips.append(mipsLiberationTableaux);
             mips.append("\n");
 
-            // TODO : est-ce que c'est vraiment utile d'add à $s2 ?
-            //  Est-ce que juste le faire à $sp n'est pas suffisant comme les deux sont liés ?
-            // et est-ce que c'est ça qui fait beuguer le retour de la fct avec tableau ?
             mips.append("\t # On dépile maintenant les constantes (dont les descriptifs des tableaux). \n");
-            mips.append("\t add $s2, $s2, " + placeVariablesLocales + " \n");
             mips.append("\t add $sp, $sp, " + placeVariablesLocales + " \n");
+
 
             mips.append("\n");
         }
