@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public abstract class Entree {
     private int ligne;
-    protected String idf;
+    private String idf;
     protected int nbParametres;
 
     public Entree(String nom, int n){

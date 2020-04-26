@@ -27,7 +27,8 @@ public class AppelFonction extends Expression {
         }
 
         entree = new EntreeFonction(nomFonction, noLigne, nbParametresAppel);
-        chercherSymbole();
+        //todo voir si ceci est important : répétition de chercherSymbole()
+        //chercherSymbole();
         estBooleen = false;
     }
 
@@ -71,6 +72,9 @@ public class AppelFonction extends Expression {
             parametres.reverse();
             mips.append("\t # Réservation de place pour les paramètres. \n ");
             mips.append("\t add $sp, $sp, -");
+            mips.append(parametres.getNbParametresAppel()*4);
+            mips.append("\n");
+            mips.append("\t add $s3, $s3, -");
             mips.append(parametres.getNbParametresAppel()*4);
             mips.append("\n \n");
 

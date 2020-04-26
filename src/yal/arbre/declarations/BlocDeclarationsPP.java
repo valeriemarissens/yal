@@ -12,9 +12,11 @@ public class BlocDeclarationsPP extends BlocDeclarations {
 
     public BlocDeclarationsPP(int n) {
         super(n);
-        setNumeroBloc(0);
-        fonctions = new ArrayList<>();
 
+        // TODO : voir si ceci est important.
+        setNumeroBloc(0);
+
+        fonctions = new ArrayList<>();
     }
 
     /**
@@ -51,8 +53,6 @@ public class BlocDeclarationsPP extends BlocDeclarations {
     public String toMIPS() {
         return "";
     }
-
-
 
     /**
      * Code des instructions des fonctions à la fin du programme.

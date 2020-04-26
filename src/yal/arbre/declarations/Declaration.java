@@ -18,7 +18,6 @@ public abstract class Declaration extends ArbreAbstrait {
     @Override
     public void verifier() {}
 
-
     @Override
     public String toMIPS() {
         return null;

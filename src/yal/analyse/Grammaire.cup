@@ -113,10 +113,10 @@ start with PROG ;
 PROG    ::=     PROGRAMME  IDF  DEBUT LDECL:ld LINST:li  FIN
                 {: Programme p = new Programme(lileft + 1) ;
 
-                    /* Ajout des fonctions et tableaux dans le programme */
-                    p.ajouterDeclarations(ld);
+                   //* Ajout des fonctions et tableaux dans le programme *//*
+                   p.ajouterDeclarations(ld);
 
-                    /* Ajout des instructions dans le programme */
+                   //* Ajout des instructions dans le programme *//*
                    p.ajouter(li) ;
 
                    RESULT =  p ;
@@ -125,6 +125,7 @@ PROG    ::=     PROGRAMME  IDF  DEBUT LDECL:ld LINST:li  FIN
                 PROGRAMME IDF  DEBUT  LINST:li  FIN
                 {: Programme p = new Programme(lileft + 1) ;
                    p.ajouter(li) ;
+
                    RESULT =  p ;
                  :}
                 ;
@@ -139,7 +140,6 @@ PROG    ::=     PROGRAMME  IDF  DEBUT LDECL:ld LINST:li  FIN
 /* Déclaration d'une ou plusieurs variables locales. */
 LDECL_LOCAL  ::=
                 LDECL_LOCAL:declarations  DECL_LOCAL:declaration
-
                 {:
                     String type = declaration.getType();
 
@@ -168,8 +168,6 @@ LDECL_LOCAL  ::=
                         declarations.ajouter((DeclarationTableau) declaration);
                         break;
                     }
-
-
 
                    RESULT = declarations ;
                  :}

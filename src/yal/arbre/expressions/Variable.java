@@ -8,14 +8,13 @@ import yal.tableSymboles.TDS;
 public class Variable extends Expression {
     private EntreeVariable entreeVariable;
     protected SymboleVariable symbole;
-    boolean estVariableLocale ;
-    boolean estParametre;
+    private boolean estVariableLocale ;
+    private boolean estParametre;
     protected String registre;
 
     public Variable(String idf, int noLigne) {
         super(noLigne);
         entreeVariable = new EntreeVariable(idf, noLigne);
-        chercherSymbole();
     }
 
     protected void chercherSymbole() {
@@ -42,20 +41,19 @@ public class Variable extends Expression {
             estVariableLocale = symbole.getNumeroBloc() != 0;
             estParametre = symbole.estParametre();
 
+            //TODO : Le problème est que quand on passe par ici, estVariableLocale est vrai.
+            // chercherSymbole() donne le mauvais numéro de bloc ? => pb de pile ?
             if (estVariableLocale){
                 registre = "($s2)";
-            }else {
+            } else {
                 registre = "($s7)";
             }
 
             // L'ordre est important car tout paramètre est aussi une variable locale
             if (estParametre){
                 registre = "($s3)";
-
             }
-
         }
-
     }
 
     @Override
@@ -73,7 +71,10 @@ public class Variable extends Expression {
         StringBuilder mips = new StringBuilder();
         // Même si on passe par vérifier, il faut quand même re-appeler vérifier pour mettre la valeur dans "registre"...
         // Sinon, registre est null pour x raison(s).
-        verifier();
+        //todo : Voir si c'est important de laisser cette ligne décommentée ? Je l'ai commenté et toutes nos
+        // erreurs de sortie de fonction où les variables du pp avaient été écrasées par celles des fonctions
+        // ont été résolus...
+        //verifier();
         
         if (symbole != null) {
             mips.append("\t lw $v0, " + symbole.getDeplacement() + registre );

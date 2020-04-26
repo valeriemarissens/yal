@@ -38,7 +38,7 @@ public class DeclarationFonction extends Declaration {
 
         /* Ajout des variables et des paramètres dans la TDS. */
         this.declarations.ajouterTDS();
-        this.parametres.ajouterTDS();
+        this.parametres.ajouterTDS(numeroBloc);
 
         // Set du nb de variables locales dans le retourne
         setRetourne();
@@ -74,7 +74,6 @@ public class DeclarationFonction extends Declaration {
         TDS tds = TDS.getInstance();
 
         int nbParametres = parametres.getNbParametres();
-
         entree = new EntreeFonction(idf, noLigne, nbParametres);
         symbole = new SymboleFonction(idf, nbParametres);
         ((SymboleFonction)symbole).setNumBloc(numeroBloc);
@@ -160,7 +159,6 @@ public class DeclarationFonction extends Declaration {
 
     @Override
     public void verifier() {
-
         if (instructions==null){
             String messageExplicite = "Une fonction doit comporter des instructions.";
             MessagesErreursSemantiques.getInstance().ajouter(noLigne, messageExplicite);

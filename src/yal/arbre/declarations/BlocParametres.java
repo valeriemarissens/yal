@@ -24,7 +24,7 @@ public class BlocParametres extends  BlocDeclarations implements Iterable<Declar
         parametres.add(param);
     }
 
-    public void ajouterTDS(){
+    public void ajouterTDS(int numeroBloc){
         FabriqueIdentifiants.getInstance().resetCompteurParametre();
         TDS tds = TDS.getInstance();
         for (DeclarationParametre parametres : parametres){

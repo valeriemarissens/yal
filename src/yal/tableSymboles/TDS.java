@@ -36,11 +36,32 @@ public class TDS {
      * @param symbole : symbole de la variable ou fonction.
      */
     public void ajouter(int numeroBloc, Entree entree, Symbole symbole){
-        if (numeroBloc==0){
+        if (numeroBloc == 0){
             ajouter(entree, symbole);
         }else{
             ajouterVariableLocale(numeroBloc, entree, symbole);
         }
+        soutdebug(numeroBloc, entree);
+    }
+
+    /**
+     * Sert à savoir ce qu'il y a actuellement dans la TDS.
+     * TODO : effacer cette fonction.
+     * @param numeroBloc
+     * @param entree
+     */
+    private void soutdebug(int numeroBloc, Entree entree){
+        System.out.println();
+        System.out.println("(TDS) On ajoute var "+entree.getIdf()+" dans "+numeroBloc);
+        System.out.println("Taille listeTDS : "+listeTDS.size());
+        int i = 0;
+        for (HashMap<Entree, Symbole> h : listeTDS){
+            System.out.println("TDS numéro: "+i);
+            i++;
+            h.forEach((e,s) -> System.out.println(e.getIdf()));
+            System.out.println();
+        }
+        System.out.println("----------------");
     }
 
     /**
@@ -55,13 +76,15 @@ public class TDS {
 
             /* On n'augmente le nombre de place à réserver que si l'entrée est une variable
             (tableau ou constante). */
-            if (!entree.estTableau() && !entree.estFonction()){
-                cptDeplacement -= 4;
-
+            if (!entree.estFonction()) {
+                if (!entree.estTableau()) {
+                    cptDeplacement -= 4;
+                }
                 /* Le tableau prend plus de place à cause de son descriptif. */
-            }else if (entree.estTableau() && !entree.estFonction()){
-                cptDeplacement -= 8;
-                /* Si c'est une fonction. */
+                else {
+                    cptDeplacement -= 8;
+                    /* Si c'est une fonction. */
+                }
             }
 
             tdsPP.put(entree,symbole);
@@ -106,17 +129,17 @@ public class TDS {
     private void ajouter(int numeroBloc, Entree entree, Symbole symbole, int compteur){
         HashMap<Entree, Symbole> donneesFonction = listeTDS.get(numeroBloc);
 
-            if (!donneesFonction.containsKey(entree)){
-                symbole.setDeplacement(compteur);
-                symbole.setNumeroBloc(numeroBloc);
-                donneesFonction.put(entree,symbole);
-            }
-            else{
-                int ligneErreur = entree.getLigne();
-                String messageExplicite = "la variable a déjà été déclarée en tant que paramètre ou en tant que variable locale.";
-                MessagesErreursSemantiques.getInstance().ajouter(ligneErreur,messageExplicite);
-            }
+        if (!donneesFonction.containsKey(entree)){
+            symbole.setDeplacement(compteur);
+            symbole.setNumeroBloc(numeroBloc);
+            donneesFonction.put(entree,symbole);
         }
+        else {
+            int ligneErreur = entree.getLigne();
+            String messageExplicite = "la variable a déjà été déclarée en tant que paramètre ou en tant que variable locale.";
+            MessagesErreursSemantiques.getInstance().ajouter(ligneErreur, messageExplicite);
+        }
+    }
 
     public void ajouterParametre(int numeroBloc, Entree entree, Symbole symbole){
         int compteur = FabriqueIdentifiants.getInstance().getCompteurParametre();
@@ -128,7 +151,7 @@ public class TDS {
         HashMap<Entree, Symbole> donneesFonctionActuelle = listeTDS.get(numeroBloc);
 
         Symbole symbole = donneesFonctionActuelle.get(e);
-        if (symbole==null){
+        if (symbole == null){
             symbole = tdsPP.get(e);
         }
         return symbole;
@@ -146,7 +169,7 @@ public class TDS {
      * Dépile : on retourne dans le bloc précédent.
      */
     public void sortieBloc(){
-        int nbBloc = (int) pile.pop();
+        pile.pop();
     }
 
     public int getTailleZoneVariable(){

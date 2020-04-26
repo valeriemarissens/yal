@@ -36,7 +36,6 @@ public class Programme extends ArbreAbstrait {
             }
         }
 
-
         if (blocDeclarationsPP !=null) {
             blocDeclarationsPP.verifier();
         }
@@ -44,8 +43,6 @@ public class Programme extends ArbreAbstrait {
         for (ArbreAbstrait instruction : instructions) {
             instruction.verifier();
         }
-
-
 
         MessagesErreursSemantiques messages = MessagesErreursSemantiques.getInstance();
         if (!messages.isEmpty()){
@@ -78,25 +75,14 @@ public class Programme extends ArbreAbstrait {
 
         // Initialisation des piles
         int tailleZoneVariables = TDS.getInstance().getTailleZoneVariable();
-        if (tailleZoneVariables != 0) {
-            int nbVariables = -tailleZoneVariables/4;
 
-            mips.append("\t # Initialiser s7 avec sp (base des variables du programme principal)\n");
-            mips.append("\t move $s7, $sp \n");
-            mips.append("\n");
+        mips.append("\t # Initialiser s7 avec sp (base des variables du programme principal)\n");
+        mips.append("\t move $s7, $sp \n");
+        mips.append("\n");
 
-            mips.append("\t # Initialiser s2 avec sp (base des variables locales)\n");
-            mips.append("\t move $s2, $sp \n");
-            mips.append("\n");
-
-            mips.append("\t # Initialiser s3 avec sp (base des paramètres)\n");
-            mips.append("\t move $s3, $sp \n");
-            mips.append("\n");
-
-            mips.append("\t # Réservation de l'espace pour les variables du programme principal. \n");
-            mips.append("\t addi $sp, $sp, "+tailleZoneVariables);
-            mips.append("\n\n");
-        }
+        mips.append("\t # Réservation de l'espace pour les variables du programme principal. \n");
+        mips.append("\t addi $sp, $sp, "+tailleZoneVariables);
+        mips.append("\n\n");
 
         // Ajout des déclarations des tableaux
 
