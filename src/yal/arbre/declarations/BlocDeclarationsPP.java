@@ -13,7 +13,6 @@ public class BlocDeclarationsPP extends BlocDeclarations {
     public BlocDeclarationsPP(int n) {
         super(n);
 
-        // TODO : voir si ceci est important.
         setNumeroBloc(0);
 
         fonctions = new ArrayList<>();

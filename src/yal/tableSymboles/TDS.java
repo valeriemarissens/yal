@@ -41,7 +41,6 @@ public class TDS {
         }else{
             ajouterVariableLocale(numeroBloc, entree, symbole);
         }
-        soutdebug(numeroBloc, entree);
     }
 
     /**

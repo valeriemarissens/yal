@@ -41,8 +41,6 @@ public class Variable extends Expression {
             estVariableLocale = symbole.getNumeroBloc() != 0;
             estParametre = symbole.estParametre();
 
-            //TODO : Le problème est que quand on passe par ici, estVariableLocale est vrai.
-            // chercherSymbole() donne le mauvais numéro de bloc ? => pb de pile ?
             if (estVariableLocale){
                 registre = "($s2)";
             } else {
