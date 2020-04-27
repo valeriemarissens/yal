@@ -25,13 +25,11 @@ public class BlocParametres extends  BlocDeclarations implements Iterable<Declar
     }
 
     public void ajouterTDS(int numeroBloc){
-        FabriqueIdentifiants.getInstance().resetCompteurParametre();
         TDS tds = TDS.getInstance();
         for (DeclarationParametre parametres : parametres){
             Entree entree = parametres.getEntree();
             Symbole symbole = parametres.getSymbole();
-
-            tds.ajouterParametre(numeroBloc, entree, symbole);
+            tds.ajouter(numeroBloc, entree, symbole);
         }
     }
 

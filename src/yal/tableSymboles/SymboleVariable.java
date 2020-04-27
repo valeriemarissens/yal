@@ -17,11 +17,4 @@ public class SymboleVariable extends Symbole{
         this.deplacement = deplacement;
     }
 
-    public void setEstParametre(boolean bool){
-        estParametre = bool;
-    }
-
-    public boolean estParametre(){
-        return estParametre;
-    }
 }

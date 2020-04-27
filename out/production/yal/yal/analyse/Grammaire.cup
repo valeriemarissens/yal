@@ -1,0 +1,423 @@
+package yal.analyse ;
+
+import java.util.*;
+import yal.arbre.* ;
+import yal.arbre.declarations.*;
+import yal.arbre.instructions.* ;
+import yal.outils.*;
+import yal.tableSymboles.* ;
+import yal.arbre.expressions.calculs.* ;
+import yal.arbre.expressions.comparaisons.* ;
+import yal.arbre.expressions.comparaisons.comparaisonsLogiques.*;
+import yal.arbre.expressions.Constante;
+import yal.arbre.expressions.ConstanteEntiere;
+import yal.arbre.expressions.Expression;
+import yal.arbre.expressions.Variable;
+import yal.arbre.expressions.AppelTableau;
+import yal.arbre.expressions.LongueurTableau;
+import yal.arbre.expressions.IndexTableau;
+import yal.arbre.expressions.AppelFonction;
+import yal.arbre.expressions.Parametre;
+
+import yal.exceptions.AnalyseSyntaxiqueException;
+
+import java_cup.runtime.*;
+
+action code {: :} ;
+
+parser code {:
+
+    public void report_error(String message, Object info) {
+
+        HashMap<Integer, String> lesTerminaux = new HashMap<>() ;
+    
+        lesTerminaux.put(new Integer(CodesLexicaux.DEBUT), "debut") ;
+        lesTerminaux.put(new Integer(CodesLexicaux.FIN), "fin") ;
+        lesTerminaux.put(new Integer(CodesLexicaux.POINTVIRGULE), ";") ;
+        lesTerminaux.put(new Integer(CodesLexicaux.EGAL), "=") ;
+
+        StringBuffer m = new StringBuffer() ;
+
+        if (info instanceof java_cup.runtime.Symbol) {
+            java_cup.runtime.Symbol s = ((java_cup.runtime.Symbol) info);
+
+            if (s.left >= 0) {                
+                m.append("\tligne : " + (s.left + 1)) ;
+                if (s.right >= 0)                    
+                    m.append(" colonne : " + (s.right+1)) ;
+            }
+            
+            if (s.value != null) {
+                lesTerminaux.put(CodesLexicaux.CSTENTIERE, "" + s.value) ;
+            }
+
+            if (lesTerminaux.containsKey(new Integer(s.sym))) {
+                m.append(" dernier token lu : " + lesTerminaux.get(new Integer(s.sym))) ;
+            }
+            else {
+                m.append(" expression non terminée") ;
+            }
+
+        }
+        throw new AnalyseSyntaxiqueException("" + m) ;
+    }
+
+    public void report_fatal_error(String message, Object info) {
+        report_error(message, info);
+    }
+:};
+   
+/* ------------Declaration of Terminals and Non Terminals Section----------- */
+   
+/* Terminals (tokens returned by the scanner).  */
+
+terminal Symbol    PROGRAMME, DEBUT, FIN, ECRIRE, LIRE ;
+terminal Symbol    POINTVIRGULE, EGAL, PARENTHESEOUVRANTE, PARENTHESEFERMANTE, VIRGULE, POINT ;
+terminal Symbol    CROCHETOUVRANT, CROCHETFERMANT ;
+terminal Symbol    PLUS, MOINS, FOIS, DIVISE;
+terminal Symbol    SI, ALORS, FINSI, SINON ;
+terminal Symbol    TANTQUE, REPETER, FINTANTQUE;
+terminal Symbol    ET, OU, NON ;
+terminal String    IDF, CSTENTIERE, ENTIER, FONCTION ;
+terminal String    SUPERIEUR, INFERIEUR, DOUBLEEGAL, PASEGAL ;
+terminal String    RETOURNE, LONGUEUR;
+   
+/* Non terminals used in the grammar section.  */
+
+non terminal ArbreAbstrait PROG, LINST, INST ;
+non terminal Expression EXP ;
+non terminal ArbreAbstrait LDECL, DECL ;
+non terminal ArbreAbstrait LDECL_LOCAL;
+non terminal ArbreAbstrait DECL_LOCAL;
+non terminal BlocParametres PARAMETRES;
+non terminal DeclarationParametre PARAMETRE;
+non terminal EnsembleParametresAppel PAR_EFFS;
+non terminal Expression PAR_EFF;
+
+/* Precedences. */
+/* Produisent un shift/reduce conflict => utilisation du precedence left */
+/* Règle 14 de la sémantique : */
+precedence left OU ;
+precedence left ET ;
+precedence left DOUBLEEGAL, PASEGAL ;
+precedence left SUPERIEUR, INFERIEUR ;
+precedence left PLUS, MOINS ;
+precedence left FOIS, DIVISE ;
+precedence left NON ;
+precedence left PARENTHESEOUVRANTE, PARENTHESEFERMANTE ;
+
+/* ----------------------------Grammar Section-------------------- */
+ 
+start with PROG ;
+
+PROG    ::=     PROGRAMME  IDF  DEBUT LDECL:ld LINST:li  FIN
+                {: Programme p = new Programme(lileft + 1) ;
+
+                   //* Ajout des fonctions et tableaux dans le programme *//*
+                   p.ajouterDeclarations(ld);
+
+                   //* Ajout des instructions dans le programme *//*
+                   p.ajouter(li) ;
+
+                   RESULT =  p ;
+                :}
+          |
+                PROGRAMME IDF  DEBUT  LINST:li  FIN
+                {: Programme p = new Programme(lileft + 1) ;
+                   p.ajouter(li) ;
+
+                   RESULT =  p ;
+                 :}
+                ;
+
+/* Obligé de faire un bloc séparé pour les déclarations de Variables Locales car
+    1- Besoin de savoir à quelle fonction appartient telle variable
+            (-> besoin d'un bloc de déclarations de variable à attribuer à une DéclarationFonction)
+    2- Besoin d'alterner entre déclarations de fonctions et déclarations de variables dans Programme
+            (-> pas le droit de faire LDECL_VARIABLES et LDECL_FONCTIONS séparemment)
+ */
+
+/* Déclaration d'une ou plusieurs variables locales. */
+LDECL_LOCAL  ::=
+                LDECL_LOCAL:declarations  DECL_LOCAL:declaration
+                {:
+                    String type = declaration.getType();
+
+                    switch (type){
+                    case "DeclarationConstante" :
+                        ((BlocDeclarations) declarations).ajouter((DeclarationConstante) declaration);
+                        break;
+                    case "DeclarationTableau":
+                        ((BlocDeclarations) declarations).ajouter((DeclarationTableau) declaration);
+                        break;
+                    }
+
+                     RESULT = declarations ;
+                 :}
+        |
+                DECL_LOCAL:declaration
+                {:
+                    BlocDeclarations declarations = new BlocDeclarations(declarationleft + 1) ;
+                    String type = declaration.getType();
+
+                    switch (type){
+                    case "DeclarationConstante" :
+                        declarations.ajouter((DeclarationConstante) declaration);
+                        break;
+                    case "DeclarationTableau":
+                        declarations.ajouter((DeclarationTableau) declaration);
+                        break;
+                    }
+
+                   RESULT = declarations ;
+                 :}
+                ;
+
+DECL_LOCAL ::=
+                ENTIER IDF:id POINTVIRGULE
+                {: RESULT = new DeclarationConstante(id, idleft); :}
+             |
+                ENTIER CROCHETOUVRANT EXP:e CROCHETFERMANT IDF:id POINTVIRGULE
+                {:
+                    RESULT = new DeclarationTableau(id, e, idleft + 1);
+                :}
+                ;
+
+
+LDECL   ::=     LDECL:ld DECL:d
+                {:
+                    ArbreAbstrait declaration = (ArbreAbstrait) d;
+                    BlocDeclarationsPP declarations = (BlocDeclarationsPP) ld;
+
+                    /* Besoin de caster pour ajouter car règle non terminale arbre abstrait */
+                    String type = declaration.getType();
+
+                    switch (type){
+                        case "DeclarationConstante":
+                            declarations.ajouter( (DeclarationConstante) declaration);
+                            break;
+                         case "DeclarationFonction":
+                            declarations.ajouter( (DeclarationFonction) declaration);
+                            break;
+                        case "DeclarationTableau":
+                            declarations.ajouter( (DeclarationTableau) declaration);
+                            break;
+
+                    }
+
+                    RESULT = declarations;
+                :}
+            |
+                 DECL:d
+            {:
+                    ArbreAbstrait declaration = (ArbreAbstrait) d;
+                    BlocDeclarationsPP declarations = new BlocDeclarationsPP(dleft + 1) ;
+
+                   /* Besoin de caster pour ajouter car règle non terminale arbre abstrait */
+                    String type = declaration.getType();
+
+                    switch (type){
+                        case "DeclarationConstante":
+                            declarations.ajouter( (DeclarationConstante) declaration);
+                            break;
+                         case "DeclarationFonction":
+                            declarations.ajouter( (DeclarationFonction) declaration);
+                            break;
+                        case "DeclarationTableau":
+                            declarations.ajouter( (DeclarationTableau) declaration);
+                            break;
+
+                    }
+
+                    RESULT = declarations ;
+             :}
+                ;
+
+
+DECL    ::=     /* Déclaration d'une variable */
+                ENTIER IDF:id POINTVIRGULE
+                {: RESULT =  new DeclarationConstante(id, idleft+1); :}
+           |
+                /* Déclaration de fonction sans paramètres ni variables locales */
+                FONCTION IDF:id PARENTHESEOUVRANTE                  PARENTHESEFERMANTE DEBUT                                   LINST:li FIN
+                {:
+                    int numeroBloc  = FabriqueIdentifiants.getInstance().getNumeroBloc();
+                    RESULT  = new DeclarationFonction(id, numeroBloc, null, null, (BlocDInstructions)li, idleft+1);
+
+                     :}
+           |
+                /* Déclaration de fonction avec paramètres et sans variables locales */
+                FONCTION IDF:id PARENTHESEOUVRANTE  PARAMETRES:p    PARENTHESEFERMANTE DEBUT                                   LINST:li FIN
+                {:
+                    int numeroBloc  = FabriqueIdentifiants.getInstance().getNumeroBloc();
+                    RESULT = new DeclarationFonction(id, numeroBloc, (BlocParametres) p, null, (BlocDInstructions)li, idleft + 1); :}
+           |
+                /* Déclaration de fonction sans paramètres et avec variables locales */
+                FONCTION IDF:id PARENTHESEOUVRANTE                  PARENTHESEFERMANTE DEBUT    LDECL_LOCAL:ld     LINST:li FIN
+                {:
+                    int numeroBloc  = FabriqueIdentifiants.getInstance().getNumeroBloc();
+                    RESULT = new DeclarationFonction(id, numeroBloc, null, (BlocDeclarations) ld, (BlocDInstructions) li, idleft + 1); :}
+           |
+                /* Déclaration de fonction avec paramètres et avec variables locales */
+                FONCTION IDF:id PARENTHESEOUVRANTE PARAMETRES:p     PARENTHESEFERMANTE DEBUT    LDECL_LOCAL:ld     LINST:li FIN
+
+                {:
+                    int numeroBloc = FabriqueIdentifiants.getInstance().getNumeroBloc();
+                    RESULT = new DeclarationFonction(id, numeroBloc,  (BlocParametres) p, (BlocDeclarations) ld, (BlocDInstructions)li, idleft + 1);
+
+                 :}
+           |
+                /* Déclaration de tableau */
+                ENTIER CROCHETOUVRANT EXP:e CROCHETFERMANT IDF:id POINTVIRGULE
+                {:
+                    RESULT = new DeclarationTableau(id, e, idleft + 1);
+                :}
+                ;
+
+LINST   ::=     LINST:li  INST:i
+                {: ((BlocDInstructions)li).ajouter(i) ;
+                   RESULT = li ; :}
+        |
+                INST:i
+                {: BlocDInstructions b = new BlocDInstructions(ileft + 1) ;
+                   b.ajouter(i) ;
+                   RESULT = b ; :}
+                ;
+
+INST    ::=     /* AFFECT */
+                IDF:id EGAL EXP:e POINTVIRGULE
+                {: RESULT = new Affectation(id, e, eleft + 1) ; :}
+        |
+                /* Affectation tableau */
+                IDF:idf CROCHETOUVRANT EXP:e CROCHETFERMANT EGAL EXP:ee POINTVIRGULE
+                {: RESULT = new Affectation(idf, ee, eleft + 1, e); :}
+        |
+
+                /* LIRE */
+                LIRE IDF:id POINTVIRGULE
+                {: RESULT = new Lire(id, idleft + 1) ; :}
+        |
+                /* ECRIRE */
+                ECRIRE EXP:e POINTVIRGULE
+                {: RESULT = new Ecrire(e, eleft + 1) ; :}
+        |
+                /* Début des conditions */
+                SI EXP:e ALORS FINSI
+                {: RESULT = new Condition(eleft+1); :}
+
+        |       SI EXP:e ALORS LINST:lifst FINSI
+                {: RESULT = new Condition(e, lifst, null, eleft+1); :}
+
+        |       SI EXP:e ALORS SINON LINST:lisnd FINSI
+                {: RESULT = new Condition(e, null, lisnd, eleft+1); :}
+
+        |       SI EXP:e ALORS LINST:lifst SINON LINST:lisnd FINSI
+                {: RESULT = new Condition(e, lifst, lisnd, eleft+1); :}
+        |
+                /* Boucle */
+                TANTQUE EXP:e REPETER LINST:li FINTANTQUE
+                {: RESULT = new Boucle(e, li, eleft+1); :}
+        |
+                RETOURNE EXP:e POINTVIRGULE
+                {: RESULT = new Retourne(e, eleft+1); :}
+                ;
+    
+EXP     ::=     CSTENTIERE:c
+                {: RESULT = new ConstanteEntiere(c, cleft + 1) ; :}
+        |
+                IDF:id
+                {: RESULT = new Variable(id, idleft + 1) ; :}
+        |
+                /* ( EXP ) */
+                PARENTHESEOUVRANTE EXP:e PARENTHESEFERMANTE
+                {: RESULT = e ; :}
+        |
+                /* - EXP */
+                MOINS EXP:e
+                {: RESULT = new Oppose(e, eleft + 1) ; :}
+        |
+                /* Début des EXP OPER EXP */
+                EXP:e1 PLUS EXP:e2
+                {: RESULT = new Addition(e1, e2, e2left + 1) ; :}
+        |
+                EXP:e1 MOINS EXP:e2
+                {: RESULT = new Soustraction(e1, e2, e2left + 1) ; :}
+        |
+                EXP:e1 FOIS EXP:e2
+                {: RESULT = new Multiplication(e1, e2, e2left + 1) ; :}
+        |
+                EXP:e1 DIVISE EXP:e2
+                {: RESULT = new Division(e1, e2, e2left + 1) ; :}
+        |
+                EXP:e1 SUPERIEUR:op EXP:e2
+                {: RESULT = new Comparaison(e1, e2, op ,e2left + 1) ; :}
+        |
+                EXP:e1 INFERIEUR:op EXP:e2
+                {: RESULT = new Comparaison(e1, e2, op, e2left + 1) ; :}
+        |
+                EXP:e1 DOUBLEEGAL:op EXP:e2
+                {: RESULT = new Egalite(e1, e2, op, e2left + 1); :}
+        |
+                EXP:e1 PASEGAL:op EXP:e2
+                {: RESULT = new Egalite(e1, e2, op, e2left + 1); :}
+        |
+                EXP:e1 ET EXP:e2
+                {: RESULT = new Et(e1, e2, e2left + 1) ; :}
+        |
+                EXP:e1 OU EXP:e2
+                {: RESULT = new Ou(e1, e2, e2left + 1) ; :}
+        |
+                NON EXP:e
+                {: RESULT = new Non(e, eleft + 1) ; :}
+        |
+                IDF:id PARENTHESEOUVRANTE PAR_EFFS:parametres PARENTHESEFERMANTE
+                {: RESULT = new AppelFonction(id, (EnsembleParametresAppel) parametres, idleft +1 ); :}
+        |
+                IDF:idf CROCHETOUVRANT EXP:exp CROCHETFERMANT
+                {: RESULT = new IndexTableau(idf, idfleft + 1, exp) ; :}
+
+        |
+                IDF:idf POINT LONGUEUR
+                {: RESULT = new LongueurTableau(idf, idfleft + 1); :}
+
+                ;
+
+/* Paramètres quand on déclare la fonction */
+PARAMETRE ::=   ENTIER IDF:id
+                {: RESULT = new DeclarationParametre(id, idleft + 1); :}
+                ;
+
+PARAMETRES ::=
+                PARAMETRES:parametres POINTVIRGULE PARAMETRE:parametre
+                {:  ((BlocParametres)parametres).ajouter(parametre) ;
+                    RESULT= parametres;
+                :}
+        |
+                PARAMETRE:parametre
+                {:  BlocParametres parametres = new BlocParametres(parametreleft +1);
+                    parametres.ajouter(parametre);
+                    RESULT = parametres;
+                :}
+                ;
+
+/* Paramètres quand on appelle la fonction */
+PAR_EFF ::=     EXP:e
+                {: RESULT = e ; :}
+                ;
+
+PAR_EFFS ::=    PAR_EFFS:plusieurs_parametres VIRGULE PAR_EFF:un_parametre
+                {: ((EnsembleParametresAppel)plusieurs_parametres).ajouter(un_parametre) ;
+                    RESULT = plusieurs_parametres;
+                :}
+
+        |
+                PAR_EFF:e
+                {: EnsembleParametresAppel parametres = new EnsembleParametresAppel(eleft+1);
+                   parametres.ajouter(e);
+                   RESULT = parametres;
+                :}
+
+
+        |
+                /* Sans paramètres, c'est le désert */
+                ;

@@ -63,7 +63,6 @@ public class Retourne extends Instruction {
         if (nbParametres > 0) {
             int deplacementADepilerParametres = 4 * nbParametres;
             mips.append("\t # On dépile les paramètres. \n ");
-            mips.append("\t add $s3, $s3, " + deplacementADepilerParametres + " \n");
             mips.append("\t add $sp, $sp, " + deplacementADepilerParametres + " \n");
             mips.append("\n \n");
         }

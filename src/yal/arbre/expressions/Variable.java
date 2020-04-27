@@ -39,17 +39,11 @@ public class Variable extends Expression {
             MessagesErreursSemantiques.getInstance().ajouter(noLigne,"La variable "+toString()+" n'a pas été déclarée.");
         }else {
             estVariableLocale = symbole.getNumeroBloc() != 0;
-            estParametre = symbole.estParametre();
 
             if (estVariableLocale){
                 registre = "($s2)";
             } else {
                 registre = "($s7)";
-            }
-
-            // L'ordre est important car tout paramètre est aussi une variable locale
-            if (estParametre){
-                registre = "($s3)";
             }
         }
     }
@@ -69,10 +63,7 @@ public class Variable extends Expression {
         StringBuilder mips = new StringBuilder();
         // Même si on passe par vérifier, il faut quand même re-appeler vérifier pour mettre la valeur dans "registre"...
         // Sinon, registre est null pour x raison(s).
-        //todo : Voir si c'est important de laisser cette ligne décommentée ? Je l'ai commenté et toutes nos
-        // erreurs de sortie de fonction où les variables du pp avaient été écrasées par celles des fonctions
-        // ont été résolus...
-        //verifier();
+        verifier();
         
         if (symbole != null) {
             mips.append("\t lw $v0, " + symbole.getDeplacement() + registre );

@@ -10,7 +10,6 @@ public class DeclarationParametre extends Declaration {
         super(idf, noLigne);
         entree = new EntreeVariable(idf, noLigne);
         symbole = new SymboleVariable();
-        ((SymboleVariable)symbole).setEstParametre(true);
     }
 
 

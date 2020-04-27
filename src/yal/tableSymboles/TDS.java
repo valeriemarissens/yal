@@ -39,7 +39,7 @@ public class TDS {
         if (numeroBloc == 0){
             ajouter(entree, symbole);
         }else{
-            ajouterVariableLocale(numeroBloc, entree, symbole);
+            ajouterDansFonction(numeroBloc, entree, symbole);
         }
     }
 
@@ -103,7 +103,15 @@ public class TDS {
         listeTDS.add(donneesFonction);
     }
 
-    private void ajouterVariableLocale(int numeroBloc, Entree entree, Symbole symbole){
+    /**
+     * Ajoute un paramètre ou une variable locale à une fonction.
+     * Un paramètre est traité de la même façon qu'une variable locale.
+     *
+     * @param numeroBloc
+     * @param entree
+     * @param symbole
+     */
+    private void ajouterDansFonction(int numeroBloc, Entree entree, Symbole symbole){
         FabriqueIdentifiants fabrique = FabriqueIdentifiants.getInstance();
 
         int compteur = fabrique.getCompteurVariableLocale();
@@ -116,7 +124,7 @@ public class TDS {
     }
 
     /**
-     * Fonction appelée par ajouterVariableLocale(...) ou ajouterParametre(...) pour la factorisation.
+     * Fonction appelée par ajouterDansFonction(...) ou ajouterParametre(...) pour la factorisation.
      * La seule différence entre les deux est le compteur.
      * Une variable locale ne peut pas avoir le même idf qu'un paramètre.
      *
@@ -139,11 +147,6 @@ public class TDS {
             MessagesErreursSemantiques.getInstance().ajouter(ligneErreur, messageExplicite);
         }
     }
-
-    public void ajouterParametre(int numeroBloc, Entree entree, Symbole symbole){
-        int compteur = FabriqueIdentifiants.getInstance().getCompteurParametre();
-        ajouter(numeroBloc, entree, symbole, compteur);
-     }
 
     public Symbole identifier(Entree e){
         int numeroBloc = (int)pile.peek();
