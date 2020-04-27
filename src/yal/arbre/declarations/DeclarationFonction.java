@@ -202,6 +202,7 @@ public class DeclarationFonction extends Declaration {
 
         // Code pour sortir de la fonction
         // C'est en fait la classe Retourne qui s'en occupe
+        // TODO : sortie bloc TDS ? Voir lorsque plusieurs fonctions.
         return mips.toString();
     }
 
