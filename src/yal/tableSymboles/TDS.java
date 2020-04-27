@@ -80,9 +80,8 @@ public class TDS {
                     cptDeplacement -= 4;
                 }
                 /* Le tableau prend plus de place à cause de son descriptif. */
-                else {
+                else if (entree.estTableau()){
                     cptDeplacement -= 8;
-                    /* Si c'est une fonction. */
                 }
             }
 

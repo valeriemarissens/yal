@@ -12,7 +12,6 @@ import java.util.Iterator;
 
 public class BlocParametres extends  BlocDeclarations implements Iterable<DeclarationParametre> {
     private ArrayList<DeclarationParametre> parametres;
-    private int numeroBloc;
 
     public BlocParametres(int noLigne){
         super(noLigne);

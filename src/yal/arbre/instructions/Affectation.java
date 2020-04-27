@@ -45,9 +45,6 @@ public class Affectation extends Instruction {
             registre = "($s2)";
         }
 
-        if (partieGauche.estParametre()){
-            registre = "($s3)";
-        }
     }
 
     public String toMIPS(){

@@ -2,11 +2,9 @@ package yal.tableSymboles;
 
 public class SymboleVariable extends Symbole{
     private int deplacement;
-    private boolean estParametre;
 
     public SymboleVariable(){
         deplacement = -1;
-        estParametre = false;
     }
 
     public int getDeplacement() {

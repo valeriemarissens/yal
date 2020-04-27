@@ -7,6 +7,7 @@ import yal.arbre.instructions.Boucle;
 import yal.arbre.instructions.Condition;
 import yal.arbre.instructions.Retourne;
 import yal.exceptions.MessagesErreursSemantiques;
+import yal.outils.FabriqueIdentifiants;
 import yal.tableSymboles.EntreeFonction;
 import yal.tableSymboles.SymboleFonction;
 import yal.tableSymboles.TDS;
@@ -20,6 +21,7 @@ public class DeclarationFonction extends Declaration {
 
     public DeclarationFonction(String idf, int numeroBloc, BlocParametres parametres, BlocDeclarations declarations, BlocDInstructions instructions, int noLigne) {
         super(idf, noLigne);
+        FabriqueIdentifiants.getInstance().resetCompteurVariableLocale();
         this.numeroBloc = numeroBloc;
         this.parametres = parametres;
         this.declarations = declarations;
@@ -37,8 +39,10 @@ public class DeclarationFonction extends Declaration {
 
 
         /* Ajout des variables et des paramètres dans la TDS. */
-        this.declarations.ajouterTDS();
+        /* Les paramètres sont en premier. */
         this.parametres.ajouterTDS(numeroBloc);
+        this.declarations.ajouterTDS();
+
 
         // Set du nb de variables locales dans le retourne
         setRetourne();
@@ -211,17 +215,19 @@ public class DeclarationFonction extends Declaration {
 
         // Paramètres empilés précédemment par AppelFonction avant le branchement.
 
+        int nbVariables = declarations.getNbConstantes() + declarations.getNbTableaux();
+
+        if (nbVariables != 0) {
+            mips.append(toMIPSVariablesLocales());
+        }
+
+
         // Adresse de retour empilée.
         mips.append("\t # On empile l'adresse de retour pour retourner à l'endroit de l'appel. \n");
         mips.append("\t move $v0, $ra \n");
         mips.append(toMIPSEmpiler());
         mips.append("\n");
 
-        int nbVariables = declarations.getNbConstantes() + declarations.getNbTableaux();
-
-        if (nbVariables != 0) {
-            mips.append(toMIPSVariablesLocales());
-        }
 
 
         return mips.toString();
@@ -235,7 +241,6 @@ public class DeclarationFonction extends Declaration {
 
         int placeAReserver = declarations.getPlaceAReserver();
         mips.append("\t # Réservation de place pour les variables locales \n");
-        mips.append("\t move $s2, $sp \n");
         mips.append("\t add $sp, $sp, -");
         mips.append(placeAReserver);
         mips.append("\n ");

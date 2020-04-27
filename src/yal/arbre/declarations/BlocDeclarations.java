@@ -97,11 +97,6 @@ public class BlocDeclarations extends ArbreAbstrait {
     }
 
     public void ajouterTDS(){
-        // Si on est dans une fonction
-        if (numeroBloc!=0){
-            // On commence à énumérer toutes les variables locales d'une fonction donc il faut reset par rapport à la précédente
-            FabriqueIdentifiants.getInstance().resetCompteurVariableLocale();
-        }
         ajouterConstantes();
         ajouterTableaux();
     }

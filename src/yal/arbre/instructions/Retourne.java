@@ -42,6 +42,11 @@ public class Retourne extends Instruction {
 
         mips.append("\t # On prépare le départ de la fonction. \n \n");
 
+
+        mips.append("\t # On dépile l'adresse de retour. \n");
+        mips.append("\t add $sp, $sp, 4 \n");
+        mips.append("\t lw $ra, 0($sp) \t\t # dépiler dans $ra \n \n");
+
         // Il faut dépiler les variables locales de s2 puis récupérer l'adresse de retour de sp.
 
         if (placeVariablesLocales > 0) {
@@ -56,9 +61,6 @@ public class Retourne extends Instruction {
             mips.append("\n");
         }
 
-        mips.append("\t # On dépile l'adresse de retour. \n");
-        mips.append("\t add $sp, $sp, 4 \n");
-        mips.append("\t lw $ra, 0($sp) \t\t # dépiler dans $ra \n \n");
 
         if (nbParametres > 0) {
             int deplacementADepilerParametres = 4 * nbParametres;

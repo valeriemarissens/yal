@@ -15,6 +15,7 @@ public class Variable extends Expression {
     public Variable(String idf, int noLigne) {
         super(noLigne);
         entreeVariable = new EntreeVariable(idf, noLigne);
+       // chercherSymbole();
     }
 
     protected void chercherSymbole() {
@@ -61,13 +62,9 @@ public class Variable extends Expression {
     @Override
     public String toMIPS() {
         StringBuilder mips = new StringBuilder();
-        // Même si on passe par vérifier, il faut quand même re-appeler vérifier pour mettre la valeur dans "registre"...
-        // Sinon, registre est null pour x raison(s).
-        verifier();
-        
         if (symbole != null) {
             mips.append("\t lw $v0, " + symbole.getDeplacement() + registre );
-            mips.append("\t\t # on range la valeur de " + entreeVariable.getIdf() + " dans $v0 \n");
+            mips.append("\t\t # on charge la valeur de " + entreeVariable.getIdf() + " dans $v0 \n");
         }
 
         return mips.toString();
