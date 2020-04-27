@@ -71,12 +71,10 @@ public class AppelFonction extends Expression {
         if (parametres != null) {
             parametres.reverse();
             mips.append("\t # Réservation de place pour les paramètres. \n ");
+            mips.append("\t move $s2, $sp \n");
             mips.append("\t add $sp, $sp, -");
             mips.append(parametres.getNbParametresAppel()*4);
             mips.append("\n");
-            mips.append("\t add $s3, $s3, -");
-            mips.append(parametres.getNbParametresAppel()*4);
-            mips.append("\n \n");
 
             mips.append("\t # On empile les paramètres de l'appel. \n");
             mips.append(toMIPSParametresAppel());
@@ -101,8 +99,7 @@ public class AppelFonction extends Expression {
         StringBuilder mips = new StringBuilder();
         for (Expression parametre : parametres){
             mips.append(parametre.toMIPS());
-            mips.append("\t sw $v0, 0($s3) \n");
-            mips.append("\t add $s3, $s3, -4 \n");
+            mips.append("\t sw $v0, 0($s2) \n");
             mips.append("\n");
         }
 
