@@ -63,7 +63,9 @@ public class Programme extends ArbreAbstrait {
         mips.append("\n");
         mips.append("divisionZero : .asciiz \"ERREUR EXECUTION : Vous avez essayé de diviser par zéro.\"");
         mips.append("\n");
-        mips.append("tailleNegative : .asciiz \"ERREUR EXECUTION : La taille du tableau est négative.\"");
+        mips.append("tailleTableau : .asciiz \"ERREUR EXECUTION : La taille du tableau est incorrecte (doit être > 0).\"");
+        mips.append("\n");
+        mips.append("indexTableau : .asciiz \"ERREUR EXECUTION : L'index demandé au tableau est incorrect. \"");
         mips.append("\n\n");
 
         // Programme général
@@ -95,12 +97,33 @@ public class Programme extends ArbreAbstrait {
             mips.append(instruction.toMIPS());
         }
 
+        mips.append("\n \t j end # Si pas de problèmes, on passe les messages d'erreurs. \n\n");
+        // Affichage et fin programme si erreur de tableau
+        mips.append("\n");
+        mips.append("# Erreurs de tableau \n");
+        mips.append("erreur_tailleTableau : \n");
+        mips.append("\t la $v0, tailleTableau \n");
+        mips.append("\t move $a0, $v0 \n");
+        mips.append("\t li $v0, 4 \n");
+        mips.append("\t syscall \n");
+        mips.append("\t j end \n");
+
+        mips.append("\n");
+
+        mips.append("erreur_indexTableau : \n");
+        mips.append("\t la $v0, indexTableau \n");
+        mips.append("\t move $a0, $v0 \n");
+        mips.append("\t li $v0, 4 \n");
+        mips.append("\t syscall \n");
+        mips.append("\t j end \n");
+
         // Retour système pour fin programme
         mips.append("\n");
         mips.append("# Fin du programme : retour au systeme\n");
         mips.append("end :\n");
         mips.append("\t li $v0, 10\n");
         mips.append("\t syscall\n");
+
 
         // Ajout des déclarations des fonctions à la fin
         if (blocDeclarationsPP != null) {

@@ -128,10 +128,6 @@ public class DeclarationTableau extends Declaration {
     }
 
     private String verificationTailleToMIPS(){
-        int identifiant = FabriqueIdentifiants.getInstance().getNumeroCondition();
-        String nomEtiquetteSinon = "sinon_tableau_"+identifiant;
-        String nomEtiquetteFinsi = "finsi_tableau_"+identifiant;
-
         StringBuilder mips = new StringBuilder();
 
         mips.append("\n");
@@ -139,39 +135,8 @@ public class DeclarationTableau extends Declaration {
         mips.append(taille.toMIPS());
 
         mips.append("\t blez $v0, ");
-        mips.append(nomEtiquetteSinon);
-        mips.append("\n");
-
-        // Ici taille > 0, donc tout va bien :
-        mips.append("\t j ");
-        mips.append(nomEtiquetteFinsi);
-        mips.append("\n");
-        mips.append("\n");
-
-        // Étiquette Sinon :
-        mips.append(nomEtiquetteSinon);
-        mips.append(": \n\t la $v0, tailleNegative \n");
-        mips.append("\n");
-
-        // Écrit l'erreur :
-        mips.append("\t move $a0, $v0 \n");
-        mips.append("\t li $v0, 4 \n");
-        mips.append("\t syscall \n");
-        mips.append("\n");
-
-        mips.append("\t li $v0, 4 \n");
-        mips.append("\t la $a0, retourLigne \n");
-        mips.append("\t syscall \n");
-        mips.append("\n");
-
-        // On va à la fin pour arrêter l'exécution :
-        mips.append("\t j end \n");
-        mips.append("\n");
-
-        // Étiquette Finsi :
-        mips.append(nomEtiquetteFinsi);
-        mips.append(": \n\t # On continue... \n");
-        mips.append("\n");
+        mips.append("erreur_tailleTableau");
+        mips.append("\n\n");
 
         return mips.toString();
     }

@@ -3,6 +3,7 @@ package yal.arbre.instructions;
 import yal.arbre.expressions.Expression;
 import yal.arbre.expressions.IndexTableau;
 import yal.arbre.expressions.Variable;
+import yal.exceptions.MessagesErreursSemantiques;
 
 public class Affectation extends Instruction {
     private Variable partieGauche;
@@ -43,6 +44,14 @@ public class Affectation extends Instruction {
 
         if (partieGauche.estVariableLocale()){
             registre = "($s2)";
+        }
+
+        /* Une affectation d'index de tableau ne peut contenir que des entiers. */
+        if (partieGauche.getType().equals("IndexTableau")){
+            if (partieDroite.getType().equals("CalculBooleen")){
+                MessagesErreursSemantiques.getInstance().ajouter(noLigne,
+                        "Un tableau ne peut contenir que des entiers. ");
+            }
         }
 
     }

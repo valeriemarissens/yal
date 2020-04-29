@@ -25,13 +25,30 @@ public class IndexTableau extends AppelTableau {
     public void verifier(){
         super.verifier();
         expression.verifier();
+        if (expression.getType().equals("CalculBooleen")){
+            MessagesErreursSemantiques.getInstance().ajouter(noLigne,
+                    "L'index d'un tableau ne peut pas être exprimé à l'aide d'un calcul booléen (pardon).");
+        }
     }
 
     /**
      * Vérifie si l'expression donnée pour l'index est dans les bornes du tableau.
      * Cette valeur n'est connue qu'à l'exécution d'où la génération de la vérification en MIPS.
+     *
+     * À l'appel de cette fonction, la valeur de l'index est contenue dans $v0.
      */
-    public void verifierToMIPS(){
+    public String verifierToMIPS(){
+        StringBuilder mips = new StringBuilder();
+
+        mips.append("\n");
+        mips.append("\t # On vérifie que l'index >= 0. \n");
+        mips.append("\t bltz $v0, ");
+        mips.append("erreur_indexTableau");
+        mips.append("\n\n");
+        mips.append("\t # On vérifie que l'index < taille du tableau. \n ");
+        mips.append("\t lw $t8, " + symbole.getDeplacement() + registre + "\n" );
+        mips.append("\t bgt $v0, $t8, erreur_indexTableau \n ");
+        return mips.toString();
     }
 
     /**
@@ -43,6 +60,9 @@ public class IndexTableau extends AppelTableau {
         StringBuilder mips = new StringBuilder();
         mips.append("\t # On place la valeur de notre index dans $v0. \n");
         mips.append(expression.toMIPS());
+
+        mips.append("\t # On vérifie la valeur de notre index. \n");
+        mips.append(verifierToMIPS());
 
         // L'adresse de la première valeur du tableau est dans $t3.
         mips.append(toMIPSDebutTableau());
