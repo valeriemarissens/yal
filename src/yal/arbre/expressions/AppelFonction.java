@@ -27,8 +27,6 @@ public class AppelFonction extends Expression {
         }
 
         entree = new EntreeFonction(nomFonction, noLigne, nbParametresAppel);
-        //todo voir si ceci est important : répétition de chercherSymbole()
-        //chercherSymbole();
         estBooleen = false;
     }
 
@@ -41,11 +39,13 @@ public class AppelFonction extends Expression {
      */
     @Override
     public void verifier() {
+
+        chercherSymbole();
+
         if (parametres != null){
             parametres.verifier();
         }
 
-        chercherSymbole();
         if (symbole == null){
             MessagesErreursSemantiques.getInstance().ajouter(noLigne,"La fonction n'a pas été déclarée.");
         }

@@ -74,6 +74,7 @@ public class Condition extends InstructionBloc {
 
     @Override
     public void verifier() {
+        expression.verifier();
         if (!estInutile) {
             if (!expression.estBooleen()) {
                 int ligneErreur = expression.getNoLigne();

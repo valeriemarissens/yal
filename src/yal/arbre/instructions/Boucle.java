@@ -2,6 +2,7 @@ package yal.arbre.instructions;
 
 import yal.arbre.ArbreAbstrait;
 import yal.arbre.expressions.Expression;
+import yal.arbre.expressions.calculs.CalculBooleen;
 import yal.exceptions.MessagesErreursSemantiques;
 import yal.outils.FabriqueIdentifiants;
 
@@ -37,6 +38,7 @@ public class Boucle extends Instruction {
 
     @Override
     public void verifier() {
+        expression.verifier();
         if (!expression.estBooleen()) {
             int ligneErreur = expression.getNoLigne();
             MessagesErreursSemantiques.getInstance().ajouter(ligneErreur,"condition mal exprimée (penser aux parenthèses si besoin).");
@@ -55,7 +57,7 @@ public class Boucle extends Instruction {
         StringBuilder code = new StringBuilder();
 
         // Évaluation de la condition, le résultat est dans $v0
-        code.append(expression.toMIPS());
+        code.append((expression).toMIPS());
         code.append("\t bne $v0, $0, ");
         code.append(nomEtiquetteRepeter);
         code.append("\n");

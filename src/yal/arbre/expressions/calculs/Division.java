@@ -17,6 +17,7 @@ public class Division extends Calcul {
      */
     @Override
     public void verifier(){
+        super.verifier();
         Expression expDroite = getExpDroite();
         String typeExpDroite = expDroite.getType();
         if (typeExpDroite.equals("ConstanteEntiere")){

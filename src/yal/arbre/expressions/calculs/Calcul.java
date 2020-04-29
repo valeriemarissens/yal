@@ -29,6 +29,7 @@ public abstract class Calcul extends Expression {
 
         boolean pasEntierGauche = expGauche.estBooleen();
         boolean pasEntierDroite = expDroite.estBooleen();
+
         if (pasEntierDroite || pasEntierGauche) {
             String messageExplicite = "Les opérandes de +, -, *, / sont des entiers, pas des booléens.";
             MessagesErreursSemantiques.getInstance().ajouter(noLigne, messageExplicite);
@@ -66,6 +67,7 @@ public abstract class Calcul extends Expression {
         }
             // expGauche dans $t8 et expDroite dans $v0
             mips.append(calculOperation());
+
             mips.append("\t # Fin : ");
             mips.append(titreOperation());
             mips.append("\n");

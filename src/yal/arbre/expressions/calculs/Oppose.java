@@ -17,6 +17,7 @@ public class Oppose extends Expression {
 
     @Override
     public void verifier() {
+        e.verifier();
         if (e.estBooleen()){
             String messageExplicite = "L'opérateur unaire - doit être appliqué à un entier.";
             MessagesErreursSemantiques.getInstance().ajouter(noLigne,messageExplicite);

@@ -43,25 +43,6 @@ public class TDS {
         }
     }
 
-    /**
-     * Sert à savoir ce qu'il y a actuellement dans la TDS.
-     * TODO : effacer cette fonction.
-     * @param numeroBloc
-     * @param entree
-     */
-    private void soutdebug(int numeroBloc, Entree entree){
-        System.out.println();
-        System.out.println("(TDS) On ajoute var "+entree.getIdf()+" dans "+numeroBloc);
-        System.out.println("Taille listeTDS : "+listeTDS.size());
-        int i = 0;
-        for (HashMap<Entree, Symbole> h : listeTDS){
-            System.out.println("TDS numéro: "+i);
-            i++;
-            h.forEach((e,s) -> System.out.println(e.getIdf()));
-            System.out.println();
-        }
-        System.out.println("----------------");
-    }
 
     /**
      * Ajout d'une variable dans la TDS du programme principal.

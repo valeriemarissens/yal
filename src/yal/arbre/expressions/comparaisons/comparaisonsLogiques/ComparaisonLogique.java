@@ -30,6 +30,7 @@ public abstract class ComparaisonLogique extends Calcul {
             String messageExplicite = "Les opérandes de 'et', 'oui' et 'non' doivent être des booléens et pas des entiers.";
             MessagesErreursSemantiques.getInstance().ajouter(noLigne,messageExplicite);
         }
+
     }
 
     @Override
