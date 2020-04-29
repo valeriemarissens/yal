@@ -15,9 +15,6 @@ public class EntreeVariable extends Entree {
         return false;
     }
 
-    public boolean estTableau(){ return estTableau; }
-
-    public void setEstTableau(boolean estTableau){ this.estTableau = estTableau;}
 
     @Override
     public String getType() {

@@ -66,6 +66,8 @@ public class Programme extends ArbreAbstrait {
         mips.append("tailleTableau : .asciiz \"ERREUR EXECUTION : La taille du tableau est incorrecte (doit être > 0).\"");
         mips.append("\n");
         mips.append("indexTableau : .asciiz \"ERREUR EXECUTION : L'index demandé au tableau est incorrect. \"");
+        mips.append("\n");
+        mips.append("taillesEgalite : .asciiz \"ERREUR EXCUTION : Les tableaux doivent être de tailles égales pour que l'un soit affecté à l'autre. \" ");
         mips.append("\n\n");
 
         // Programme général
@@ -112,6 +114,15 @@ public class Programme extends ArbreAbstrait {
 
         mips.append("erreur_indexTableau : \n");
         mips.append("\t la $v0, indexTableau \n");
+        mips.append("\t move $a0, $v0 \n");
+        mips.append("\t li $v0, 4 \n");
+        mips.append("\t syscall \n");
+        mips.append("\t j end \n");
+
+        mips.append("\n");
+
+        mips.append("erreur_taillesEgalite : \n");
+        mips.append("\t la $v0, taillesEgalite \n");
         mips.append("\t move $a0, $v0 \n");
         mips.append("\t li $v0, 4 \n");
         mips.append("\t syscall \n");

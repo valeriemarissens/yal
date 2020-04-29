@@ -18,8 +18,15 @@ public abstract class CalculBooleen extends Calcul {
             String messageExplicite = "Les deux opérandes doivent être de même type.";
             MessagesErreursSemantiques.getInstance().ajouter(noLigne, messageExplicite);
         }
+
         expGauche.verifier();
         expDroite.verifier();
+
+        type = ( (expGauche.estTableau() && !expDroite.estTableau()) || (!expGauche.estTableau() && expDroite.estTableau()) );
+        if (type) {
+            String messageExplicite = "Les deux opérandes doivent être de même type.";
+            MessagesErreursSemantiques.getInstance().ajouter(noLigne, messageExplicite);
+        }
     }
 
     public String getType(){

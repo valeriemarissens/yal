@@ -4,6 +4,7 @@ import yal.arbre.expressions.ConstanteEntiere;
 import yal.arbre.expressions.Expression;
 import yal.arbre.expressions.calculs.CalculBooleen;
 import yal.arbre.expressions.calculs.Soustraction;
+import yal.exceptions.MessagesErreursSemantiques;
 import yal.outils.FabriqueIdentifiants;
 
 public class Comparaison extends CalculBooleen {
@@ -19,6 +20,14 @@ public class Comparaison extends CalculBooleen {
             cmdMips = "slt";
         }
 
+    }
+
+    public void verifier(){
+        super.verifier();
+        if (expGauche.getType().equals("Tableau") || expDroite.getType().equals("Tableau")){
+            MessagesErreursSemantiques.getInstance().ajouter(noLigne,
+                    "On ne peut pas comparer des tableaux (inférieur ou supérieur).");
+        }
     }
 
     public String getOperateur(){

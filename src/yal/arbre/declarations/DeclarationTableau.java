@@ -25,7 +25,7 @@ public class DeclarationTableau extends Declaration {
 
         // L'entrée précise que c'est un tableau pour le compteur (en effet, un tableau prend 2 places au lieu
         // d'une).
-        ((EntreeVariable) entree).setEstTableau(true);
+        ((SymboleVariable) symbole).setEstTableau(true);
     }
 
     @Override
@@ -159,7 +159,6 @@ public class DeclarationTableau extends Declaration {
         StringBuilder mips = new StringBuilder();
         mips.append("\n");
         mips.append("\t # On empile les éléments du tableau dans $sp. \n");
-
 
         // Boucle :
         /* Tant que $v0 n'est pas égal à 0 ... ($v0 est la taille du tableau) */

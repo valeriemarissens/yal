@@ -9,13 +9,11 @@ public class Variable extends Expression {
     private EntreeVariable entreeVariable;
     protected SymboleVariable symbole;
     private boolean estVariableLocale ;
-    private boolean estParametre;
     protected String registre;
 
     public Variable(String idf, int noLigne) {
         super(noLigne);
         entreeVariable = new EntreeVariable(idf, noLigne);
-       // chercherSymbole();
     }
 
     protected void chercherSymbole() {
@@ -26,9 +24,6 @@ public class Variable extends Expression {
         return estVariableLocale;
     }
 
-    public boolean estParametre(){
-        return estParametre;
-    }
 
     /**
      * Vérifie que la variable soit déclarée précédemment.
@@ -41,6 +36,8 @@ public class Variable extends Expression {
         }else {
             estVariableLocale = symbole.getNumeroBloc() != 0;
 
+            estTableau = symbole.estTableau();
+
             if (estVariableLocale){
                 registre = "($s2)";
             } else {
@@ -51,7 +48,11 @@ public class Variable extends Expression {
 
     @Override
     public String getType() {
+        if (estTableau){
+            return "Tableau";
+        }
         return "Variable";
+
     }
 
 
