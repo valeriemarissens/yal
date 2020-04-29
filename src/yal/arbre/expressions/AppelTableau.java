@@ -30,7 +30,7 @@ public abstract class AppelTableau extends Variable {
     public String toMIPSDebutTableau(){
         StringBuilder mips = new StringBuilder();
         mips.append("\t # On va chercher l'adresse de la première valeur du tableau. \n");
-        mips.append("\t la $t3, " + (symbole.getDeplacement()-4) + registre + "\n" );
+        mips.append("\t lw $t3, " + (symbole.getDeplacement()-4) + registre + "\n" );
         return mips.toString();
     }
 }

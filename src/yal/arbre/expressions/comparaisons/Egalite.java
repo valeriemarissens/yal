@@ -122,7 +122,7 @@ public class Egalite extends CalculBooleen {
         }else {
             mips.append("\t bgtz $v0, "+ etiquetteInversement + "\n");
         }
-        
+
         mips.append("\n");
         /* On va chercher l'élément suivant. */
         mips.append("\t addi $t3, $t3, -4 \n");

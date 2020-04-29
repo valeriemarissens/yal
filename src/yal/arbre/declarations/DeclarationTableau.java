@@ -25,6 +25,7 @@ public class DeclarationTableau extends Declaration {
 
         // L'entrée précise que c'est un tableau pour le compteur (en effet, un tableau prend 2 places au lieu
         // d'une).
+        ((EntreeVariable) entree).setEstTableau(true);
         ((SymboleVariable) symbole).setEstTableau(true);
     }
 
@@ -175,7 +176,7 @@ public class DeclarationTableau extends Declaration {
 
         /* On range $t8 dans $t3, qui est l'emplacement du i-eme élément du tableau. */
         /* Petit souci avec tableau[0], d'où le 4($t3) qui a réglé le beug, à voir si le dernier élément est ok du coup... */
-        mips.append("\t sw $t8, 4($t3) \n");
+        mips.append("\t sw $t8, 0($t3) \n");
 
         /* On va chercher l'élément suivant. */
         mips.append("\t addi $t3, $t3, -4 \n");
