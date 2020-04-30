@@ -39,9 +39,7 @@ public class AppelFonction extends Expression {
      */
     @Override
     public void verifier() {
-
         chercherSymbole();
-
         if (parametres != null){
             parametres.verifier();
         }

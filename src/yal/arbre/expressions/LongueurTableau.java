@@ -1,5 +1,7 @@
 package yal.arbre.expressions;
 
+import yal.exceptions.MessagesErreursSemantiques;
+
 public class LongueurTableau extends AppelTableau {
     /**
      * Classe donnant la longueur d'un tableau.
@@ -9,6 +11,15 @@ public class LongueurTableau extends AppelTableau {
      */
     public LongueurTableau(String idf, int noLigne) {
         super(idf, noLigne);
+    }
+
+    @Override
+    public void verifier() {
+        super.verifier();
+        if (!symbole.estTableau()){
+            MessagesErreursSemantiques.getInstance().ajouter(noLigne,
+                    "Il faut demander la longueur à un tableau.");
+        }
     }
 
     /**
