@@ -58,8 +58,6 @@ public class DeclarationFonction extends Declaration {
 
         /* S'il n'y a pas de paramètres... */
         if (parametres == null) parametres = new BlocParametres(noLigne);
-
-
     }
 
 
@@ -221,14 +219,15 @@ public class DeclarationFonction extends Declaration {
             mips.append(toMIPSVariablesLocales());
         }
 
-
         // Adresse de retour empilée.
         mips.append("\t # On empile l'adresse de retour pour retourner à l'endroit de l'appel. \n");
         mips.append("\t move $v0, $ra \n");
         mips.append(toMIPSEmpiler());
         mips.append("\n");
 
-
+        // Initialisation de $s2 pour les variables locales.
+        mips.append("\t move $s2, $sp \n");
+        mips.append("\n");
 
         return mips.toString();
     }
