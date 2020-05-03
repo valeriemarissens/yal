@@ -128,6 +128,13 @@ public class TDS {
         }
     }
 
+    /**
+     * Grâce au numéro de bloc dans la pile, récupère la TDS correspondante à ce
+     * numéro de bloc. Ensuite, cherche le symbole qui est associé à l'entrée
+     * dans cette TDS.
+     * @param e entrée qui nous intéresse.
+     * @return symbole qui est associé à e.
+     */
     public Symbole identifier(Entree e){
         int numeroBloc = (int)pile.peek();
         HashMap<Entree, Symbole> donneesFonctionActuelle = listeTDS.get(numeroBloc);
