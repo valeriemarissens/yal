@@ -7,10 +7,10 @@ import yal.tableSymboles.SymboleFonction;
 import yal.tableSymboles.TDS;
 
 public class AppelFonction extends Expression {
-    String nom ;
-    EntreeFonction entree;
-    SymboleFonction symbole;
-    EnsembleParametresAppel parametres;
+    private String nom;
+    private EntreeFonction entree;
+    private SymboleFonction symbole;
+    private EnsembleParametresAppel parametres;
 
     protected AppelFonction(int n) {
         super(n);
@@ -68,6 +68,7 @@ public class AppelFonction extends Expression {
         // On empile les valeurs des paramètres donnés.
         if (parametres != null) {
             mips.append("\t # Réservation de place pour les paramètres. \n ");
+            // todo: pb lorsque fonction récursives : $s2 est initialisé à chaque appel...
             mips.append("\t move $s2, $sp \n");
             mips.append("\t add $sp, $sp, -");
             mips.append(parametres.getNbParametresAppel()*4);

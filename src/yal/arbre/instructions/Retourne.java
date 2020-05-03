@@ -54,16 +54,33 @@ public class Retourne extends Instruction {
             mips.append(mipsLiberationTableaux);
             mips.append("\n");
 
+            mips.append("\t # On remet les cases occupées par les variables locales à 0.\n");
+            for (int k=placeVariablesLocales; k>=0; k -= 4){
+                String deplacement = "-"+k;
+                mips.append("\t li $t1, 0 \n");
+                mips.append("\t sw $t1, ");
+                mips.append(deplacement);
+                mips.append("($sp) \n");
+            }
+
             mips.append("\t # On dépile maintenant les constantes (dont les descriptifs des tableaux). \n");
             mips.append("\t add $sp, $sp, " + placeVariablesLocales + " \n");
-
-
             mips.append("\n");
         }
 
 
         if (nbParametres > 0) {
             int deplacementADepilerParametres = 4 * nbParametres;
+
+            mips.append("\t # On remet les cases occupées par les paramètres à 0.\n");
+            for (int k=deplacementADepilerParametres; k>=0; k -= 4){
+                String deplacement = "-"+k;
+                mips.append("\t li $t1, 0 \n");
+                mips.append("\t sw $t1, ");
+                mips.append(deplacement);
+                mips.append("($sp) \n");
+            }
+
             mips.append("\t # On dépile les paramètres. \n ");
             mips.append("\t add $sp, $sp, " + deplacementADepilerParametres + " \n");
             mips.append("\n \n");

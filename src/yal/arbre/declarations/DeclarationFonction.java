@@ -1,6 +1,5 @@
 package yal.arbre.declarations;
 
-
 import yal.arbre.ArbreAbstrait;
 import yal.arbre.BlocDInstructions;
 import yal.arbre.instructions.Boucle;
@@ -33,16 +32,14 @@ public class DeclarationFonction extends Declaration {
         this.declarations.setNumeroBloc(numeroBloc);
         this.parametres.setNumeroBloc(numeroBloc);
 
-        // On ajoute la déclaration de cette fonction dans la TDS du PP; on y crée l'entrée et le symbole.
+        /* On ajoute la déclaration de cette fonction dans la TDS du PP; on y crée l'entrée et le symbole. */
         ajouterTDS(0);
         ((SymboleFonction) this.symbole).setNumBloc(numeroBloc);
-
 
         /* Ajout des variables et des paramètres dans la TDS. */
         /* Les paramètres sont en premier. */
         this.parametres.ajouterTDS(numeroBloc);
         this.declarations.ajouterTDS();
-
 
         // Set du nb de variables locales dans le retourne
         setRetourne();
@@ -157,8 +154,6 @@ public class DeclarationFonction extends Declaration {
         }
     }
 
-
-
     @Override
     public void verifier() {
         if (instructions==null){
@@ -225,14 +220,18 @@ public class DeclarationFonction extends Declaration {
         mips.append(toMIPSEmpiler());
         mips.append("\n");
 
-        // Initialisation de $s2 pour les variables locales.
-        mips.append("\t move $s2, $sp \n");
-        mips.append("\n");
+        if (parametres.getNbParametres() == 0) {
+            // $s2 n'avait pas été initialisé encore.
+            mips.append("\t move $s2, $sp \n");
+            mips.append("\n");
+        }
 
         return mips.toString();
     }
 
     /**
+     * Réservation de placer pour les variables, puis affectation de chaque
+     * variable à 0.
      * @return
      */
     private String toMIPSVariablesLocales(){
@@ -245,13 +244,11 @@ public class DeclarationFonction extends Declaration {
         mips.append("\n ");
         mips.append("\n");
 
-
         if (declarations.getNbTableaux() > 0){
             mips.append(declarations.tableauxToMIPS());
         }
         return mips.toString();
     }
-
 
     /**
      * La valeur à empiler doit être dans $v0.

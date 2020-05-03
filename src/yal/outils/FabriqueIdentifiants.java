@@ -43,7 +43,9 @@ public class FabriqueIdentifiants {
         compteurVariableLocale = 4;
     }
 
-
+    /**
+     * Initialisation des compteurs.
+     */
     private FabriqueIdentifiants() {
         compteurCdt = 0;
         compteurBoucle = 0;

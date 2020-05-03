@@ -10,7 +10,6 @@ public class Affectation extends Instruction {
     private Variable partieGauche;
     private Expression partieDroite;
     private String registre;
-    private Expression index;
 
     public Affectation(String id, Expression e, int n) {
         super(n);
@@ -77,7 +76,6 @@ public class Affectation extends Instruction {
         }
     }
 
-
     private String toMIPSTableaux(){
         Variable tableauGauche = (Variable) partieGauche;
         Variable tableauDroite = (Variable) partieDroite;
@@ -136,6 +134,7 @@ public class Affectation extends Instruction {
         mips.append("\t "+ etiquetteFin + ": \n");
         return mips.toString();
     }
+
     /**
      * Les déplacements de variables sont dans l'arbre,
      * la TDS ne sert plus.
@@ -156,20 +155,19 @@ public class Affectation extends Instruction {
 
     public String toMIPSTableau(){
         IndexTableau partieGauche = ((IndexTableau) this.partieGauche);
-     StringBuilder mips = new StringBuilder();
-     mips.append("\t #On met l'adresse de l'index demandé du tableau dans $t3. \n");
-     mips.append(partieGauche.toMIPSIndex());
+        StringBuilder mips = new StringBuilder();
+        mips.append("\t #On met l'adresse de l'index demandé du tableau dans $t3. \n");
+        mips.append(partieGauche.toMIPSIndex());
 
-     mips.append("\t # On met la valeur de la partie droite dans $v0.\n");
-     mips.append(partieDroite.toMIPS());
+        mips.append("\t # On met la valeur de la partie droite dans $v0.\n");
+        mips.append(partieDroite.toMIPS());
 
-     mips.append("\t sw $v0, 0($t3) \n");
-     return mips.toString();
+        mips.append("\t sw $v0, 0($t3) \n");
+        return mips.toString();
     }
 
     @Override
     public String getType() {
         return "Affectation";
     }
-
 }
